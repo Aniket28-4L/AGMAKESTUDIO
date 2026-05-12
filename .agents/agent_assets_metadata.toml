@@ -48,3 +48,15 @@ id = "uQOzq5WXmY6Jn2hexFuK2"
 uri = "file://attached_assets/founder.png"
 type = "image"
 title = "elegant makeup artist portrait"
+
+[[generated]]
+id = "j4dJMszep1Gp_IKeG2qPc"
+uri = "file://attached_assets/hero_right.png"
+type = "image"
+title = "Indian bride right angle"
+
+[[generated]]
+id = "omDLOE_8kJNNtrcOpub0l"
+uri = "file://attached_assets/hero_left.png"
+type = "image"
+title = "Indian bride left angle"
