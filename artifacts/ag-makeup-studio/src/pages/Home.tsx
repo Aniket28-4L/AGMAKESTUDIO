@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { motion, useScroll, useTransform, useInView } from "framer-motion";
+import { motion, useScroll, useTransform, useInView, useSpring, useMotionValue } from "framer-motion";
 import heroRightPath from "@assets/hero_right.png";
 import heroLeftPath from "@assets/hero_left.png";
 import gallery1Path from "@assets/gallery_1.png";
@@ -94,6 +94,34 @@ export default function Home() {
   
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  // Custom cursor
+  const cursorX = useMotionValue(-100);
+  const cursorY = useMotionValue(-100);
+  const springConfig = { damping: 28, stiffness: 280, mass: 0.5 };
+  const trailConfig = { damping: 40, stiffness: 120, mass: 1 };
+  const orbX = useSpring(cursorX, springConfig);
+  const orbY = useSpring(cursorY, springConfig);
+  const trailX = useSpring(cursorX, trailConfig);
+  const trailY = useSpring(cursorY, trailConfig);
+  const [cursorHover, setCursorHover] = useState(false);
+
+  useEffect(() => {
+    const move = (e: MouseEvent) => {
+      cursorX.set(e.clientX);
+      cursorY.set(e.clientY);
+    };
+    const onEnter = () => setCursorHover(true);
+    const onLeave = () => setCursorHover(false);
+    window.addEventListener("mousemove", move);
+    document.querySelectorAll("a, button, [data-testid]").forEach(el => {
+      el.addEventListener("mouseenter", onEnter);
+      el.addEventListener("mouseleave", onLeave);
+    });
+    return () => {
+      window.removeEventListener("mousemove", move);
+    };
+  }, [cursorX, cursorY]);
+
   // Lock body scroll when mobile menu is open
   useEffect(() => {
     if (mobileMenuOpen) {
@@ -104,7 +132,34 @@ export default function Home() {
   }, [mobileMenuOpen]);
 
   return (
-    <main className="min-h-screen bg-background overflow-x-hidden selection:bg-primary/20 selection:text-foreground relative">
+    <main className="min-h-screen bg-background overflow-x-hidden selection:bg-primary/20 selection:text-foreground relative cursor-none">
+      {/* Custom Champagne Cursor */}
+      <motion.div
+        data-testid="cursor-orb"
+        className="fixed pointer-events-none z-[99999] hidden md:block"
+        style={{ x: orbX, y: orbY, translateX: "-50%", translateY: "-50%" }}
+      >
+        <motion.div
+          className="rounded-full border border-[#B79272]/70 bg-[#C9A98A]/10 backdrop-blur-[2px]"
+          animate={{ width: cursorHover ? 48 : 12, height: cursorHover ? 48 : 12 }}
+          transition={{ duration: 0.3, ease: "easeOut" }}
+        />
+      </motion.div>
+      <motion.div
+        className="fixed pointer-events-none z-[99998] hidden md:block"
+        style={{ x: trailX, y: trailY, translateX: "-50%", translateY: "-50%" }}
+      >
+        <div
+          className="rounded-full"
+          style={{
+            width: 80,
+            height: 80,
+            background: "radial-gradient(circle, rgba(199,169,138,0.18) 0%, rgba(215,187,180,0.06) 50%, transparent 70%)",
+            filter: "blur(8px)",
+          }}
+        />
+      </motion.div>
+
       {/* Texture & Entrance Overlays */}
       <div className="noise-overlay" />
       <div className="cinematic-entrance-overlay" />
@@ -756,20 +811,25 @@ export default function Home() {
               Crafted exclusively with the world's most prestigious beauty houses to ensure a flawless, enduring finish.
             </p>
 
-            {/* Layered floating brands */}
-            <div className="relative h-64 md:h-80 w-full max-w-5xl mx-auto">
-              {[
-                { name: "CHARLOTTE TILBURY", top: "10%", left: "10%", size: "text-2xl md:text-4xl", font: "font-serif tracking-widest", delay: 0 },
-                { name: "DIOR", top: "40%", left: "40%", size: "text-4xl md:text-6xl", font: "font-serif tracking-[0.2em]", delay: 0.1 },
-                { name: "M·A·C", top: "20%", left: "70%", size: "text-3xl md:text-5xl", font: "font-sans tracking-[0.3em] font-medium", delay: 0.2 },
-                { name: "NARS", top: "70%", left: "20%", size: "text-2xl md:text-4xl", font: "font-sans tracking-[0.4em]", delay: 0.3 },
-                { name: "ESTÉE LAUDER", top: "60%", left: "70%", size: "text-xl md:text-3xl", font: "font-serif tracking-widest", delay: 0.4 },
-                { name: "TOM FORD", top: "85%", left: "45%", size: "text-lg md:text-2xl", font: "font-sans tracking-[0.2em]", delay: 0.5 },
-              ].map((brand, i) => (
-                <FadeIn key={i} delay={brand.delay} className={`absolute text-foreground/80 hover:text-foreground hover:scale-105 transition-all duration-500 cursor-default ${brand.size} ${brand.font}`} style={{ top: brand.top, left: brand.left, transform: 'translate(-50%, -50%)' }}>
-                  {brand.name}
-                </FadeIn>
-              ))}
+            {/* Editorial Brand Showcase */}
+            <div className="w-full max-w-5xl mx-auto mt-16 mb-4">
+              {/* Row 1 */}
+              <FadeIn delay={0} className="flex items-baseline justify-center gap-8 md:gap-16 mb-10 flex-wrap">
+                <span className="font-serif text-3xl md:text-5xl tracking-[0.25em] text-foreground/75 hover:text-foreground transition-colors duration-500 cursor-default whitespace-nowrap">DIOR</span>
+                <span className="font-serif text-xl md:text-2xl tracking-widest text-foreground/50 hover:text-foreground/80 transition-colors duration-500 cursor-default whitespace-nowrap">CHARLOTTE TILBURY</span>
+              </FadeIn>
+              {/* Row 2 */}
+              <FadeIn delay={0.1} className="flex items-baseline justify-center gap-8 md:gap-20 mb-10 flex-wrap">
+                <span className="font-sans text-2xl md:text-4xl tracking-[0.35em] font-medium text-foreground/80 hover:text-foreground transition-colors duration-500 cursor-default whitespace-nowrap">M·A·C</span>
+                <span className="font-serif text-2xl md:text-3xl tracking-widest text-foreground/55 hover:text-foreground/80 transition-colors duration-500 cursor-default whitespace-nowrap">ESTÉE LAUDER</span>
+                <span className="font-sans text-xl md:text-2xl tracking-[0.4em] text-foreground/45 hover:text-foreground/70 transition-colors duration-500 cursor-default whitespace-nowrap">NARS</span>
+              </FadeIn>
+              {/* Row 3 */}
+              <FadeIn delay={0.2} className="flex items-baseline justify-center gap-8 md:gap-16 flex-wrap">
+                <span className="font-sans text-lg md:text-xl tracking-[0.3em] text-foreground/40 hover:text-foreground/65 transition-colors duration-500 cursor-default whitespace-nowrap">TOM FORD</span>
+                <span className="font-serif text-xl md:text-2xl tracking-widest text-foreground/50 hover:text-foreground/75 transition-colors duration-500 cursor-default whitespace-nowrap">HUDA BEAUTY</span>
+                <span className="font-sans text-sm md:text-base tracking-[0.4em] text-foreground/35 hover:text-foreground/60 transition-colors duration-500 cursor-default whitespace-nowrap">BOBBI BROWN</span>
+              </FadeIn>
             </div>
             
             <p className="font-sans text-[9px] uppercase tracking-[0.3em] text-foreground/50 mt-12">
