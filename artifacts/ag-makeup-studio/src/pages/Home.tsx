@@ -9,6 +9,13 @@ import gallery4Path from "@assets/gallery_4.png";
 import gallery5Path from "@assets/gallery_5.png";
 import gallery6Path from "@assets/gallery_6.png";
 import founderPath from "@assets/founder.png";
+import story1Path from "@assets/story_1.png";
+import story2Path from "@assets/story_2.png";
+import story3Path from "@assets/story_3.png";
+import story4Path from "@assets/story_4.png";
+import lens1Path from "@assets/lens_1.png";
+import lens2Path from "@assets/lens_2.png";
+import lens3Path from "@assets/lens_3.png";
 import { Menu, X } from "lucide-react";
 
 // Helper for cinematic fade ins
@@ -102,6 +109,23 @@ export default function Home() {
       <div className="noise-overlay" />
       <div className="cinematic-entrance-overlay" />
 
+      {/* Ambient floating pearls - global atmospheric element */}
+      <div className="fixed inset-0 pointer-events-none z-[1] overflow-hidden">
+        {Array.from({ length: 8 }).map((_, i) => (
+          <div
+            key={i}
+            className="ambient-pearl"
+            style={{
+              left: `${10 + i * 11}%`,
+              animationDelay: `${i * 3}s`,
+              animationDuration: `${25 + i * 5}s`,
+              width: `${80 + i * 30}px`,
+              height: `${80 + i * 30}px`,
+            }}
+          />
+        ))}
+      </div>
+
       {/* Navigation */}
       <nav className="fixed top-0 left-0 right-0 z-50 py-6 px-6 md:px-12 flex justify-between items-center bg-background/5 backdrop-blur-sm border-none mix-blend-difference text-white transition-all duration-500">
         <div className="flex flex-col items-start cursor-pointer group">
@@ -148,7 +172,7 @@ export default function Home() {
         <div className="letterbox bottom" />
         
         {/* Image Crossfade Loop */}
-        <motion.div style={{ y: yHero }} className="absolute inset-0 w-full h-full">
+        <motion.div style={{ y: yHero }} className="absolute inset-0 w-full h-full lens-breathe">
           <div className="absolute inset-0 w-full h-full hero-img-1">
              <img src={heroRightPath} alt="Bride angle 1" className="w-full h-full object-cover" />
           </div>
@@ -194,9 +218,19 @@ export default function Home() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1.8, ease: [0.25, 0.1, 0.25, 1], delay: 0.6 }}
-              className="text-huge text-white flex flex-col"
+              className="text-white flex flex-col relative"
+              style={{ fontSize: 'clamp(3.5rem, 9vw, 8.5rem)', lineHeight: 0.9 }}
             >
               <span className="font-serif font-light">Crafted For The Bride</span>
+              
+              {/* Animated Horizontal Rule */}
+              <motion.div 
+                initial={{ scaleX: 0 }}
+                animate={{ scaleX: 1 }}
+                transition={{ duration: 1.2, delay: 0.8, ease: "easeInOut" }}
+                className="h-[2px] bg-primary/40 w-1/2 my-2 origin-left" 
+              />
+              
               <span className="font-serif italic text-white/90 translate-x-4 md:translate-x-12">Who Wants To Feel Unforgettable.</span>
             </motion.h1>
             
@@ -212,6 +246,16 @@ export default function Home() {
               <a href="#portfolio" data-testid="button-view-gallery" className="btn-frosted px-12 py-5 text-xs uppercase tracking-[0.2em] text-white/70 text-center w-full sm:w-auto">
                 View Archive
               </a>
+            </motion.div>
+
+            {/* Second Subtitle */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 1.5, delay: 1.6 }}
+              className="mt-16"
+            >
+              <p className="font-serif italic text-white/60" style={{ fontSize: 'clamp(1.2rem, 2.5vw, 1.8rem)' }}>Beauty Designed Like A Memory.</p>
             </motion.div>
           </div>
         </div>
@@ -309,7 +353,70 @@ export default function Home() {
       </section>
 
       {/* Gradient Transition */}
-      <div className="h-[20vh] bg-gradient-to-b from-background to-[#F5F0EB]" />
+      <div className="h-[15vh] bg-gradient-to-b from-background to-black" />
+
+      {/* NEW SECTION 1: THE BRIDAL MOMENT */}
+      <section className="relative bg-black overflow-hidden">
+        {/* Background atmospheric glow */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black via-[#1a0f08] to-black" />
+        
+        {/* 4 cinematic story frames stacked vertically, each full viewport height */}
+        {/* Frame 1: Anticipation */}
+        <div className="relative h-[100svh] flex items-center justify-end pr-[8vw]">
+          <img src={story1Path} className="absolute inset-0 w-full h-full object-cover opacity-60" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/20 to-transparent" />
+          <FadeIn className="relative z-10 text-right max-w-lg">
+            <span className="font-sans text-[9px] tracking-[0.4em] text-[#B79272] uppercase block mb-6">I. The Anticipation</span>
+            <h3 className="font-serif text-5xl md:text-7xl font-light text-white leading-[0.9] mb-8">
+              She has<br/><em>always known</em><br/>this moment.
+            </h3>
+          </FadeIn>
+        </div>
+        
+        {/* Frame 2: Artistry */}
+        <div className="relative h-[100svh] flex items-center pl-[8vw]">
+          <img src={story2Path} className="absolute inset-0 w-full h-full object-cover opacity-70" />
+          <div className="absolute inset-0 bg-gradient-to-l from-black/80 via-black/20 to-transparent" />
+          <FadeIn className="relative z-10 max-w-lg">
+            <span className="font-sans text-[9px] tracking-[0.4em] text-[#B79272] uppercase block mb-6">II. The Artistry</span>
+            <h3 className="font-serif text-5xl md:text-7xl font-light text-white leading-[0.9] mb-8">
+              Each stroke,<br/><em>a memory</em><br/>being born.
+            </h3>
+          </FadeIn>
+        </div>
+
+        {/* Frame 3: Emotion */}
+        <div className="relative h-[100svh] flex items-center justify-end pr-[8vw]">
+          <img src={story3Path} className="absolute inset-0 w-full h-full object-cover opacity-60" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/20 to-transparent" />
+          <FadeIn className="relative z-10 text-right max-w-lg">
+            <span className="font-sans text-[9px] tracking-[0.4em] text-[#B79272] uppercase block mb-6">III. The Revelation</span>
+            <h3 className="font-serif text-5xl md:text-7xl font-light text-white leading-[0.9] mb-8">
+              The mirror<br/>reflects what<br/><em>she always was.</em>
+            </h3>
+          </FadeIn>
+        </div>
+
+        {/* Frame 4: The Final Bride */}
+        <div className="relative h-[100svh] flex items-center justify-center">
+          <img src={story4Path} className="absolute inset-0 w-full h-full object-cover opacity-50" />
+          <div className="absolute inset-0 bg-black/40" />
+          <FadeIn className="relative z-10 text-center">
+            <span className="font-sans text-[9px] tracking-[0.4em] text-[#B79272] uppercase block mb-8">IV. The Bride</span>
+            <h3 className="font-serif text-6xl md:text-[10vw] font-light text-white leading-[0.85]">
+              Unforgettable.<br/><em>Always.</em>
+            </h3>
+          </FadeIn>
+        </div>
+
+        {/* Section label */}
+        <div className="absolute top-1/2 right-6 -translate-y-1/2 writing-mode-vertical font-sans text-[8px] tracking-[0.4em] text-white/20 uppercase" style={{ writingMode: 'vertical-rl' }}>
+          The Bridal Moment
+        </div>
+      </section>
+
+      {/* Gradient Transition */}
+      <div className="h-[15vh] bg-gradient-to-b from-black to-[#F5F0EB]" />
 
       {/* Collections */}
       <section id="collections" className="py-32 relative bg-[#F5F0EB]">
@@ -404,7 +511,75 @@ export default function Home() {
       </section>
 
       {/* Gradient Transition */}
-      <div className="h-[20vh] bg-gradient-to-b from-[#F5F0EB] to-background" />
+      <div className="h-[15vh] bg-gradient-to-b from-[#F5F0EB] to-[#0d0b0a]" />
+
+      {/* NEW SECTION 2: AS SEEN THROUGH THE LENS */}
+      <section className="py-40 bg-[#0d0b0a] relative overflow-hidden">
+        {/* Background */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_#1a0f08_0%,_#0d0b0a_70%)]" />
+
+        <div className="container mx-auto px-6 md:px-12 relative z-10">
+          <FadeIn className="mb-24 flex flex-col items-center text-center">
+            <span className="font-sans text-[9px] tracking-[0.4em] text-[#B79272] uppercase mb-6">As Seen Through The Lens</span>
+            <h2 className="font-serif text-5xl md:text-8xl font-light text-white leading-[0.9]">
+              Through the<br/><em className="text-[#B79272]">DSLR</em>
+            </h2>
+            <p className="font-sans font-light text-white/40 mt-8 text-sm tracking-[0.2em]">Every bride captured in her most luminous moment.</p>
+          </FadeIn>
+
+          {/* Three asymmetric DSLR frames */}
+          <div className="flex flex-col md:flex-row gap-6 md:gap-4 items-end">
+            
+            {/* Frame 1 - tall */}
+            <div className="w-full md:w-[45%] relative group">
+              <div className="relative overflow-hidden aspect-[3/4]">
+                <img src={lens1Path} className="w-full h-full object-cover editorial-image-hover opacity-90" />
+                {/* DSLR frame overlay */}
+                <div className="absolute inset-0 border border-white/10 m-4 pointer-events-none" />
+                <div className="absolute top-6 left-6 right-6 flex justify-between items-start pointer-events-none">
+                  <div className="font-mono text-[8px] text-white/30 tracking-wider">f/1.8 — 1/200s — ISO 800</div>
+                </div>
+                <div className="absolute bottom-6 left-6 right-6 flex justify-between items-end pointer-events-none">
+                  <div className="font-mono text-[8px] text-white/30">85mm</div>
+                  <div className="w-2 h-2 rounded-full border border-white/30" />
+                </div>
+                {/* Film grain overlay */}
+                <div className="absolute inset-0 noise-overlay opacity-[0.06]" />
+              </div>
+              <p className="mt-4 font-serif italic text-white/40 text-sm">The intimate portrait.</p>
+            </div>
+
+            {/* Frame 2 - shorter, offset up */}
+            <div className="w-full md:w-[30%] md:-translate-y-16 relative group">
+              <div className="relative overflow-hidden aspect-square">
+                <img src={lens2Path} className="w-full h-full object-cover editorial-image-hover opacity-90" />
+                <div className="absolute inset-0 border border-white/10 m-4 pointer-events-none" />
+                <div className="absolute top-6 left-6 right-6 flex justify-between items-start pointer-events-none">
+                  <div className="font-mono text-[8px] text-white/30 tracking-wider">f/2.8 — 1/125s</div>
+                </div>
+                <div className="absolute inset-0 noise-overlay opacity-[0.06]" />
+              </div>
+              <p className="mt-4 font-serif italic text-white/40 text-sm">The artistry revealed.</p>
+            </div>
+
+            {/* Frame 3 - medium height */}
+            <div className="w-full md:w-[25%] relative group">
+              <div className="relative overflow-hidden aspect-[2/3]">
+                <img src={lens3Path} className="w-full h-full object-cover editorial-image-hover opacity-90" />
+                <div className="absolute inset-0 border border-white/10 m-4 pointer-events-none" />
+                <div className="absolute top-6 left-6 right-6 flex justify-between items-start pointer-events-none">
+                  <div className="font-mono text-[8px] text-white/30 tracking-wider">100mm — Macro</div>
+                </div>
+                <div className="absolute inset-0 noise-overlay opacity-[0.06]" />
+              </div>
+              <p className="mt-4 font-serif italic text-white/40 text-sm">The whispered detail.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Gradient Transition */}
+      <div className="h-[15vh] bg-gradient-to-b from-[#0d0b0a] to-background" />
 
       {/* Founder / About */}
       <section className="py-32 relative bg-background overflow-hidden">
@@ -465,8 +640,60 @@ export default function Home() {
         </div>
       </section>
 
+      {/* NEW SECTION 3: REELS WALL */}
+      <section className="py-40 bg-background relative overflow-hidden">
+        <div className="container mx-auto px-6 md:px-12">
+          <FadeIn className="mb-20">
+            <span className="font-sans text-[9px] tracking-[0.4em] text-primary uppercase block mb-4">The Archive in Motion</span>
+            <h2 className="font-serif text-5xl md:text-7xl font-light text-foreground leading-[0.9]">
+              Moments<br/><em className="text-muted-foreground">Frozen in Light</em>
+            </h2>
+          </FadeIn>
+
+          {/* Horizontal scrolling reel strip */}
+          <div className="flex gap-4 overflow-x-auto pb-8 snap-x snap-mandatory scrollbar-hide -mx-6 px-6">
+            {[gallery1Path, gallery2Path, gallery3Path, gallery4Path, gallery5Path, gallery6Path].map((img, i) => (
+              <div key={i} className="flex-none w-[240px] md:w-[280px] snap-center relative group" data-testid={`reel-frame-${i}`}>
+                <div className="relative overflow-hidden aspect-[9/16] bg-black">
+                  <img src={img} className="w-full h-full object-cover editorial-image-hover opacity-90 group-hover:opacity-100 transition-opacity duration-700" />
+                  {/* Reel overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20" />
+                  {/* Reel frame lines */}
+                  <div className="absolute inset-0 border border-white/5 m-2 pointer-events-none" />
+                  {/* Simulated play button on hover */}
+                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                    <div className="w-14 h-14 rounded-full backdrop-blur-sm bg-white/10 border border-white/30 flex items-center justify-center">
+                      <div className="w-0 h-0 border-t-[6px] border-t-transparent border-l-[10px] border-l-white border-b-[6px] border-b-transparent ml-1" />
+                    </div>
+                  </div>
+                  {/* Caption */}
+                  <div className="absolute bottom-4 left-4 right-4">
+                    <p className="font-sans text-[8px] tracking-[0.2em] text-white/50 uppercase">AG Bridal Film · 0{i + 1}</p>
+                  </div>
+                  {/* Glow on hover */}
+                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" style={{ boxShadow: 'inset 0 0 40px rgba(183,146,114,0.15)' }} />
+                </div>
+              </div>
+            ))}
+          </div>
+          
+          <p className="font-sans text-[9px] tracking-[0.3em] text-muted-foreground uppercase mt-8 text-center">
+            Follow @agmakeupstudio for the full story
+          </p>
+        </div>
+      </section>
+
       {/* Recognition & Testimonials */}
       <section className="py-40 bg-background relative border-t border-border">
+        {/* Brand Trust Strip */}
+        <div className="w-full overflow-hidden mb-24 border-t border-b border-border/30 py-6">
+          <div className="scroll-strip">
+            {['Vogue India', 'Elle Weddings', 'Brides Today', 'WedMeGood', 'The Wed', 'Bridal Asia', 'Vogue India', 'Elle Weddings', 'Brides Today', 'WedMeGood', 'The Wed', 'Bridal Asia'].map((brand, i) => (
+              <span key={i} className="font-serif italic text-2xl text-muted-foreground mx-12 whitespace-nowrap">{brand}</span>
+            ))}
+          </div>
+        </div>
+
         <div className="container mx-auto px-6 md:px-12">
           
           {/* Large Quote style testimonials */}
@@ -506,11 +733,11 @@ export default function Home() {
       </section>
 
       {/* Atelier / Products - Full Bleed Cinematic */}
-      <section id="atelier" className="py-40 bg-[#eaddcf] relative overflow-hidden">
+      <section id="atelier" className="py-40 bg-gradient-to-br from-[#EEE3D7] via-[#F7F1EB] to-[#EEE3D7] relative overflow-hidden">
         <div className="absolute inset-0 candlelit-overlay opacity-30" />
         <motion.div 
           style={{ y: yBg }} 
-          className="absolute inset-0 opacity-5"
+          className="absolute inset-0 opacity-10 atelier-bg-glow"
           initial={false}
         >
           {/* Abstract texture bg */}
@@ -605,6 +832,36 @@ export default function Home() {
             </form>
           </FadeIn>
         </div>
+      </section>
+
+      {/* NEW SECTION 4: EMOTIONAL FINAL CTA */}
+      <section className="relative h-[80vh] md:h-[100vh] overflow-hidden flex items-center justify-center" data-testid="section-final-cta">
+        {/* Background: use hero_left image with dark overlay */}
+        <img src={heroLeftPath} className="absolute inset-0 w-full h-full object-cover scale-105" style={{ filter: 'brightness(0.35) saturate(0.8)' }} />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/40" />
+        
+        {/* Atmospheric glow */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(183,146,114,0.08)_0%,_transparent_70%)]" />
+
+        <div className="relative z-10 text-center px-6 max-w-4xl mx-auto">
+          <FadeIn>
+            <span className="font-sans text-[9px] tracking-[0.5em] text-[#B79272] uppercase block mb-12">Begin Your Bridal Story</span>
+            <h2 className="font-serif text-6xl md:text-[8vw] font-light text-white leading-[0.85] mb-12">
+              Your most<br/>beautiful<br/><em>chapter awaits.</em>
+            </h2>
+            <div className="w-16 h-px bg-[#B79272]/60 mx-auto mb-12" />
+            <p className="font-sans font-light text-white/50 text-sm tracking-[0.2em] mb-16 max-w-md mx-auto">
+              We accept a curated selection of brides each season.<br/>Your story deserves to begin with intention.
+            </p>
+            <a href="#book" data-testid="link-final-cta" className="inline-block btn-frosted px-16 py-5 text-xs uppercase tracking-[0.3em] text-white/90">
+              Reserve Your Date
+            </a>
+          </FadeIn>
+        </div>
+
+        {/* Letterbox bars */}
+        <div className="absolute top-0 left-0 right-0 h-[50px] bg-black opacity-40 pointer-events-none" />
+        <div className="absolute bottom-0 left-0 right-0 h-[50px] bg-black opacity-40 pointer-events-none" />
       </section>
 
       {/* Footer */}

@@ -112,6 +112,22 @@
   pointer-events: none;
 }
 
+/* Ambient Pearls */
+@keyframes ambient-float {
+  0% { transform: translateY(110vh) scale(0.8); opacity: 0; }
+  10% { opacity: 0.04; }
+  90% { opacity: 0.04; }
+  100% { transform: translateY(-10vh) scale(1.2); opacity: 0; }
+}
+.ambient-pearl {
+  position: absolute;
+  bottom: -100px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(199,169,138,0.3) 0%, rgba(215,187,180,0.1) 50%, transparent 70%);
+  filter: blur(30px);
+  animation: ambient-float linear infinite;
+}
+
 /* DSLR Camera Pan Crossfade */
 @keyframes dslr-pan-1 {
   0%, 45% { opacity: 1; transform: scale(1.02) translateX(2%); }
@@ -130,6 +146,14 @@
 }
 .hero-img-2 {
   animation: dslr-pan-2 20s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+@keyframes lens-breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.008); }
+}
+.lens-breathe {
+  animation: lens-breathe 4s ease-in-out infinite;
 }
 
 /* Cinematic Edge Blur */
@@ -314,4 +338,16 @@
 /* Section drawing line */
 .section-line {
   transform-origin: left;
+}
+
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+@keyframes slow-rotate-glow {
+  0% { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(180deg) scale(1.2); }
+  100% { transform: rotate(360deg) scale(1); }
+}
+.atelier-bg-glow {
+  animation: slow-rotate-glow 30s linear infinite;
 }
