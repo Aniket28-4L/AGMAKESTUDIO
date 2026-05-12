@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "AG Makeup Studio"
+version = "1.0.0"
+id = "artifacts/ag-makeup-studio"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 25466
+
+[services.development]
+run = "pnpm --filter @workspace/ag-makeup-studio run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/ag-makeup-studio", "run", "build" ]
+publicDir = "artifacts/ag-makeup-studio/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "25466"
+BASE_PATH = "/"

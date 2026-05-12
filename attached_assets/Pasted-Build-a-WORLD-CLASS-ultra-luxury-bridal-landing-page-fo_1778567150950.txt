@@ -1,0 +1,515 @@
+Build a WORLD-CLASS ultra-luxury bridal landing page for “AG Makeup Studio”.
+
+This is NOT a typical salon website.
+
+The final experience should feel like:
+
+* a couture bridal fashion campaign
+* a cinematic bridal film
+* a Vogue India Weddings editorial
+* a Dior Beauty-inspired luxury microsite
+* a premium bridal showroom translated into digital form
+
+The emotional brand perception should instantly communicate:
+
+“Luxury bridal artistry designed for unforgettable moments.”
+
+The user should immediately feel:
+
+“This is not a local makeup studio.
+This is a couture bridal luxury brand.”
+
+━━━━━━━━━━━━━━━━━━━━━━━
+
+# ⚠️ IMPORTANT EXECUTION RULES
+
+Create ONLY ONE SINGLE LANDING PAGE.
+
+DO NOT:
+
+* create multiple pages
+* generate dashboard-like layouts
+* create template sections
+* use startup SaaS UI patterns
+* use generic salon website structures
+* create boxed corporate compositions
+* use repetitive equal-sized grids
+
+This entire experience must feel:
+editorial,
+cinematic,
+immersive,
+fashion-directed,
+and emotionally luxurious.
+
+The page should scroll like:
+a bridal couture fashion film.
+
+━━━━━━━━━━━━━━━━━━━━━━━
+
+# 🎨 MASTER ART DIRECTION — EDGAR DEGAS INSPIRED LUXURY PASTELS
+
+The visual identity should feel inspired by how Edgar Degas would paint luxury bridal femininity using layered pastel pigments, candlelit warmth, powder textures, muted skin tones, silk reflections, and emotional softness.
+
+The colors must NEVER feel:
+
+* candy pastel
+* flat beige
+* overly pink
+* digital-looking
+* startup minimal
+* cold modern
+* trendy UI-template pastel
+
+Instead the palette should feel:
+
+* creamy
+* couture-inspired
+* pearl diffused
+* powdered
+* candlelit
+* atmospheric
+* emotionally warm
+* soft-focus
+* skin-toned
+* fashion editorial
+
+The entire website should feel like:
+a luxury bridal showroom blended with a Vogue India editorial campaign.
+
+━━━━━━━━━━━━━━━━━━━━━━━
+
+# 💎 ULTRA-LUXURY COLOR SYSTEM
+
+PRIMARY — Champagne Silk
+#B79272
+
+SECONDARY — Dusty Blush Veil
+#D7BBB4
+
+MAIN BACKGROUND — Warm Pearl Ivory
+#F7F1EB
+
+SECONDARY BACKGROUND — Nude Linen
+#EEE3D7
+
+ACCENT GLOW — Candle Gold
+#C9A98A
+
+CINEMATIC DEPTH — Mauve Taupe
+#B7A19C
+
+TEXT PRIMARY — Espresso Cocoa
+#4A3428
+
+TEXT SECONDARY — Dusty Cocoa
+#7D675C
+
+━━━━━━━━━━━━━━━━━━━━━━━
+
+# ✨ COLOR EXECUTION RULES
+
+The colors must blend softly into each other like:
+luxury bridal makeup blending into skin.
+
+Add:
+
+* pearl gradients
+* champagne diffusion
+* dusty blush overlays
+* candlelit haze
+* creamy atmospheric glow
+* silk-inspired reflections
+* luxury warm opacity layers
+* translucent ivory surfaces
+* couture fabric-inspired softness
+
+DO NOT use:
+
+* hard color separations
+* sharp section contrast
+* flat pastel blocks
+* harsh shadows
+* strong black elements
+* oversaturated bridal tones
+
+The interface should feel:
+expensive even without content.
+
+━━━━━━━━━━━━━━━━━━━━━━━
+
+# 🔥 HERO SECTION — CINEMATIC MASTERPIECE
+
+The hero section is the emotional centerpiece of the entire website.
+
+It must feel:
+immersive,
+alive,
+luxurious,
+editorial,
+and emotionally unforgettable.
+
+━━━━━━━━━━━━━━━━━━━━━━━
+
+# 🎬 HERO VISUAL DIRECTION
+
+Create a cinematic bridal visual experience where:
+a luxury Indian bride slowly moves from RIGHT to LEFT across the screen like a couture fashion film.
+
+The movement should feel:
+
+* graceful
+* elegant
+* emotionally soft
+* cinematic
+* slow and premium
+
+Add:
+
+* veil movement
+* soft motion blur
+* cinematic diffusion
+* candlelit highlights
+* floating particles
+* depth layering
+* atmospheric softness
+
+The bridal styling should feel:
+
+* modern Indian luxury
+* pastel bridal couture
+* editorial fashion styling
+* emotionally expressive
+* premium Vogue-inspired beauty direction
+
+━━━━━━━━━━━━━━━━━━━━━━━
+
+# 🧠 HERO LAYOUT COMPOSITION
+
+The hero composition should feel:
+like a luxury magazine editorial.
+
+Use:
+
+* cinematic asymmetry
+* oversized editorial typography
+* dramatic whitespace
+* layered framing
+* premium visual rhythm
+* floating compositions
+* elegant imbalance
+* couture visual pacing
+
+DO NOT:
+
+* center everything symmetrically
+* use startup hero layouts
+* use generic landing page composition
+
+━━━━━━━━━━━━━━━━━━━━━━━
+
+# ✨ HERO TYPOGRAPHY
+
+Typography should feel:
+luxury fashion editorial.
+
+Use:
+
+* elegant serif typography
+* cinematic scale
+* oversized luxury headings
+* premium readability
+* emotional femininity
+
+Suggested tone:
+“Crafted For The Bride Who Wants To Feel Unforgettable.”
+
+“Beauty Designed Like A Memory.”
+
+Typography should feel:
+soft,
+expensive,
+editorial,
+and emotionally elegant.
+
+━━━━━━━━━━━━━━━━━━━━━━━
+
+# ⚡ HERO CTA BUTTONS
+
+Include TWO premium CTA buttons:
+
+1. Explore Bridal Packages
+2. View Bridal Gallery
+
+The buttons must feel:
+like luxury beauty packaging.
+
+Use:
+
+* frosted pearl glassmorphism
+* champagne glow borders
+* soft hover diffusion
+* subtle luxury lighting
+* premium blur layering
+* rounded couture softness
+
+Avoid:
+
+* loud gradients
+* harsh borders
+* generic modern buttons
+* neon effects
+
+━━━━━━━━━━━━━━━━━━━━━━━
+
+# 🖼️ BRIDAL GALLERY SECTION
+
+The gallery must feel:
+like a luxury bridal fashion editorial.
+
+NOT:
+a salon portfolio grid.
+
+Use:
+
+* cinematic bridal portraits
+* emotional candid moments
+* luxury jewelry closeups
+* couture bridal compositions
+* editorial vertical imagery
+* soft cinematic lighting
+* fashion-style framing
+
+The gallery should feel:
+immersive,
+elegant,
+and premium.
+
+━━━━━━━━━━━━━━━━━━━━━━━
+
+# 💍 BRIDAL COLLECTIONS SECTION
+
+Present bridal packages like:
+couture bridal collections.
+
+DO NOT create:
+traditional pricing cards.
+
+Instead use:
+
+* editorial layouts
+* layered compositions
+* cinematic spacing
+* premium containers
+* emotional storytelling
+* asymmetrical luxury arrangements
+
+Package names:
+
+* The Signature Bride
+* The Timeless Bride
+* The Royal Glow
+* The Modern Muse
+
+The section should feel:
+aspirational,
+luxurious,
+and emotionally premium.
+
+━━━━━━━━━━━━━━━━━━━━━━━
+
+# 💎 “MEET ANU GIRI” SECTION
+
+Create a cinematic editorial founder introduction.
+
+This section should feel:
+like a Vogue India feature article.
+
+DO NOT make it:
+
+* corporate
+* bio-style
+* startup founder section
+* simple About Us block
+
+Use:
+
+* cinematic portrait composition
+* emotional storytelling
+* editorial spacing
+* luxury typography
+* asymmetrical structure
+* floating layered visuals
+
+The emotional narrative should communicate:
+
+“More than makeup — artistry designed for unforgettable bridal memories.”
+
+Include:
+
+* years of experience
+* luxury bridal positioning
+* emotional connection with brides
+* couture bridal philosophy
+* artistic credibility
+
+━━━━━━━━━━━━━━━━━━━━━━━
+
+# 🏆 RECOGNITION & TRUST SECTION
+
+Create a luxury recognition showcase.
+
+Include:
+
+* awards
+* academy achievements
+* workshop moments
+* celebrity/premium client trust
+* bridal milestones
+* certifications
+* transformation highlights
+
+The visual treatment should feel:
+editorial,
+premium,
+and cinematic.
+
+Use:
+
+* floating award frames
+* luxury testimonial cards
+* soft editorial spacing
+* cinematic image layering
+* creamy depth shadows
+* emotional social proof presentation
+
+━━━━━━━━━━━━━━━━━━━━━━━
+
+# 💄 LUXURY PRODUCTS SHOWCASE
+
+Create a cinematic showcase of premium makeup products used by AG Makeup Studio.
+
+Include luxury brands such as:
+
+* MAC
+* Huda Beauty
+* Dior Beauty
+* Charlotte Tilbury
+* NARS
+* Bobbi Brown
+* Estée Lauder
+
+The section should feel:
+like a Dior Beauty campaign.
+
+NOT:
+an e-commerce section.
+
+Use:
+
+* floating compositions
+* luxury beauty lighting
+* cinematic product closeups
+* soft shadow diffusion
+* couture beauty styling
+* editorial arrangements
+* pearl-glow reflections
+
+━━━━━━━━━━━━━━━━━━━━━━━
+
+# ✨ MOTION SYSTEM
+
+The entire experience must feel:
+slow,
+feminine,
+graceful,
+and luxurious.
+
+Add:
+
+* cinematic fade reveals
+* floating veil motion
+* smooth scroll choreography
+* subtle parallax depth
+* editorial motion timing
+* elegant hover interactions
+* soft atmospheric transitions
+* luxury motion blur
+
+Nothing should animate aggressively.
+
+The scrolling experience should feel:
+like moving through a couture bridal film.
+
+━━━━━━━━━━━━━━━━━━━━━━━
+
+# 💎 MATERIAL & SURFACE DESIGN
+
+All UI surfaces should feel:
+tactile,
+luxurious,
+and couture-inspired.
+
+Use:
+
+* frosted pearl translucency
+* champagne glass effects
+* creamy layered gradients
+* silk-inspired reflections
+* soft luxury diffusion shadows
+* premium depth lighting
+* subtle cinematic blur
+* couture texture layering
+
+Buttons, cards, overlays, and containers should feel:
+crafted like luxury beauty packaging.
+
+━━━━━━━━━━━━━━━━━━━━━━━
+
+# 📱 RESPONSIVE EXPERIENCE
+
+The mobile experience must feel:
+as premium as desktop.
+
+Avoid:
+
+* oversized vertical sections
+* broken editorial pacing
+* cluttered mobile layouts
+* inconsistent spacing
+* poor typography scaling
+
+Maintain:
+
+* luxury whitespace
+* cinematic pacing
+* elegant composition
+* premium readability
+
+━━━━━━━━━━━━━━━━━━━━━━━
+
+# 🏆 FINAL CREATIVE DIRECTION
+
+The final website should resemble:
+
+* Vogue India Weddings
+* Sabyasachi bridal campaigns
+* Dior Beauty microsites
+* luxury perfume editorials
+* couture bridal fashion films
+
+The final result must feel:
+
+* emotionally luxurious
+* couture-inspired
+* globally premium
+* cinematic
+* feminine
+* editorial
+* unforgettable
+
+The interface should feel:
+expensive,
+even before content is added.
+
+Generate ONE MASTERPIECE-LEVEL ultra-luxury cinematic landing page ONLY.

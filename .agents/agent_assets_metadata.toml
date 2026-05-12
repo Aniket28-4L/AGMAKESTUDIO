@@ -1,0 +1,50 @@
+uploads = []
+outputs = []
+
+[[generated]]
+id = "l8GvOtH_OprNXeTNAx3Rc"
+uri = "file://attached_assets/hero_bride.png"
+type = "image"
+title = "luxury Indian bride with veil"
+
+[[generated]]
+id = "es8aGRLB8xLC3mWJe1Ntm"
+uri = "file://attached_assets/gallery_1.png"
+type = "image"
+title = "Indian bride closeup portrait"
+
+[[generated]]
+id = "k9J7X-NaHMEo3VboRjGTB"
+uri = "file://attached_assets/gallery_2.png"
+type = "image"
+title = "Indian bridal hands with mehndi"
+
+[[generated]]
+id = "gJCEQao9yTnArec79Ycba"
+uri = "file://attached_assets/gallery_3.png"
+type = "image"
+title = "Indian bride in motion"
+
+[[generated]]
+id = "4FmLff1vlh-BO2scn_mXr"
+uri = "file://attached_assets/gallery_4.png"
+type = "image"
+title = "Indian bridal makeup closeup"
+
+[[generated]]
+id = "So1sMVNl_qCaYuPlbAcsQ"
+uri = "file://attached_assets/gallery_5.png"
+type = "image"
+title = "luxury bridal jewelry flatlay"
+
+[[generated]]
+id = "18VJPN7LFpCnXeFDHi88g"
+uri = "file://attached_assets/gallery_6.png"
+type = "image"
+title = "Indian bride candid laugh"
+
+[[generated]]
+id = "uQOzq5WXmY6Jn2hexFuK2"
+uri = "file://attached_assets/founder.png"
+type = "image"
+title = "elegant makeup artist portrait"
