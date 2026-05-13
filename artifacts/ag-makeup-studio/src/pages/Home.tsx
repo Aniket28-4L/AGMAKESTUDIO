@@ -576,34 +576,19 @@ export default function Home() {
         <div className="letterbox top" />
         <div className="letterbox bottom" />
         
-        {/* Video Background — Indian Bridal Ambience via YouTube */}
-        <motion.div style={{ y: yHero }} className="absolute inset-0 w-full h-full overflow-hidden">
-          {/* Poster fallback image — always visible beneath the iframe */}
-          <img
-            src={heroRightPath}
-            alt="Bride"
-            className="absolute inset-0 w-full h-full object-cover"
-            style={{ filter: "brightness(0.72) saturate(1.15)" }}
-          />
-          {/* YouTube autoplay iframe — replace VIDEO_ID with preferred Indian bridal video */}
-          {/* e.g. Sabyasachi lookbook, bridal film, etc. The poster image shows while it loads */}
-          <iframe
-            src="https://www.youtube-nocookie.com/embed/7HqeX3yjW0Y?autoplay=1&mute=1&loop=1&playlist=7HqeX3yjW0Y&controls=0&showinfo=0&rel=0&disablekb=1&modestbranding=1&iv_load_policy=3&playsinline=1"
-            allow="autoplay; encrypted-media"
-            className="absolute pointer-events-none"
-            style={{
-              top: "-10%", left: "-10%",
-              width: "120%", height: "120%",
-              border: "none",
-              filter: "brightness(0.68) saturate(1.2)",
-            }}
-            title="AG Makeup Studio — Bridal Cinematic"
-          />
+        {/* Cinematic Image Crossfade — DSLR hero alternating */}
+        <motion.div style={{ y: yHero }} className="absolute inset-0 w-full h-full lens-breathe">
+          <div className="absolute inset-0 w-full h-full hero-img-1">
+            <img src={heroRightPath} alt="Bride" className="w-full h-full object-cover" />
+          </div>
+          <div className="absolute inset-0 w-full h-full hero-img-2">
+            <img src={heroLeftPath} alt="Bride" className="w-full h-full object-cover" />
+          </div>
           {/* Overlays */}
           <div className="candlelit-overlay" />
           <div className="vignette" />
           <div className="dof-blur" />
-          <div className="absolute inset-0 bg-black/30" />
+          <div className="absolute inset-0 bg-black/20" />
         </motion.div>
 
         {/* Particles */}
@@ -776,23 +761,22 @@ export default function Home() {
             <span className="font-sans text-[9px] tracking-[0.5em] text-[#B79272] uppercase">The Bridal Moment</span>
           </FadeIn>
 
-          {/* Two-column layout: images left, verses right */}
-          <div className="flex flex-col md:flex-row gap-12 md:gap-20 items-start">
+          {/* Two-column layout: images left, verses right — both stretch to same height */}
+          <div className="flex flex-col md:flex-row gap-12 md:gap-20 items-stretch">
 
-            {/* Left: 2×2 portrait contact sheet */}
-            <FadeIn className="md:w-[42%] w-full flex-none">
-              <div className="grid grid-cols-2 gap-2">
+            {/* Left: 2×2 contact sheet — stretches to match verse column height */}
+            <FadeIn className="md:w-[42%] w-full flex-none flex flex-col">
+              <div className="grid grid-cols-2 grid-rows-2 gap-2 flex-1">
                 {[story1Path, story2Path, story3Path, story4Path].map((src, i) => (
-                  <div key={i} className="relative overflow-hidden aspect-[3/4] group">
+                  <div key={i} className="relative overflow-hidden group min-h-0">
                     <img
                       src={src}
-                      className="w-full h-full object-cover opacity-70 group-hover:opacity-90 transition-opacity duration-700"
+                      alt={["Anticipation", "Artistry", "Revelation", "Bride"][i]}
+                      className="absolute inset-0 w-full h-full object-cover opacity-70 group-hover:opacity-90 transition-opacity duration-700"
                       style={{ filter: "saturate(0.75)" }}
                     />
-                    {/* thin border frame */}
-                    <div className="absolute inset-0 border border-white/8 pointer-events-none" />
-                    {/* roman numeral badge */}
-                    <div className="absolute top-3 left-3 font-serif italic text-[10px] text-[#B79272]/70">
+                    <div className="absolute inset-0 border border-white/[0.08] pointer-events-none" />
+                    <div className="absolute top-3 left-3 font-serif italic text-[10px] text-[#B79272]/70 pointer-events-none">
                       {["I", "II", "III", "IV"][i]}
                     </div>
                   </div>
@@ -801,21 +785,19 @@ export default function Home() {
             </FadeIn>
 
             {/* Right: stacked editorial verses */}
-            <div className="md:w-[58%] w-full flex flex-col justify-center gap-0 md:pt-4">
+            <div className="md:w-[58%] w-full flex flex-col justify-between gap-0 md:pt-4">
               {[
-                { num: "I", title: "The Anticipation", lines: ["She has", "always known", "this moment."] },
-                { num: "II", title: "The Artistry", lines: ["Each stroke,", "a memory", "being born."] },
-                { num: "III", title: "The Revelation", lines: ["The mirror reflects", "what she", "always was."] },
-                { num: "IV", title: "The Bride", lines: ["Unforgettable.", "Always."] },
+                { num: "I",   title: "The Anticipation", lines: ["She has", "always known", "this moment."] },
+                { num: "II",  title: "The Artistry",     lines: ["Each stroke,", "a memory", "being born."] },
+                { num: "III", title: "The Revelation",   lines: ["The mirror reflects", "what she", "always was."] },
+                { num: "IV",  title: "The Bride",        lines: ["Unforgettable.", "Always."] },
               ].map((verse, i) => (
-                <FadeIn key={i} delay={i * 0.1}>
-                  <div className="py-8 border-t border-white/8 flex gap-8 items-start group">
-                    {/* Roman numeral */}
+                <FadeIn key={i} delay={i * 0.1} className="flex-1 flex flex-col justify-center">
+                  <div className="py-6 border-t border-white/[0.08] flex gap-8 items-start">
                     <span className="font-sans text-[9px] tracking-[0.3em] text-[#B79272]/50 w-6 flex-none pt-1">{verse.num}</span>
-                    {/* Verse block */}
                     <div className="flex-1">
                       <span className="font-sans text-[8px] tracking-[0.35em] text-white/20 uppercase block mb-3">{verse.title}</span>
-                      <h3 className="font-serif font-light text-white leading-[1.15]" style={{ fontSize: "clamp(1.5rem, 3.2vw, 2.6rem)" }}>
+                      <h3 className="font-serif font-light text-white leading-[1.15]" style={{ fontSize: "clamp(1.4rem, 3vw, 2.5rem)" }}>
                         {verse.lines.map((line, li) => (
                           <span key={li} className="block">
                             {li === verse.lines.length - 1 ? <em>{line}</em> : line}
@@ -826,8 +808,7 @@ export default function Home() {
                   </div>
                 </FadeIn>
               ))}
-              {/* Bottom border */}
-              <div className="border-t border-white/8" />
+              <div className="border-t border-white/[0.08]" />
             </div>
           </div>
         </div>
