@@ -598,77 +598,67 @@ export default function Home() {
             </h2>
           </FadeIn>
 
-          <div className="flex flex-col gap-32">
-            
-            {/* Collection 1: Horizontal asymmetric */}
-            <FadeIn>
-              <div className="flex flex-col md:flex-row gap-12 items-center">
-                <div className="md:w-5/12 md:pl-12">
-                  <div className="font-sans text-xs tracking-widest text-primary mb-4">01</div>
-                  <h3 className="font-serif text-4xl mb-6 tracking-wide">The Signature Bride</h3>
-                  <div className="w-12 h-px bg-primary mb-6" />
-                  <p className="font-sans font-light text-muted-foreground leading-loose mb-8">
-                    Our most requested comprehensive bridal styling. Flawless HD makeup, advanced draping, and intricate hairstyling designed for a majestic, commanding presence.
-                  </p>
-                  <a href="#book" className="text-[10px] uppercase tracking-[0.2em] border-b border-foreground pb-1 hover:text-primary hover:border-primary transition-colors">Request Consultation</a>
+          <div className="flex flex-col gap-2">
+            {[
+              {
+                num: "01",
+                name: "The Signature Bride",
+                desc: "Our most requested comprehensive bridal styling. Flawless HD makeup, advanced draping, and intricate hairstyling designed for a majestic, commanding presence.",
+                img: gallery2Path,
+                alt: "Signature Bride",
+              },
+              {
+                num: "02",
+                name: "The Timeless Bride",
+                desc: "A classic, elegant aesthetic focusing on glowing skin and traditional elements that transcend fleeting trends. Pure, radiant, eternal.",
+                img: gallery3Path,
+                alt: "Timeless Bride",
+              },
+              {
+                num: "03",
+                name: "The Royal Glow",
+                desc: "Premium airbrush techniques paired with luxury 24k gold infused skincare prep for the ultimate illuminated finish. For the bride who demands absolute perfection.",
+                img: gallery1Path,
+                alt: "Royal Glow",
+              },
+              {
+                num: "04",
+                name: "The Modern Muse",
+                desc: "For the contemporary bride — minimalist, editorial-style makeup that highlights natural bone structure and lets your inner radiance lead.",
+                img: gallery4Path,
+                alt: "Modern Muse",
+              },
+            ].map((col, i) => (
+              <FadeIn key={i} delay={i * 0.08}>
+                <div className="flex flex-col md:flex-row items-stretch border-t border-primary/20 py-10 gap-8 group">
+                  {/* Number */}
+                  <div className="md:w-16 flex-none flex items-start pt-1">
+                    <span className="font-sans text-[11px] tracking-[0.35em] text-primary">{col.num}</span>
+                  </div>
+                  {/* Image */}
+                  <div className="md:w-[38%] flex-none h-64 md:h-72 overflow-hidden bg-muted">
+                    <img
+                      src={col.img}
+                      alt={col.alt}
+                      className="w-full h-full object-cover editorial-image-hover"
+                    />
+                  </div>
+                  {/* Text */}
+                  <div className="flex-1 flex flex-col justify-center md:pl-12">
+                    <div className="w-8 h-px bg-primary mb-6" />
+                    <h3 className="font-serif text-3xl md:text-4xl mb-5 tracking-wide">{col.name}</h3>
+                    <p className="font-sans font-light text-muted-foreground leading-loose mb-8 max-w-md">{col.desc}</p>
+                    <a
+                      href="#book"
+                      data-testid={`link-collection-${col.num}`}
+                      className="text-[10px] uppercase tracking-[0.25em] border-b border-foreground/30 pb-1 hover:text-primary hover:border-primary transition-colors w-fit"
+                    >
+                      Request Consultation
+                    </a>
+                  </div>
                 </div>
-                <div className="md:w-7/12 w-full h-[50vh] md:h-[60vh] bg-muted overflow-hidden group">
-                  <img src={gallery2Path} alt="Signature Bride" className="w-full h-full object-cover editorial-image-hover" />
-                </div>
-              </div>
-            </FadeIn>
-
-            <SectionDivider />
-
-            {/* Collection 2: Vertical with overlay */}
-            <FadeIn>
-              <div className="relative w-full md:w-3/4 mx-auto h-[70vh] bg-muted overflow-hidden group">
-                <img src={gallery3Path} alt="Timeless Bride" className="w-full h-full object-cover editorial-image-hover" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-                <div className="absolute bottom-0 left-0 w-full p-8 md:p-16 text-white">
-                  <div className="font-sans text-xs tracking-widest text-primary mb-2">02</div>
-                  <h3 className="font-serif text-4xl mb-4 tracking-wide text-white">The Timeless Bride</h3>
-                  <p className="font-sans font-light text-white/80 leading-loose mb-8 max-w-md">
-                    A classic, elegant aesthetic focusing on glowing skin and traditional elements that transcend fleeting trends. Pure, radiant, eternal.
-                  </p>
-                  <a href="#book" className="text-[10px] uppercase tracking-[0.2em] border-b border-white pb-1 hover:text-primary hover:border-primary transition-colors text-white">Request Consultation</a>
-                </div>
-              </div>
-            </FadeIn>
-
-            <SectionDivider />
-
-            {/* Collection 3: Two column offset text */}
-            <FadeIn>
-              <div className="flex flex-col-reverse md:flex-row gap-12 items-center">
-                <div className="md:w-1/2 w-full h-[60vh] bg-muted overflow-hidden group">
-                  <img src={gallery1Path} alt="Royal Glow" className="w-full h-full object-cover editorial-image-hover" />
-                </div>
-                <div className="md:w-1/2 relative md:pl-20">
-                  <div className="absolute -top-20 -left-10 text-[15rem] font-serif font-light text-primary/10 leading-none pointer-events-none hidden md:block">03</div>
-                  <h3 className="font-serif text-4xl mb-6 tracking-wide relative z-10">The Royal Glow</h3>
-                  <p className="font-sans font-light text-muted-foreground leading-loose mb-8 relative z-10">
-                    Premium airbrush techniques paired with luxury 24k gold infused skincare prep for the ultimate illuminated finish. For the bride who demands absolute perfection.
-                  </p>
-                  <a href="#book" className="text-[10px] uppercase tracking-[0.2em] border-b border-foreground pb-1 hover:text-primary hover:border-primary transition-colors relative z-10">Request Consultation</a>
-                </div>
-              </div>
-            </FadeIn>
-
-            <SectionDivider />
-
-            {/* Collection 4: Minimal with large quote */}
-            <FadeIn>
-              <div className="max-w-4xl mx-auto text-center py-12">
-                <div className="font-sans text-xs tracking-widest text-primary mb-4">04</div>
-                <h3 className="font-serif text-4xl mb-12 tracking-wide">The Modern Muse</h3>
-                <p className="font-serif italic text-3xl md:text-5xl text-muted-foreground mb-12 leading-tight">
-                  "For the contemporary bride. Minimalist, editorial-style makeup that highlights natural bone structure, rather than masking it."
-                </p>
-                <a href="#book" className="text-[10px] uppercase tracking-[0.2em] border-b border-foreground pb-1 hover:text-primary hover:border-primary transition-colors">Request Consultation</a>
-              </div>
-            </FadeIn>
-
+              </FadeIn>
+            ))}
           </div>
         </div>
       </section>
@@ -690,53 +680,44 @@ export default function Home() {
             <p className="font-sans font-light text-white/40 mt-8 text-sm tracking-[0.2em]">Every bride captured in her most luminous moment.</p>
           </FadeIn>
 
-          {/* Three asymmetric DSLR frames */}
-          <div className="flex flex-col md:flex-row gap-6 md:gap-4 items-end">
-            
-            {/* Frame 1 - tall */}
-            <div className="w-full md:w-[45%] relative group">
-              <div className="relative overflow-hidden aspect-[3/4]">
-                <img src={lens1Path} className="w-full h-full object-cover editorial-image-hover opacity-90" />
-                {/* DSLR frame overlay */}
-                <div className="absolute inset-0 border border-white/10 m-4 pointer-events-none" />
-                <div className="absolute top-6 left-6 right-6 flex justify-between items-start pointer-events-none">
-                  <div className="font-mono text-[8px] text-white/30 tracking-wider">f/1.8 — 1/200s — ISO 800</div>
+          {/* Three DSLR frames — uniform 3-column grid */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {[
+              { src: lens1Path, meta: "f/1.8 · 1/200s · ISO 800", focal: "85mm", caption: "The intimate portrait." },
+              { src: lens2Path, meta: "f/2.0 · 1/160s · ISO 640", focal: "50mm", caption: "The artistry revealed." },
+              { src: lens3Path, meta: "f/2.8 · 1/125s · ISO 500", focal: "100mm Macro", caption: "The whispered detail." },
+            ].map((frame, i) => (
+              <FadeIn key={i} delay={i * 0.12}>
+                <div className="group relative overflow-hidden aspect-[3/4]">
+                  <img
+                    src={frame.src}
+                    alt={frame.caption}
+                    className="w-full h-full object-cover editorial-image-hover opacity-90 group-hover:opacity-100 transition-opacity duration-700"
+                  />
+                  {/* DSLR viewfinder border */}
+                  <div className="absolute inset-0 border border-white/10 m-3 pointer-events-none" />
+                  {/* Corner brackets */}
+                  <div className="absolute top-5 left-5 w-5 h-5 border-t border-l border-white/25 pointer-events-none" />
+                  <div className="absolute top-5 right-5 w-5 h-5 border-t border-r border-white/25 pointer-events-none" />
+                  <div className="absolute bottom-5 left-5 w-5 h-5 border-b border-l border-white/25 pointer-events-none" />
+                  <div className="absolute bottom-5 right-5 w-5 h-5 border-b border-r border-white/25 pointer-events-none" />
+                  {/* EXIF top */}
+                  <div className="absolute top-7 left-7 right-7 flex justify-between pointer-events-none">
+                    <span className="font-mono text-[8px] text-white/30 tracking-wider">{frame.meta}</span>
+                  </div>
+                  {/* Focal bottom */}
+                  <div className="absolute bottom-7 left-7 right-7 flex justify-between items-center pointer-events-none">
+                    <span className="font-mono text-[8px] text-white/30">{frame.focal}</span>
+                    <div className="w-2 h-2 rounded-full border border-white/20" />
+                  </div>
+                  {/* Film grain */}
+                  <div className="absolute inset-0 noise-overlay opacity-[0.05] pointer-events-none" />
+                  {/* Hover champagne glow */}
+                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" style={{ boxShadow: "inset 0 0 60px rgba(183,146,114,0.12)" }} />
                 </div>
-                <div className="absolute bottom-6 left-6 right-6 flex justify-between items-end pointer-events-none">
-                  <div className="font-mono text-[8px] text-white/30">85mm</div>
-                  <div className="w-2 h-2 rounded-full border border-white/30" />
-                </div>
-                {/* Film grain overlay */}
-                <div className="absolute inset-0 noise-overlay opacity-[0.06]" />
-              </div>
-              <p className="mt-4 font-serif italic text-white/40 text-sm">The intimate portrait.</p>
-            </div>
-
-            {/* Frame 2 - shorter, offset up */}
-            <div className="w-full md:w-[30%] md:-translate-y-16 relative group">
-              <div className="relative overflow-hidden aspect-square">
-                <img src={lens2Path} className="w-full h-full object-cover editorial-image-hover opacity-90" />
-                <div className="absolute inset-0 border border-white/10 m-4 pointer-events-none" />
-                <div className="absolute top-6 left-6 right-6 flex justify-between items-start pointer-events-none">
-                  <div className="font-mono text-[8px] text-white/30 tracking-wider">f/2.8 — 1/125s</div>
-                </div>
-                <div className="absolute inset-0 noise-overlay opacity-[0.06]" />
-              </div>
-              <p className="mt-4 font-serif italic text-white/40 text-sm">The artistry revealed.</p>
-            </div>
-
-            {/* Frame 3 - medium height */}
-            <div className="w-full md:w-[25%] relative group">
-              <div className="relative overflow-hidden aspect-[2/3]">
-                <img src={lens3Path} className="w-full h-full object-cover editorial-image-hover opacity-90" />
-                <div className="absolute inset-0 border border-white/10 m-4 pointer-events-none" />
-                <div className="absolute top-6 left-6 right-6 flex justify-between items-start pointer-events-none">
-                  <div className="font-mono text-[8px] text-white/30 tracking-wider">100mm — Macro</div>
-                </div>
-                <div className="absolute inset-0 noise-overlay opacity-[0.06]" />
-              </div>
-              <p className="mt-4 font-serif italic text-white/40 text-sm">The whispered detail.</p>
-            </div>
+                <p className="mt-3 font-serif italic text-white/35 text-sm">0{i + 1}. {frame.caption}</p>
+              </FadeIn>
+            ))}
           </div>
         </div>
       </section>
@@ -1002,35 +983,41 @@ export default function Home() {
         </div>
       </section>
 
-      {/* NEW SECTION 4: EMOTIONAL FINAL CTA */}
-      <section className="relative h-[80vh] md:h-[100vh] overflow-hidden flex items-center justify-center" data-testid="section-final-cta">
-        {/* Background: use hero_left image with dark overlay */}
-        <img src={heroLeftPath} className="absolute inset-0 w-full h-full object-cover scale-105" style={{ filter: 'brightness(0.35) saturate(0.8)' }} />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/40" />
-        
-        {/* Atmospheric glow */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(183,146,114,0.08)_0%,_transparent_70%)]" />
+      {/* WhatsApp Floating Button */}
+      <a
+        href="https://wa.me/919999999999?text=Hi%2C%20I%27d%20love%20to%20book%20a%20bridal%20consultation%20with%20AG%20Makeup%20Studio"
+        target="_blank"
+        rel="noopener noreferrer"
+        data-testid="button-whatsapp"
+        className="fixed bottom-8 right-8 z-[9990] group flex items-center gap-3"
+        aria-label="Book via WhatsApp"
+      >
+        {/* Label pill — expands on hover */}
+        <motion.span
+          initial={{ opacity: 0, x: 10, width: 0 }}
+          whileHover={{ opacity: 1, x: 0, width: "auto" }}
+          className="hidden md:block overflow-hidden font-sans text-[9px] tracking-[0.25em] uppercase text-white/80 bg-[#1A1614]/80 backdrop-blur-md px-4 py-2 rounded-full whitespace-nowrap"
+        >
+          Book on WhatsApp
+        </motion.span>
 
-        <div className="relative z-10 text-center px-6 max-w-4xl mx-auto">
-          <FadeIn>
-            <span className="font-sans text-[9px] tracking-[0.5em] text-[#B79272] uppercase block mb-12">Begin Your Bridal Story</span>
-            <h2 className="font-serif text-6xl md:text-[8vw] font-light text-white leading-[0.85] mb-12">
-              Your most<br/>beautiful<br/><em>chapter awaits.</em>
-            </h2>
-            <div className="w-16 h-px bg-[#B79272]/60 mx-auto mb-12" />
-            <p className="font-sans font-light text-white/50 text-sm tracking-[0.2em] mb-16 max-w-md mx-auto">
-              We accept a curated selection of brides each season.<br/>Your story deserves to begin with intention.
-            </p>
-            <a href="#book" data-testid="link-final-cta" className="inline-block btn-frosted px-16 py-5 text-xs uppercase tracking-[0.3em] text-white/90">
-              Reserve Your Date
-            </a>
-          </FadeIn>
+        {/* Main orb button */}
+        <div
+          className="relative w-14 h-14 rounded-full flex items-center justify-center transition-transform duration-300 group-hover:scale-110"
+          style={{
+            background: "linear-gradient(135deg, #B79272 0%, #C9A98A 100%)",
+            boxShadow: "0 4px 24px rgba(183,146,114,0.45)",
+          }}
+        >
+          {/* WhatsApp icon */}
+          <svg viewBox="0 0 24 24" fill="white" className="w-6 h-6">
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+          </svg>
+
+          {/* Pulse ring */}
+          <span className="absolute inset-0 rounded-full animate-ping opacity-20" style={{ background: "#B79272" }} />
         </div>
-
-        {/* Letterbox bars */}
-        <div className="absolute top-0 left-0 right-0 h-[50px] bg-black opacity-40 pointer-events-none" />
-        <div className="absolute bottom-0 left-0 right-0 h-[50px] bg-black opacity-40 pointer-events-none" />
-      </section>
+      </a>
 
       {/* Footer */}
       <footer className="bg-[#1A1614] text-[#F5F0EB] py-32 relative overflow-hidden">
