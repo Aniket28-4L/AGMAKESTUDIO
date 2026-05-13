@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from "react";
-import { motion, useScroll, useTransform, useInView, useSpring, useMotionValue } from "framer-motion";
+import { useEffect, useRef, useState, useCallback } from "react";
+import { motion, AnimatePresence, useScroll, useTransform, useInView, useSpring, useMotionValue } from "framer-motion";
 import heroRightPath from "@assets/hero_right.png";
 import heroLeftPath from "@assets/hero_left.png";
 import gallery1Path from "@assets/gallery_1.png";
@@ -216,12 +216,229 @@ function TransformationSlider({ beforeSrc, afterSrc }: { beforeSrc: string; afte
   );
 }
 
+// ── Bridal Quiz ─────────────────────────────────────────────────────────────
+const QUIZ_QUESTIONS = [
+  {
+    q: "What feeling do you want to radiate on your wedding day?",
+    opts: [
+      { label: "Timeless & Pure", value: "timeless" },
+      { label: "Majestic & Commanding", value: "signature" },
+      { label: "Luminous & Regal", value: "royal" },
+      { label: "Modern & Editorial", value: "muse" },
+    ],
+  },
+  {
+    q: "Your bridal palette — which speaks to your soul?",
+    opts: [
+      { label: "Ivory, Pearl & Blush", value: "timeless" },
+      { label: "Deep Jewels & Burgundy", value: "signature" },
+      { label: "Gold, Vermillion & Amber", value: "royal" },
+      { label: "Nude, Taupe & Champagne", value: "muse" },
+    ],
+  },
+  {
+    q: "Which word defines your bridal vision?",
+    opts: [
+      { label: "Eternal", value: "timeless" },
+      { label: "Grand", value: "signature" },
+      { label: "Opulent", value: "royal" },
+      { label: "Effortless", value: "muse" },
+    ],
+  },
+];
+
+const QUIZ_RESULTS: Record<string, { name: string; desc: string; img: string }> = {
+  timeless: {
+    name: "The Timeless Bride",
+    desc: "A classic, elegant aesthetic — glowing skin, traditional elements, and a radiance that transcends trends. Pure. Eternal.",
+    img: "/src/assets/gallery_3.png",
+  },
+  signature: {
+    name: "The Signature Bride",
+    desc: "Comprehensive, commanding, majestic. Flawless HD makeup and intricate hairstyling for a presence that fills every room.",
+    img: "/src/assets/gallery_2.png",
+  },
+  royal: {
+    name: "The Royal Glow",
+    desc: "Premium airbrush and 24k gold-infused skincare prep — the ultimate illuminated finish for a bride who demands perfection.",
+    img: "/src/assets/gallery_1.png",
+  },
+  muse: {
+    name: "The Modern Muse",
+    desc: "Minimalist and editorial — celebrating your natural bone structure with a softness that reads breathtaking in every frame.",
+    img: "/src/assets/gallery_4.png",
+  },
+};
+
+function BridalQuiz({ onClose }: { onClose: () => void }) {
+  const [step, setStep] = useState(0); // 0-2 questions, 3 = result
+  const [answers, setAnswers] = useState<string[]>([]);
+  const [selected, setSelected] = useState<string | null>(null);
+
+  const getResult = useCallback((ans: string[]) => {
+    const counts: Record<string, number> = { timeless: 0, signature: 0, royal: 0, muse: 0 };
+    ans.forEach((a) => { counts[a] = (counts[a] || 0) + 1; });
+    return Object.entries(counts).sort((a, b) => b[1] - a[1])[0][0];
+  }, []);
+
+  const next = () => {
+    if (!selected) return;
+    const newAnswers = [...answers, selected];
+    setAnswers(newAnswers);
+    setSelected(null);
+    if (step < 2) {
+      setStep(step + 1);
+    } else {
+      setStep(3);
+    }
+  };
+
+  const result = step === 3 ? QUIZ_RESULTS[getResult(answers)] : null;
+
+  return (
+    <motion.div
+      key="quiz-overlay"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.6 }}
+      className="fixed inset-0 z-[9998] flex items-center justify-center"
+      style={{ background: "rgba(15,10,8,0.97)" }}
+    >
+      {/* Noise grain */}
+      <div className="absolute inset-0 noise-overlay opacity-[0.04] pointer-events-none" />
+      {/* Ambient champagne glow */}
+      <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse at center, rgba(183,146,114,0.07) 0%, transparent 65%)" }} />
+
+      {/* Close */}
+      <button
+        onClick={onClose}
+        className="absolute top-7 right-8 font-sans text-[10px] tracking-[0.3em] uppercase text-white/30 hover:text-white/70 transition-colors"
+      >
+        Close
+      </button>
+
+      <div className="w-full max-w-2xl px-8 md:px-0 relative z-10">
+        <AnimatePresence mode="wait">
+          {step < 3 ? (
+            <motion.div
+              key={step}
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -24 }}
+              transition={{ duration: 0.7, ease: [0.25, 0.1, 0.25, 1] }}
+            >
+              {/* Header */}
+              <div className="mb-12 text-center">
+                <span className="font-sans text-[9px] tracking-[0.5em] text-[#B79272] uppercase block mb-6">
+                  Bridal Style Discovery — {step + 1} of 3
+                </span>
+                {/* Progress line */}
+                <div className="w-48 h-px bg-white/10 mx-auto relative">
+                  <motion.div
+                    className="absolute left-0 top-0 h-full bg-[#B79272]"
+                    animate={{ width: `${((step + 1) / 3) * 100}%` }}
+                    transition={{ duration: 0.5, ease: "easeOut" }}
+                  />
+                </div>
+              </div>
+
+              <h2 className="font-serif text-3xl md:text-5xl font-light text-white text-center leading-[1.15] mb-14">
+                {QUIZ_QUESTIONS[step].q}
+              </h2>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {QUIZ_QUESTIONS[step].opts.map((opt) => (
+                  <button
+                    key={opt.value}
+                    onClick={() => setSelected(opt.value)}
+                    className="group text-left px-7 py-6 border transition-all duration-400 relative overflow-hidden"
+                    style={{
+                      borderColor: selected === opt.value ? "#B79272" : "rgba(255,255,255,0.1)",
+                      background: selected === opt.value ? "rgba(183,146,114,0.08)" : "transparent",
+                    }}
+                  >
+                    {selected === opt.value && (
+                      <motion.div
+                        layoutId="quiz-select-bg"
+                        className="absolute inset-0 pointer-events-none"
+                        style={{ background: "rgba(183,146,114,0.06)" }}
+                      />
+                    )}
+                    <span className="font-serif text-xl text-white/80 group-hover:text-white transition-colors relative z-10">
+                      {opt.label}
+                    </span>
+                    {selected === opt.value && (
+                      <div className="absolute right-5 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-[#B79272]" />
+                    )}
+                  </button>
+                ))}
+              </div>
+
+              <div className="mt-12 flex justify-center">
+                <button
+                  onClick={next}
+                  disabled={!selected}
+                  className="font-sans text-[10px] uppercase tracking-[0.3em] border-b pb-1 transition-all duration-300"
+                  style={{
+                    borderColor: selected ? "#B79272" : "rgba(255,255,255,0.2)",
+                    color: selected ? "#B79272" : "rgba(255,255,255,0.2)",
+                    cursor: selected ? "pointer" : "not-allowed",
+                  }}
+                >
+                  {step < 2 ? "Continue →" : "Reveal My Look →"}
+                </button>
+              </div>
+            </motion.div>
+          ) : (
+            <motion.div
+              key="result"
+              initial={{ opacity: 0, scale: 0.97 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.9, ease: [0.25, 0.1, 0.25, 1] }}
+              className="text-center"
+            >
+              <span className="font-sans text-[9px] tracking-[0.5em] text-[#B79272] uppercase block mb-8">
+                Your Bridal Look
+              </span>
+              <h2 className="font-serif text-5xl md:text-7xl font-light text-white mb-6 leading-[0.9]">
+                {result?.name}
+              </h2>
+              <div className="w-16 h-px bg-[#B79272]/50 mx-auto mb-8" />
+              <p className="font-sans font-light text-white/50 text-sm leading-loose max-w-md mx-auto mb-12">
+                {result?.desc}
+              </p>
+              <div className="flex gap-4 justify-center flex-wrap">
+                <a
+                  href="#book"
+                  onClick={onClose}
+                  className="inline-block px-10 py-4 text-[10px] uppercase tracking-[0.3em] text-white"
+                  style={{ background: "linear-gradient(135deg,#B79272,#C9A98A)", boxShadow: "0 4px 24px rgba(183,146,114,0.35)" }}
+                >
+                  Book This Look
+                </a>
+                <button
+                  onClick={() => { setStep(0); setAnswers([]); setSelected(null); }}
+                  className="px-10 py-4 text-[10px] uppercase tracking-[0.3em] border border-white/15 text-white/40 hover:text-white/70 hover:border-white/30 transition-colors"
+                >
+                  Retake Quiz
+                </button>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </motion.div>
+  );
+}
+
 export default function Home() {
   const { scrollYProgress } = useScroll();
   const yHero = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
   const yBg = useTransform(scrollYProgress, [0, 1], ["0%", "10%"]);
   
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [quizOpen, setQuizOpen] = useState(false);
 
   // Custom cursor
   const cursorX = useMotionValue(-100);
@@ -262,6 +479,10 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-background overflow-x-hidden selection:bg-primary/20 selection:text-foreground relative cursor-none">
+      {/* Bridal Quiz Overlay */}
+      <AnimatePresence>
+        {quizOpen && <BridalQuiz onClose={() => setQuizOpen(false)} />}
+      </AnimatePresence>
       {/* Custom Champagne Cursor */}
       <motion.div
         data-testid="cursor-orb"
@@ -355,20 +576,34 @@ export default function Home() {
         <div className="letterbox top" />
         <div className="letterbox bottom" />
         
-        {/* Image Crossfade Loop */}
-        <motion.div style={{ y: yHero }} className="absolute inset-0 w-full h-full lens-breathe">
-          <div className="absolute inset-0 w-full h-full hero-img-1">
-             <img src={heroRightPath} alt="Bride angle 1" className="w-full h-full object-cover" />
-          </div>
-          <div className="absolute inset-0 w-full h-full hero-img-2">
-             <img src={heroLeftPath} alt="Bride angle 2" className="w-full h-full object-cover" />
-          </div>
-          
+        {/* Video Background — Indian Bridal Ambience via YouTube */}
+        <motion.div style={{ y: yHero }} className="absolute inset-0 w-full h-full overflow-hidden">
+          {/* Poster fallback image — always visible beneath the iframe */}
+          <img
+            src={heroRightPath}
+            alt="Bride"
+            className="absolute inset-0 w-full h-full object-cover"
+            style={{ filter: "brightness(0.72) saturate(1.15)" }}
+          />
+          {/* YouTube autoplay iframe — replace VIDEO_ID with preferred Indian bridal video */}
+          {/* e.g. Sabyasachi lookbook, bridal film, etc. The poster image shows while it loads */}
+          <iframe
+            src="https://www.youtube-nocookie.com/embed/7HqeX3yjW0Y?autoplay=1&mute=1&loop=1&playlist=7HqeX3yjW0Y&controls=0&showinfo=0&rel=0&disablekb=1&modestbranding=1&iv_load_policy=3&playsinline=1"
+            allow="autoplay; encrypted-media"
+            className="absolute pointer-events-none"
+            style={{
+              top: "-10%", left: "-10%",
+              width: "120%", height: "120%",
+              border: "none",
+              filter: "brightness(0.68) saturate(1.2)",
+            }}
+            title="AG Makeup Studio — Bridal Cinematic"
+          />
           {/* Overlays */}
           <div className="candlelit-overlay" />
           <div className="vignette" />
           <div className="dof-blur" />
-          <div className="absolute inset-0 bg-black/20" />
+          <div className="absolute inset-0 bg-black/30" />
         </motion.div>
 
         {/* Particles */}
@@ -427,9 +662,16 @@ export default function Home() {
               <a href="#collections" data-testid="button-explore-packages" className="btn-frosted px-12 py-5 text-xs uppercase tracking-[0.2em] text-white text-center w-full sm:w-auto">
                 Explore Collections
               </a>
-              <a href="#portfolio" data-testid="button-view-gallery" className="btn-frosted px-12 py-5 text-xs uppercase tracking-[0.2em] text-white/70 text-center w-full sm:w-auto">
-                View Archive
-              </a>
+              <button
+                data-testid="button-open-quiz"
+                onClick={() => setQuizOpen(true)}
+                className="btn-frosted px-12 py-5 text-xs uppercase tracking-[0.2em] text-[#C9A98A] text-center w-full sm:w-auto relative group overflow-hidden"
+              >
+                <span className="relative z-10 flex items-center justify-center gap-2">
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" stroke="#C9A98A" strokeWidth="1"/><path d="M6 4v2.5M6 8v.5" stroke="#C9A98A" strokeWidth="1" strokeLinecap="round"/></svg>
+                  Find Your Bridal Look
+                </span>
+              </button>
             </motion.div>
 
             {/* Second Subtitle */}
@@ -518,63 +760,81 @@ export default function Home() {
       {/* Gradient Transition */}
       <div className="h-[15vh] bg-gradient-to-b from-background to-black" />
 
-      {/* NEW SECTION 1: THE BRIDAL MOMENT */}
+      {/* THE BRIDAL MOMENT — compact editorial spread */}
       <section className="relative bg-black overflow-hidden">
-        {/* Background atmospheric glow */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black via-[#1a0f08] to-black" />
-        
-        {/* 4 cinematic story frames stacked vertically, each full viewport height */}
-        {/* Frame 1: Anticipation */}
-        <div className="relative h-[100svh] flex items-center justify-end pr-[8vw]">
-          <img src={story1Path} className="absolute inset-0 w-full h-full object-cover opacity-60" />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/20 to-transparent" />
-          <FadeIn className="relative z-10 text-right max-w-lg">
-            <span className="font-sans text-[9px] tracking-[0.4em] text-[#B79272] uppercase block mb-6">I. The Anticipation</span>
-            <h3 className="font-serif text-5xl md:text-7xl font-light text-white leading-[0.9] mb-8">
-              She has<br/><em>always known</em><br/>this moment.
-            </h3>
-          </FadeIn>
-        </div>
-        
-        {/* Frame 2: Artistry */}
-        <div className="relative h-[100svh] flex items-center pl-[8vw]">
-          <img src={story2Path} className="absolute inset-0 w-full h-full object-cover opacity-70" />
-          <div className="absolute inset-0 bg-gradient-to-l from-black/80 via-black/20 to-transparent" />
-          <FadeIn className="relative z-10 max-w-lg">
-            <span className="font-sans text-[9px] tracking-[0.4em] text-[#B79272] uppercase block mb-6">II. The Artistry</span>
-            <h3 className="font-serif text-5xl md:text-7xl font-light text-white leading-[0.9] mb-8">
-              Each stroke,<br/><em>a memory</em><br/>being born.
-            </h3>
-          </FadeIn>
+        {/* Full-bleed atmospheric background */}
+        <div className="absolute inset-0">
+          <img src={story4Path} className="w-full h-full object-cover opacity-25" style={{ filter: "blur(2px) saturate(0.6)" }} />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/50 to-black/70" />
+          <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at 70% 50%, rgba(183,146,114,0.06) 0%, transparent 60%)" }} />
         </div>
 
-        {/* Frame 3: Emotion */}
-        <div className="relative h-[100svh] flex items-center justify-end pr-[8vw]">
-          <img src={story3Path} className="absolute inset-0 w-full h-full object-cover opacity-60" />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/20 to-transparent" />
-          <FadeIn className="relative z-10 text-right max-w-lg">
-            <span className="font-sans text-[9px] tracking-[0.4em] text-[#B79272] uppercase block mb-6">III. The Revelation</span>
-            <h3 className="font-serif text-5xl md:text-7xl font-light text-white leading-[0.9] mb-8">
-              The mirror<br/>reflects what<br/><em>she always was.</em>
-            </h3>
+        <div className="relative z-10 container mx-auto px-6 md:px-12 py-24 md:py-32">
+          {/* Section eyebrow */}
+          <FadeIn className="flex items-center gap-4 mb-16 md:mb-20">
+            <div className="h-px w-8 bg-[#B79272]/40" />
+            <span className="font-sans text-[9px] tracking-[0.5em] text-[#B79272] uppercase">The Bridal Moment</span>
           </FadeIn>
+
+          {/* Two-column layout: images left, verses right */}
+          <div className="flex flex-col md:flex-row gap-12 md:gap-20 items-start">
+
+            {/* Left: 2×2 portrait contact sheet */}
+            <FadeIn className="md:w-[42%] w-full flex-none">
+              <div className="grid grid-cols-2 gap-2">
+                {[story1Path, story2Path, story3Path, story4Path].map((src, i) => (
+                  <div key={i} className="relative overflow-hidden aspect-[3/4] group">
+                    <img
+                      src={src}
+                      className="w-full h-full object-cover opacity-70 group-hover:opacity-90 transition-opacity duration-700"
+                      style={{ filter: "saturate(0.75)" }}
+                    />
+                    {/* thin border frame */}
+                    <div className="absolute inset-0 border border-white/8 pointer-events-none" />
+                    {/* roman numeral badge */}
+                    <div className="absolute top-3 left-3 font-serif italic text-[10px] text-[#B79272]/70">
+                      {["I", "II", "III", "IV"][i]}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </FadeIn>
+
+            {/* Right: stacked editorial verses */}
+            <div className="md:w-[58%] w-full flex flex-col justify-center gap-0 md:pt-4">
+              {[
+                { num: "I", title: "The Anticipation", lines: ["She has", "always known", "this moment."] },
+                { num: "II", title: "The Artistry", lines: ["Each stroke,", "a memory", "being born."] },
+                { num: "III", title: "The Revelation", lines: ["The mirror reflects", "what she", "always was."] },
+                { num: "IV", title: "The Bride", lines: ["Unforgettable.", "Always."] },
+              ].map((verse, i) => (
+                <FadeIn key={i} delay={i * 0.1}>
+                  <div className="py-8 border-t border-white/8 flex gap-8 items-start group">
+                    {/* Roman numeral */}
+                    <span className="font-sans text-[9px] tracking-[0.3em] text-[#B79272]/50 w-6 flex-none pt-1">{verse.num}</span>
+                    {/* Verse block */}
+                    <div className="flex-1">
+                      <span className="font-sans text-[8px] tracking-[0.35em] text-white/20 uppercase block mb-3">{verse.title}</span>
+                      <h3 className="font-serif font-light text-white leading-[1.15]" style={{ fontSize: "clamp(1.5rem, 3.2vw, 2.6rem)" }}>
+                        {verse.lines.map((line, li) => (
+                          <span key={li} className="block">
+                            {li === verse.lines.length - 1 ? <em>{line}</em> : line}
+                          </span>
+                        ))}
+                      </h3>
+                    </div>
+                  </div>
+                </FadeIn>
+              ))}
+              {/* Bottom border */}
+              <div className="border-t border-white/8" />
+            </div>
+          </div>
         </div>
 
-        {/* Frame 4: The Final Bride */}
-        <div className="relative h-[100svh] flex items-center justify-center">
-          <img src={story4Path} className="absolute inset-0 w-full h-full object-cover opacity-50" />
-          <div className="absolute inset-0 bg-black/40" />
-          <FadeIn className="relative z-10 text-center">
-            <span className="font-sans text-[9px] tracking-[0.4em] text-[#B79272] uppercase block mb-8">IV. The Bride</span>
-            <h3 className="font-serif text-6xl md:text-[10vw] font-light text-white leading-[0.85]">
-              Unforgettable.<br/><em>Always.</em>
-            </h3>
-          </FadeIn>
-        </div>
-
-        {/* Section label */}
-        <div className="absolute top-1/2 right-6 -translate-y-1/2 writing-mode-vertical font-sans text-[8px] tracking-[0.4em] text-white/20 uppercase" style={{ writingMode: 'vertical-rl' }}>
-          The Bridal Moment
+        {/* Vertical section label */}
+        <div className="absolute top-1/2 right-6 -translate-y-1/2 font-sans text-[8px] tracking-[0.4em] text-white/15 uppercase" style={{ writingMode: "vertical-rl" }}>
+          AG Bridal Couture
         </div>
       </section>
 
