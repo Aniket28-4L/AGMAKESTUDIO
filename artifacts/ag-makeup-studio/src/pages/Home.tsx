@@ -87,6 +87,135 @@ const SectionDivider = () => {
   );
 };
 
+function TransformationSlider({ beforeSrc, afterSrc }: { beforeSrc: string; afterSrc: string }) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [pos, setPos] = useState(50);
+  const isDragging = useRef(false);
+
+  const updatePos = (clientX: number) => {
+    const rect = containerRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    const pct = Math.min(100, Math.max(0, ((clientX - rect.left) / rect.width) * 100));
+    setPos(pct);
+  };
+
+  useEffect(() => {
+    const onMove = (e: MouseEvent | TouchEvent) => {
+      if (!isDragging.current) return;
+      const clientX = "touches" in e ? e.touches[0].clientX : e.clientX;
+      updatePos(clientX);
+    };
+    const onUp = () => { isDragging.current = false; };
+    window.addEventListener("mousemove", onMove);
+    window.addEventListener("touchmove", onMove);
+    window.addEventListener("mouseup", onUp);
+    window.addEventListener("touchend", onUp);
+    return () => {
+      window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("touchmove", onMove);
+      window.removeEventListener("mouseup", onUp);
+      window.removeEventListener("touchend", onUp);
+    };
+  }, []);
+
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-10% 0px" });
+
+  return (
+    <section ref={ref} className="py-32 bg-background relative overflow-hidden">
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+        transition={{ duration: 1.4, ease: [0.25, 0.1, 0.25, 1] }}
+        className="container mx-auto px-6 md:px-12"
+      >
+        {/* Header */}
+        <div className="mb-16 text-center">
+          <span className="font-sans text-[10px] tracking-[0.4em] uppercase text-primary block mb-4">The Transformation</span>
+          <h2 className="font-serif text-5xl md:text-7xl font-light leading-[0.9]">
+            Before &amp; <em className="text-muted-foreground">After</em>
+          </h2>
+          <p className="font-sans font-light text-muted-foreground mt-6 text-sm tracking-[0.15em]">Drag the divider to reveal the artistry.</p>
+        </div>
+
+        {/* Slider */}
+        <div
+          ref={containerRef}
+          data-testid="transformation-slider"
+          className="relative w-full max-w-4xl mx-auto aspect-[4/5] md:aspect-[16/9] overflow-hidden select-none"
+          style={{ cursor: "ew-resize" }}
+          onMouseDown={(e) => { isDragging.current = true; updatePos(e.clientX); }}
+          onTouchStart={(e) => { isDragging.current = true; updatePos(e.touches[0].clientX); }}
+        >
+          {/* AFTER image — full width base */}
+          <img
+            src={afterSrc}
+            alt="After bridal transformation"
+            className="absolute inset-0 w-full h-full object-cover"
+            draggable={false}
+          />
+
+          {/* BEFORE image — clipped to left portion */}
+          <div
+            className="absolute inset-0 overflow-hidden"
+            style={{ width: `${pos}%` }}
+          >
+            <img
+              src={beforeSrc}
+              alt="Before bridal transformation"
+              className="absolute inset-0 h-full object-cover"
+              style={{ width: containerRef.current?.offsetWidth ?? "100%", filter: "grayscale(0.6) brightness(0.9) saturate(0.5)" }}
+              draggable={false}
+            />
+            {/* Before label */}
+            <div className="absolute top-6 left-6">
+              <span className="font-sans text-[9px] tracking-[0.35em] uppercase text-white/70 bg-black/30 backdrop-blur-sm px-3 py-1.5">Before</span>
+            </div>
+          </div>
+
+          {/* After label */}
+          <div className="absolute top-6 right-6">
+            <span className="font-sans text-[9px] tracking-[0.35em] uppercase text-white/70 bg-black/30 backdrop-blur-sm px-3 py-1.5">After</span>
+          </div>
+
+          {/* Divider line */}
+          <div
+            className="absolute top-0 bottom-0 w-px bg-white/80 shadow-[0_0_12px_rgba(255,255,255,0.6)]"
+            style={{ left: `${pos}%` }}
+          />
+
+          {/* Drag handle */}
+          <div
+            className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 flex flex-col items-center gap-2 z-10"
+            style={{ left: `${pos}%` }}
+          >
+            <div
+              data-testid="slider-handle"
+              className="w-11 h-11 rounded-full flex items-center justify-center"
+              style={{
+                background: "rgba(255,255,255,0.12)",
+                backdropFilter: "blur(12px)",
+                border: "1.5px solid rgba(183,146,114,0.8)",
+                boxShadow: "0 0 20px rgba(183,146,114,0.3)",
+              }}
+            >
+              {/* Left/right arrows */}
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <path d="M6 10l-3 3m0 0l3 3m-3-3h14m0 0l-3-3m3 3l-3 3" stroke="rgba(183,146,114,0.9)" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom note */}
+        <p className="text-center font-serif italic text-muted-foreground mt-8 text-lg">
+          "Every bride deserves to see herself transformed."
+        </p>
+      </motion.div>
+    </section>
+  );
+}
+
 export default function Home() {
   const { scrollYProgress } = useScroll();
   const yHero = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
@@ -351,52 +480,28 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-y-16 md:gap-8 auto-rows-auto">
-            {/* Masonry-style layout */}
-            
-            {/* Large vertical */}
-            <div className="col-span-1 md:col-span-5 md:row-span-2 group">
-              <FadeIn className="h-full">
-                <div className="overflow-hidden bg-muted aspect-[3/4] md:aspect-auto md:h-[90vh]">
-                  <img src={gallery1Path} alt="Bridal portrait" className="w-full h-full object-cover editorial-image-hover" />
+          {/* Pinterest-style masonry using CSS columns */}
+          <div className="columns-2 md:columns-3 gap-4 md:gap-6">
+            {[
+              { src: gallery1Path, alt: "Bridal portrait", caption: "01. The Signature Look, New Delhi" },
+              { src: gallery3Path, alt: "Bridal in motion", caption: "02. Veil in Flight" },
+              { src: gallery4Path, alt: "Makeup closeup", caption: "03. Luminous Finish" },
+              { src: gallery2Path, alt: "Bridal hands", caption: "04. Mehndi & Pearls" },
+              { src: gallery6Path, alt: "Bridal Joy", caption: "05. Candid Radiance" },
+              { src: gallery5Path, alt: "Jewelry", caption: "06. Heritage Adornments" },
+            ].map((item, i) => (
+              <div key={i} className="break-inside-avoid mb-4 md:mb-6 group relative overflow-hidden" data-testid={`gallery-item-${i}`}>
+                <div className="relative overflow-hidden">
+                  <img
+                    src={item.src}
+                    alt={item.alt}
+                    className="w-full h-auto block editorial-image-hover"
+                  />
                   <div className="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 mix-blend-overlay transition-opacity duration-700 pointer-events-none" />
                 </div>
-                <p className="mt-4 font-serif italic text-muted-foreground text-sm">01. The Signature Look, New Delhi</p>
-              </FadeIn>
-            </div>
-            
-            {/* Wide horizontal */}
-            <div className="col-span-1 md:col-span-7 group md:-ml-12 md:mt-24 relative z-10">
-              <FadeIn delay={0.1} className="h-full">
-                <div className="overflow-hidden bg-muted aspect-video md:h-[60vh] shadow-2xl">
-                  <img src={gallery6Path} alt="Bridal Joy" className="w-full h-full object-cover editorial-image-hover" />
-                  <div className="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 mix-blend-overlay transition-opacity duration-700 pointer-events-none" />
-                </div>
-                <p className="mt-4 font-serif italic text-muted-foreground text-sm">02. Cinematic Details</p>
-              </FadeIn>
-            </div>
-            
-            {/* Small vertical offset */}
-            <div className="col-span-1 md:col-span-4 group md:mt-[-10vh]">
-              <FadeIn delay={0.2} className="h-full">
-                <div className="overflow-hidden bg-muted aspect-square md:h-[50vh]">
-                  <img src={gallery4Path} alt="Makeup closeup" className="w-full h-full object-cover editorial-image-hover" />
-                  <div className="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 mix-blend-overlay transition-opacity duration-700 pointer-events-none" />
-                </div>
-                <p className="mt-4 font-serif italic text-muted-foreground text-sm">03. Luminous Finish</p>
-              </FadeIn>
-            </div>
-
-            {/* Medium portrait */}
-            <div className="col-span-1 md:col-span-3 group">
-              <FadeIn delay={0.3} className="h-full">
-                <div className="overflow-hidden bg-muted aspect-[4/5] md:h-[65vh]">
-                  <img src={gallery5Path} alt="Jewelry" className="w-full h-full object-cover editorial-image-hover" />
-                  <div className="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 mix-blend-overlay transition-opacity duration-700 pointer-events-none" />
-                </div>
-                <p className="mt-4 font-serif italic text-muted-foreground text-sm">04. Heritage Adornments</p>
-              </FadeIn>
-            </div>
+                <p className="mt-2 font-serif italic text-muted-foreground text-xs px-1">{item.caption}</p>
+              </div>
+            ))}
           </div>
           
           <FadeIn delay={0.4} className="mt-24 text-center">
@@ -406,6 +511,9 @@ export default function Home() {
           </FadeIn>
         </div>
       </section>
+
+      {/* Transformation Reveal */}
+      <TransformationSlider beforeSrc={gallery4Path} afterSrc={gallery1Path} />
 
       {/* Gradient Transition */}
       <div className="h-[15vh] bg-gradient-to-b from-background to-black" />
