@@ -16,6 +16,7 @@ import story4Path from "@assets/story_4.png";
 import lens1Path from "@assets/lens_1.png";
 import lens2Path from "@assets/lens_2.png";
 import lens3Path from "@assets/lens_3.png";
+import testimonialsBgPath from "@assets/a0dcf1bf0f646736b9552283059a83bf_1778999396158.jpg";
 import { Menu, X } from "lucide-react";
 
 // Helper for cinematic fade ins
@@ -1069,9 +1070,21 @@ export default function Home() {
       </section>
 
       {/* Recognition & Testimonials */}
-      <section className="py-40 bg-background relative border-t border-border">
+      <section className="py-40 relative overflow-hidden border-t border-border">
+        {/* Butterfly watercolour background */}
+        <div className="absolute inset-0">
+          <img
+            src={testimonialsBgPath}
+            alt=""
+            className="w-full h-full object-cover"
+            style={{ objectPosition: "center center" }}
+          />
+          {/* Soft ivory wash so text stays legible while art shines through */}
+          <div className="absolute inset-0 bg-[#F7F1EB]/72" />
+        </div>
+
         {/* Brand Trust Strip */}
-        <div className="w-full overflow-hidden mb-24 border-t border-b border-border/30 py-6">
+        <div className="w-full overflow-hidden mb-24 border-t border-b border-[#B79272]/20 py-6 relative z-10">
           <div className="scroll-strip">
             {['Vogue India', 'Elle Weddings', 'Brides Today', 'WedMeGood', 'The Wed', 'Bridal Asia', 'Vogue India', 'Elle Weddings', 'Brides Today', 'WedMeGood', 'The Wed', 'Bridal Asia'].map((brand, i) => (
               <span key={i} className="font-serif italic text-2xl text-muted-foreground mx-12 whitespace-nowrap">{brand}</span>
@@ -1079,12 +1092,12 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="container mx-auto px-6 md:px-12">
+        <div className="container mx-auto px-6 md:px-12 relative z-10">
           
           {/* Large Quote style testimonials */}
           <div className="max-w-4xl mx-auto">
             <FadeIn>
-              <div className="font-serif text-8xl text-primary/40 leading-none h-16">"</div>
+              <div className="font-serif text-8xl text-primary/50 leading-none h-16">"</div>
               <p className="font-serif italic text-3xl md:text-5xl text-foreground leading-[1.3] mb-12">
                 Anu didn't just do my makeup; she crafted a vision. I felt like I stepped out of a Vogue India editorial. Truly unforgettable.
               </p>
@@ -1098,16 +1111,16 @@ export default function Home() {
             </FadeIn>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-16 mt-32 max-w-5xl mx-auto border-t border-border pt-16">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-16 mt-32 max-w-5xl mx-auto border-t border-[#B79272]/25 pt-16">
             <FadeIn delay={0.1}>
-              <p className="font-serif italic text-2xl text-muted-foreground mb-8 leading-relaxed">
+              <p className="font-serif italic text-2xl text-foreground/70 mb-8 leading-relaxed">
                 "The detail, the care, the luxury experience. The AG team understands how to make a bride feel like absolute royalty."
               </p>
               <div className="font-serif text-lg">Meera R.</div>
               <div className="font-sans text-[9px] uppercase tracking-[0.3em] text-muted-foreground mt-1">Royal Palace Bride</div>
             </FadeIn>
             <FadeIn delay={0.2}>
-              <p className="font-serif italic text-2xl text-muted-foreground mb-8 leading-relaxed">
+              <p className="font-serif italic text-2xl text-foreground/70 mb-8 leading-relaxed">
                 "My makeup lasted flawlessly through tears, laughter, and a night of dancing. She is an absolute master of her craft."
               </p>
               <div className="font-serif text-lg">Aisha M.</div>
