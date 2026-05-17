@@ -17,6 +17,7 @@ import lens1Path from "@assets/lens_1.png";
 import lens2Path from "@assets/lens_2.png";
 import lens3Path from "@assets/lens_3.png";
 import testimonialsBgPath from "@assets/a0dcf1bf0f646736b9552283059a83bf_1778999396158.jpg";
+import featherBgPath from "@assets/3b202712b82894b59517c133e8c2fecf_1779000059086.jpg";
 import { Menu, X } from "lucide-react";
 
 // Helper for cinematic fade ins
@@ -685,8 +686,12 @@ export default function Home() {
       </section>
 
       {/* Gallery / Archive */}
-      <section id="portfolio" className="py-40 bg-background relative z-10">
-        <div className="container mx-auto px-6 md:px-12">
+      <section id="portfolio" className="py-40 relative z-10 overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none">
+          <img src={featherBgPath} alt="" className="w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-[#F7F1EB]/90" />
+        </div>
+        <div className="container mx-auto px-6 md:px-12 relative z-10">
           
           <div className="relative mb-32 flex flex-col md:flex-row justify-between items-end">
             <FadeIn>
@@ -824,8 +829,12 @@ export default function Home() {
       <div className="h-[15vh] bg-gradient-to-b from-black to-[#F5F0EB]" />
 
       {/* Collections */}
-      <section id="collections" className="py-32 relative bg-[#F5F0EB]">
-        <div className="absolute top-0 right-0 text-ghost text-primary/40 -translate-y-1/2">
+      <section id="collections" className="py-32 relative overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none">
+          <img src={featherBgPath} alt="" className="w-full h-full object-cover object-left" />
+          <div className="absolute inset-0 bg-[#EEE3D7]/88" />
+        </div>
+        <div className="absolute top-0 right-0 text-ghost text-primary/40 -translate-y-1/2 z-10">
           COLLECTIONS
         </div>
         
@@ -968,8 +977,12 @@ export default function Home() {
       <div className="h-[15vh] bg-gradient-to-b from-[#0d0b0a] to-background" />
 
       {/* Founder / About */}
-      <section className="py-32 relative bg-background overflow-hidden">
-        <div className="absolute -left-40 top-20 text-[20rem] font-serif italic text-foreground opacity-[0.03] whitespace-nowrap pointer-events-none">
+      <section className="py-32 relative overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none">
+          <img src={featherBgPath} alt="" className="w-full h-full object-cover object-right" />
+          <div className="absolute inset-0 bg-[#F7F1EB]/88" />
+        </div>
+        <div className="absolute -left-40 top-20 text-[20rem] font-serif italic text-foreground opacity-[0.03] whitespace-nowrap pointer-events-none z-10">
           Artistry
         </div>
 
@@ -1183,9 +1196,13 @@ export default function Home() {
       </section>
 
       {/* Booking Form */}
-      <section id="book" className="py-40 relative bg-background overflow-hidden">
+      <section id="book" className="py-40 relative overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none">
+          <img src={featherBgPath} alt="" className="w-full h-full object-cover object-center" />
+          <div className="absolute inset-0 bg-[#F7F1EB]/90" />
+        </div>
         {/* Subtle radial glow */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/5 rounded-full blur-[100px] pointer-events-none" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/5 rounded-full blur-[100px] pointer-events-none z-10" />
 
         <div className="container mx-auto px-6 md:px-12 max-w-3xl relative z-10">
           <FadeIn className="text-center mb-20">
