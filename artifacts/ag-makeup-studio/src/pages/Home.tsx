@@ -1,7 +1,5 @@
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState, useCallback, memo } from "react";
 import { motion, AnimatePresence, useScroll, useTransform, useInView, useSpring, useMotionValue } from "framer-motion";
-import heroRightPath from "@assets/hero_right.png";
-import heroLeftPath from "@assets/hero_left.png";
 import gallery1Path from "@assets/gallery_1.png";
 import gallery2Path from "@assets/gallery_2.png";
 import gallery3Path from "@assets/gallery_3.png";
@@ -19,6 +17,8 @@ import lens3Path from "@assets/lens_3.png";
 import testimonialsBgPath from "@assets/a0dcf1bf0f646736b9552283059a83bf_1778999396158.jpg";
 import featherBgPath from "@assets/3b202712b82894b59517c133e8c2fecf_1779000059086.jpg";
 import { Menu, X } from "lucide-react";
+import ThreeDPhotoCarousel from "../components/ui/three-d-carousel";
+import { LeafyButton } from "../components/ui/leafy-button";
 
 // Helper for cinematic fade ins
 const FadeIn = ({ children, delay = 0, className = "", stagger = false }: { children: React.ReactNode; delay?: number; className?: string, stagger?: boolean }) => {
@@ -124,12 +124,18 @@ function TransformationSlider({ beforeSrc, afterSrc }: { beforeSrc: string; afte
   const isInView = useInView(ref, { once: true, margin: "-10% 0px" });
 
   return (
-    <section ref={ref} className="py-32 bg-background relative overflow-hidden">
+    <section ref={ref} className="py-32 relative overflow-hidden">
+      {/* Background */}
+      <div className="absolute inset-0 z-0">
+        <img src={featherBgPath} alt="" className="w-full h-full object-cover" />
+        <div className="absolute inset-0 bg-background/80 backdrop-blur-[2px]" />
+      </div>
+
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
         transition={{ duration: 1.4, ease: [0.25, 0.1, 0.25, 1] }}
-        className="container mx-auto px-6 md:px-12"
+        className="container mx-auto px-6 md:px-12 relative z-10"
       >
         {/* Header */}
         <div className="mb-16 text-center">
@@ -144,8 +150,7 @@ function TransformationSlider({ beforeSrc, afterSrc }: { beforeSrc: string; afte
         <div
           ref={containerRef}
           data-testid="transformation-slider"
-          className="relative w-full max-w-4xl mx-auto aspect-[4/5] md:aspect-[16/9] overflow-hidden select-none"
-          style={{ cursor: "ew-resize" }}
+          className="relative w-full max-w-4xl mx-auto aspect-[4/5] md:aspect-[16/9] overflow-hidden select-none cursor-ew-resize"
           onMouseDown={(e) => { isDragging.current = true; updatePos(e.clientX); }}
           onTouchStart={(e) => { isDragging.current = true; updatePos(e.touches[0].clientX); }}
         >
@@ -434,6 +439,57 @@ function BridalQuiz({ onClose }: { onClose: () => void }) {
   );
 }
 
+// Continuous playback cinematic background video
+const CinematicHeroVideo = memo(() => {
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    // Ensure video stays playing
+    const handlePlay = () => {
+      if (video.paused) {
+        video.play().catch(() => {});
+      }
+    };
+
+    window.addEventListener('focus', handlePlay);
+    window.addEventListener('scroll', handlePlay, { passive: true });
+    
+    // Force play on mount
+    handlePlay();
+
+    return () => {
+      window.removeEventListener('focus', handlePlay);
+      window.removeEventListener('scroll', handlePlay);
+    };
+  }, []);
+
+  return (
+    <motion.video
+      ref={videoRef}
+      autoPlay
+      muted
+      loop
+      playsInline
+      preload="auto"
+      className="w-full h-full object-cover object-[75%_35%] md:object-[82%_28%] scale-[1.05] will-change-transform"
+      style={{ filter: 'contrast(1.04) saturate(1.08) brightness(1.04) sepia(0.04)' }}
+      initial={{ scale: 1.05 }}
+      animate={{ scale: 1.12 }}
+      transition={{ 
+        duration: 30,
+        repeat: Infinity, 
+        repeatType: "reverse", 
+        ease: "easeInOut" 
+      }}
+    >
+      <source src="/videos/bridal-hero.mp4" type="video/mp4" />
+    </motion.video>
+  );
+});
+
 export default function Home() {
   const { scrollYProgress } = useScroll();
   const yHero = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
@@ -480,38 +536,12 @@ export default function Home() {
   }, [mobileMenuOpen]);
 
   return (
-    <main className="min-h-screen bg-background overflow-x-hidden selection:bg-primary/20 selection:text-foreground relative cursor-none">
+    <main className="min-h-screen bg-background overflow-x-hidden selection:bg-primary/20 selection:text-foreground relative">
       {/* Bridal Quiz Overlay */}
       <AnimatePresence>
         {quizOpen && <BridalQuiz onClose={() => setQuizOpen(false)} />}
       </AnimatePresence>
-      {/* Custom Champagne Cursor */}
-      <motion.div
-        data-testid="cursor-orb"
-        className="fixed pointer-events-none z-[99999] hidden md:block"
-        style={{ x: orbX, y: orbY, translateX: "-50%", translateY: "-50%" }}
-      >
-        <motion.div
-          className="rounded-full border border-[#B79272]/70 bg-[#C9A98A]/10 backdrop-blur-[2px]"
-          animate={{ width: cursorHover ? 48 : 12, height: cursorHover ? 48 : 12 }}
-          transition={{ duration: 0.3, ease: "easeOut" }}
-        />
-      </motion.div>
-      <motion.div
-        className="fixed pointer-events-none z-[99998] hidden md:block"
-        style={{ x: trailX, y: trailY, translateX: "-50%", translateY: "-50%" }}
-      >
-        <div
-          className="rounded-full"
-          style={{
-            width: 80,
-            height: 80,
-            background: "radial-gradient(circle, rgba(199,169,138,0.18) 0%, rgba(215,187,180,0.06) 50%, transparent 70%)",
-            filter: "blur(8px)",
-          }}
-        />
-      </motion.div>
-
+      
       {/* Texture & Entrance Overlays */}
       <div className="noise-overlay" />
       <div className="cinematic-entrance-overlay" />
@@ -534,43 +564,67 @@ export default function Home() {
       </div>
 
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 py-6 px-6 md:px-12 flex justify-between items-center bg-background/5 backdrop-blur-sm border-none mix-blend-difference text-white transition-all duration-500">
+      <nav className="fixed top-0 left-0 right-0 z-[60] py-3 md:py-4 px-6 md:px-12 flex justify-between items-center bg-white/[0.01] backdrop-blur-[6px] border-b border-white/[0.04] text-white transition-all duration-500">
         <div className="flex flex-col items-start cursor-pointer group">
-          <span className="font-serif text-3xl leading-none">AG</span>
-          <span className="font-sans text-[8px] tracking-[0.4em] mt-1 group-hover:text-primary transition-colors">MAKEUP STUDIO</span>
+          <span className="font-serif text-xl md:text-2xl leading-none tracking-tight">AG</span>
+          <span className="font-sans text-[6px] md:text-[7px] tracking-[0.6em] mt-1 group-hover:text-primary transition-colors uppercase opacity-70">Makeup Studio</span>
         </div>
         
         {/* Desktop Nav */}
-        <div className="hidden md:flex gap-10 font-sans text-xs tracking-widest uppercase">
-          <a href="#portfolio" className="nav-link cursor-pointer hover:text-primary transition-colors py-2">Portfolio</a>
-          <a href="#collections" className="nav-link cursor-pointer hover:text-primary transition-colors py-2">Collections</a>
-          <a href="#atelier" className="nav-link cursor-pointer hover:text-primary transition-colors py-2">Atelier</a>
-          <a href="#book" className="nav-link cursor-pointer hover:text-primary transition-colors py-2">Book</a>
+        <div className="hidden md:flex gap-10 font-sans text-[9px] tracking-[0.4em] uppercase opacity-80">
+          <a href="#portfolio" className="nav-link cursor-pointer hover:text-primary transition-colors py-1">Portfolio</a>
+          <a href="#collections" className="nav-link cursor-pointer hover:text-primary transition-colors py-1">Collections</a>
+          <a href="#atelier" className="nav-link cursor-pointer hover:text-primary transition-colors py-1">Atelier</a>
+          <a href="#book" className="nav-link cursor-pointer hover:text-primary transition-colors py-1">Book</a>
         </div>
 
         {/* Mobile Menu Toggle */}
         <button 
-          className="md:hidden text-white z-50 mix-blend-difference"
+          className="md:hidden text-white z-50 p-2 opacity-80"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
         >
-          {mobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
+          {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
         </button>
       </nav>
 
       {/* Mobile Menu Overlay */}
-      <motion.div 
-        initial={{ x: "100%" }}
-        animate={{ x: mobileMenuOpen ? "0%" : "100%" }}
-        transition={{ duration: 0.6, ease: [0.25, 0.1, 0.25, 1] }}
-        className="fixed inset-0 z-40 bg-background flex flex-col justify-center items-center md:hidden"
-      >
-        <div className="flex flex-col items-center gap-8 font-sans text-sm tracking-widest uppercase text-foreground">
-          <a href="#portfolio" onClick={() => setMobileMenuOpen(false)} className="hover:text-primary transition-colors">Portfolio</a>
-          <a href="#collections" onClick={() => setMobileMenuOpen(false)} className="hover:text-primary transition-colors">Collections</a>
-          <a href="#atelier" onClick={() => setMobileMenuOpen(false)} className="hover:text-primary transition-colors">Atelier</a>
-          <a href="#book" onClick={() => setMobileMenuOpen(false)} className="hover:text-primary transition-colors">Book</a>
-        </div>
-      </motion.div>
+      {/* Mobile Menu Overlay - Refined for slimmer aesthetic */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, x: "100%" }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: "100%" }}
+            transition={{ type: "spring", damping: 25, stiffness: 200 }}
+            className="fixed inset-0 z-[100] bg-[#1A1614]/98 backdrop-blur-xl flex flex-col items-center justify-center gap-8 md:hidden"
+          >
+            <button 
+              className="absolute top-6 right-6 text-white/60"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              <X size={24} />
+            </button>
+            <div className="flex flex-col items-center gap-12">
+              {['Portfolio', 'Collections', 'Atelier', 'Book'].map((item, i) => (
+                <motion.a
+                  key={item}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1 + i * 0.1 }}
+                  href={`#${item.toLowerCase()}`}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="font-serif text-3xl italic text-white/90 tracking-widest hover:text-primary transition-colors"
+                >
+                  {item}
+                </motion.a>
+              ))}
+            </div>
+            <div className="absolute bottom-12 flex flex-col items-center gap-4">
+              <span className="font-sans text-[8px] tracking-[0.5em] text-white/30 uppercase">AG Makeup Studio</span>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Hero Section */}
       <section className="relative h-[100svh] flex items-center justify-center overflow-hidden bg-black">
@@ -578,20 +632,28 @@ export default function Home() {
         <div className="letterbox top" />
         <div className="letterbox bottom" />
         
-        {/* Cinematic Image Crossfade — DSLR hero alternating */}
-        <motion.div style={{ y: yHero }} className="absolute inset-0 w-full h-full lens-breathe">
-          <div className="absolute inset-0 w-full h-full hero-img-1">
-            <img src={heroRightPath} alt="Bride" className="w-full h-full object-cover" />
-          </div>
-          <div className="absolute inset-0 w-full h-full hero-img-2">
-            <img src={heroLeftPath} alt="Bride" className="w-full h-full object-cover" />
-          </div>
-          {/* Overlays */}
-          <div className="candlelit-overlay" />
-          <div className="vignette" />
-          <div className="dof-blur" />
-          <div className="absolute inset-0 bg-black/20" />
-        </motion.div>
+        {/* Cinematic Video Background */}
+         <motion.div 
+           style={{ y: yHero }} 
+           className="absolute inset-0 w-full h-full overflow-hidden"
+         >
+           <CinematicHeroVideo />
+ 
+           {/* Luxury Overlays - Ultra light and cinematic */}
+           <div className="absolute inset-0 bg-black/5" /> {/* Negligible tint */}
+           <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-black/5 to-transparent z-10" /> {/* Subtle left-aligned gradient for readability */}
+           
+           {/* Soft Highlight Glow around the subject */}
+           <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_40%,rgba(255,240,220,0.1)_0%,transparent_50%)] mix-blend-overlay pointer-events-none" />
+           
+           {/* Local Cinematic Film Grain */}
+           <div className="absolute inset-0 opacity-[0.03] pointer-events-none mix-blend-overlay z-20 hero-grain" />
+
+           {/* Atmospheric Effects with ultra-low intensity */}
+           <div className="candlelit-overlay opacity-40" />
+           <div className="vignette opacity-20" />
+           <div className="dof-blur opacity-15" />
+         </motion.div>
 
         {/* Particles */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none z-20">
@@ -611,64 +673,70 @@ export default function Home() {
           ))}
         </div>
 
-        <div className="relative z-30 container mx-auto px-6 md:px-12 flex flex-col pt-24 h-full justify-center">
-          <div className="max-w-5xl">
+        <div className="relative z-30 container mx-auto px-6 md:px-16 flex flex-col pt-32 h-full justify-center">
+          <div className="max-w-4xl">
             <FadeIn delay={0.4}>
-              <div className="flex items-center gap-4 mb-6">
-                <span className="font-sans text-[10px] tracking-[0.4em] uppercase text-primary/80">AG Bridal Couture</span>
-                <div className="h-px w-12 bg-primary/40" />
+              <div className="flex items-center gap-4 mb-8">
+                <span className="font-sans text-[9px] md:text-[10px] tracking-[0.5em] uppercase text-primary/70">AG Bridal Couture</span>
+                <div className="h-px w-10 bg-primary/30" />
               </div>
             </FadeIn>
             
             <motion.h1 
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1.8, ease: [0.25, 0.1, 0.25, 1], delay: 0.6 }}
+              transition={{ duration: 2, ease: [0.25, 0.1, 0.25, 1], delay: 0.6 }}
               className="text-white flex flex-col relative"
-              style={{ fontSize: 'clamp(3.5rem, 9vw, 8.5rem)', lineHeight: 0.9 }}
+              style={{ 
+                fontSize: 'clamp(2.4rem, 7vw, 6.5rem)', 
+                lineHeight: 1.1,
+                letterSpacing: '-0.01em',
+                textShadow: '0 4px 30px rgba(0,0,0,0.15)' 
+              }}
             >
               <span className="font-serif font-light">Crafted For The Bride</span>
               
-              {/* Animated Horizontal Rule */}
+              {/* Animated Horizontal Rule - Refined scale */}
               <motion.div 
                 initial={{ scaleX: 0 }}
                 animate={{ scaleX: 1 }}
-                transition={{ duration: 1.2, delay: 0.8, ease: "easeInOut" }}
-                className="h-[2px] bg-primary/40 w-1/2 my-2 origin-left" 
+                transition={{ duration: 1.4, delay: 0.8, ease: "easeInOut" }}
+                className="h-[1.5px] bg-primary/30 w-1/3 my-4 origin-left" 
               />
               
-              <span className="font-serif italic text-white/90 translate-x-4 md:translate-x-12">Who Wants To Feel Unforgettable.</span>
+              <span className="font-serif italic text-white/85 translate-x-4 md:translate-x-12" style={{ textShadow: '0 2px 15px rgba(0,0,0,0.1)' }}>Who Wants To Feel Unforgettable.</span>
             </motion.h1>
             
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1.5, delay: 1.2, ease: "easeOut" }}
-              className="mt-16 flex flex-col sm:flex-row gap-6 w-full sm:w-auto"
+              transition={{ duration: 1.8, delay: 1.4, ease: "easeOut" }}
+              className="mt-20 flex flex-col sm:flex-row gap-8 w-full sm:w-auto"
             >
-              <a href="#collections" data-testid="button-explore-packages" className="btn-frosted px-12 py-5 text-xs uppercase tracking-[0.2em] text-white text-center w-full sm:w-auto">
-                Explore Collections
+              <a href="#collections" data-testid="button-explore-packages" className="w-full sm:w-auto">
+                <LeafyButton className="btn-frosted w-full sm:w-auto">
+                  Explore Collections
+                </LeafyButton>
               </a>
-              <button
-                data-testid="button-open-quiz"
-                onClick={() => setQuizOpen(true)}
-                className="btn-frosted px-12 py-5 text-xs uppercase tracking-[0.2em] text-[#C9A98A] text-center w-full sm:w-auto relative group overflow-hidden"
-              >
-                <span className="relative z-10 flex items-center justify-center gap-2">
-                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" stroke="#C9A98A" strokeWidth="1"/><path d="M6 4v2.5M6 8v.5" stroke="#C9A98A" strokeWidth="1" strokeLinecap="round"/></svg>
+              <div className="w-full sm:w-auto">
+                <LeafyButton
+                  data-testid="button-open-quiz"
+                  onClick={() => setQuizOpen(true)}
+                  className="btn-frosted w-full sm:w-auto !text-[#C9A98A]"
+                >
                   Find Your Bridal Look
-                </span>
-              </button>
+                </LeafyButton>
+              </div>
             </motion.div>
 
-            {/* Second Subtitle */}
+            {/* Subtitle - More breathing room */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ duration: 1.5, delay: 1.6 }}
-              className="mt-16"
+              transition={{ duration: 2, delay: 2 }}
+              className="mt-24"
             >
-              <p className="font-serif italic text-white/60" style={{ fontSize: 'clamp(1.2rem, 2.5vw, 1.8rem)' }}>Beauty Designed Like A Memory.</p>
+              <p className="font-serif italic text-white/50 tracking-wide" style={{ fontSize: 'clamp(1rem, 2vw, 1.4rem)' }}>Beauty Designed Like A Memory.</p>
             </motion.div>
           </div>
         </div>
@@ -680,8 +748,7 @@ export default function Home() {
           transition={{ delay: 2, duration: 1 }}
           className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4 z-30"
         >
-          <span className="font-sans text-[9px] uppercase tracking-[0.3em] text-white/50">Scroll</span>
-          <div className="scroll-line text-white/30" />
+          
         </motion.div>
       </section>
 
@@ -748,16 +815,13 @@ export default function Home() {
       {/* Transformation Reveal */}
       <TransformationSlider beforeSrc={gallery4Path} afterSrc={gallery1Path} />
 
-      {/* Gradient Transition */}
-      <div className="h-[15vh] bg-gradient-to-b from-background to-black" />
-
       {/* THE BRIDAL MOMENT — compact editorial spread */}
-      <section className="relative bg-black overflow-hidden">
+      <section className="relative bg-background overflow-hidden">
         {/* Full-bleed atmospheric background */}
         <div className="absolute inset-0">
-          <img src={story4Path} className="w-full h-full object-cover opacity-25" style={{ filter: "blur(2px) saturate(0.6)" }} />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/50 to-black/70" />
-          <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at 70% 50%, rgba(183,146,114,0.06) 0%, transparent 60%)" }} />
+          <img src={featherBgPath} className="w-full h-full object-cover opacity-30" />
+          <div className="absolute inset-0 bg-background/60" />
+          <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at 70% 50%, rgba(183,146,114,0.1) 0%, transparent 60%)" }} />
         </div>
 
         <div className="relative z-10 container mx-auto px-6 md:px-12 py-24 md:py-32">
@@ -778,10 +842,10 @@ export default function Home() {
                     <img
                       src={src}
                       alt={["Anticipation", "Artistry", "Revelation", "Bride"][i]}
-                      className="absolute inset-0 w-full h-full object-cover opacity-70 group-hover:opacity-90 transition-opacity duration-700"
-                      style={{ filter: "saturate(0.75)" }}
+                      className="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-700"
+                      style={{ filter: "saturate(0.85)" }}
                     />
-                    <div className="absolute inset-0 border border-white/[0.08] pointer-events-none" />
+                    <div className="absolute inset-0 border border-black/[0.05] pointer-events-none" />
                     <div className="absolute top-3 left-3 font-serif italic text-[10px] text-[#B79272]/70 pointer-events-none">
                       {["I", "II", "III", "IV"][i]}
                     </div>
@@ -799,14 +863,14 @@ export default function Home() {
                 { num: "IV",  title: "The Bride",        lines: ["Unforgettable.", "Always."] },
               ].map((verse, i) => (
                 <FadeIn key={i} delay={i * 0.1} className="flex-1 flex flex-col justify-center">
-                  <div className="py-6 border-t border-white/[0.08] flex gap-8 items-start">
+                  <div className="py-6 border-t border-black/[0.08] flex gap-8 items-start">
                     <span className="font-sans text-[9px] tracking-[0.3em] text-[#B79272]/50 w-6 flex-none pt-1">{verse.num}</span>
                     <div className="flex-1">
-                      <span className="font-sans text-[8px] tracking-[0.35em] text-white/20 uppercase block mb-3">{verse.title}</span>
-                      <h3 className="font-serif font-light text-white leading-[1.15]" style={{ fontSize: "clamp(1.4rem, 3vw, 2.5rem)" }}>
+                      <span className="font-sans text-[8px] tracking-[0.35em] text-muted-foreground uppercase block mb-3">{verse.title}</span>
+                      <h3 className="font-serif font-light text-foreground leading-[1.15]" style={{ fontSize: "clamp(1.4rem, 3vw, 2.5rem)" }}>
                         {verse.lines.map((line, li) => (
                           <span key={li} className="block">
-                            {li === verse.lines.length - 1 ? <em>{line}</em> : line}
+                            {li === verse.lines.length - 1 ? <em className="text-primary/80">{line}</em> : line}
                           </span>
                         ))}
                       </h3>
@@ -814,19 +878,16 @@ export default function Home() {
                   </div>
                 </FadeIn>
               ))}
-              <div className="border-t border-white/[0.08]" />
+              <div className="border-t border-black/[0.08]" />
             </div>
           </div>
         </div>
 
         {/* Vertical section label */}
-        <div className="absolute top-1/2 right-6 -translate-y-1/2 font-sans text-[8px] tracking-[0.4em] text-white/15 uppercase" style={{ writingMode: "vertical-rl" }}>
+        <div className="absolute top-1/2 right-6 -translate-y-1/2 font-sans text-[8px] tracking-[0.4em] text-black/15 uppercase" style={{ writingMode: "vertical-rl" }}>
           AG Bridal Couture
         </div>
       </section>
-
-      {/* Gradient Transition */}
-      <div className="h-[15vh] bg-gradient-to-b from-black to-[#F5F0EB]" />
 
       {/* Collections */}
       <section id="collections" className="py-32 relative overflow-hidden">
@@ -914,67 +975,47 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Gradient Transition */}
-      <div className="h-[15vh] bg-gradient-to-b from-[#F5F0EB] to-[#0d0b0a]" />
+
 
       {/* NEW SECTION 2: AS SEEN THROUGH THE LENS */}
-      <section className="py-40 bg-[#0d0b0a] relative overflow-hidden">
+      <section className="py-24 relative overflow-hidden">
         {/* Background */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_#1a0f08_0%,_#0d0b0a_70%)]" />
+        <div className="absolute inset-0 z-0">
+          <img 
+            src={featherBgPath} 
+            alt="" 
+            className="w-full h-full object-cover" 
+          />
+          {/* Soft overlay to ensure content pops */}
+          <div className="absolute inset-0 bg-white/60 backdrop-blur-[2px]" />
+        </div>
 
         <div className="container mx-auto px-6 md:px-12 relative z-10">
-          <FadeIn className="mb-24 flex flex-col items-center text-center">
+          <FadeIn className="mb-16 flex flex-col items-center text-center">
             <span className="font-sans text-[9px] tracking-[0.4em] text-[#B79272] uppercase mb-6">As Seen Through The Lens</span>
-            <h2 className="font-serif text-5xl md:text-8xl font-light text-white leading-[0.9]">
+            <h2 className="font-serif text-5xl md:text-8xl font-light text-foreground leading-[0.9]">
               Through the<br/><em className="text-[#B79272]">DSLR</em>
             </h2>
-            <p className="font-sans font-light text-white/40 mt-8 text-sm tracking-[0.2em]">Every bride captured in her most luminous moment.</p>
+            <p className="font-sans font-light text-muted-foreground mt-8 text-sm tracking-[0.2em]">Every bride captured in her most luminous moment.</p>
           </FadeIn>
+        </div>
 
-          {/* Three DSLR frames — uniform 3-column grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {[
-              { src: lens1Path, meta: "f/1.8 · 1/200s · ISO 800", focal: "85mm", caption: "The intimate portrait." },
-              { src: lens2Path, meta: "f/2.0 · 1/160s · ISO 640", focal: "50mm", caption: "The artistry revealed." },
-              { src: lens3Path, meta: "f/2.8 · 1/125s · ISO 500", focal: "100mm Macro", caption: "The whispered detail." },
-            ].map((frame, i) => (
-              <FadeIn key={i} delay={i * 0.12}>
-                <div className="group relative overflow-hidden aspect-[3/4]">
-                  <img
-                    src={frame.src}
-                    alt={frame.caption}
-                    className="w-full h-full object-cover editorial-image-hover opacity-90 group-hover:opacity-100 transition-opacity duration-700"
-                  />
-                  {/* DSLR viewfinder border */}
-                  <div className="absolute inset-0 border border-white/10 m-3 pointer-events-none" />
-                  {/* Corner brackets */}
-                  <div className="absolute top-5 left-5 w-5 h-5 border-t border-l border-white/25 pointer-events-none" />
-                  <div className="absolute top-5 right-5 w-5 h-5 border-t border-r border-white/25 pointer-events-none" />
-                  <div className="absolute bottom-5 left-5 w-5 h-5 border-b border-l border-white/25 pointer-events-none" />
-                  <div className="absolute bottom-5 right-5 w-5 h-5 border-b border-r border-white/25 pointer-events-none" />
-                  {/* EXIF top */}
-                  <div className="absolute top-7 left-7 right-7 flex justify-between pointer-events-none">
-                    <span className="font-mono text-[8px] text-white/30 tracking-wider">{frame.meta}</span>
-                  </div>
-                  {/* Focal bottom */}
-                  <div className="absolute bottom-7 left-7 right-7 flex justify-between items-center pointer-events-none">
-                    <span className="font-mono text-[8px] text-white/30">{frame.focal}</span>
-                    <div className="w-2 h-2 rounded-full border border-white/20" />
-                  </div>
-                  {/* Film grain */}
-                  <div className="absolute inset-0 noise-overlay opacity-[0.05] pointer-events-none" />
-                  {/* Hover champagne glow */}
-                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" style={{ boxShadow: "inset 0 0 60px rgba(183,146,114,0.12)" }} />
-                </div>
-                <p className="mt-3 font-serif italic text-white/35 text-sm">0{i + 1}. {frame.caption}</p>
-              </FadeIn>
-            ))}
-          </div>
+        {/* 3D Carousel - Moved outside restricted container for more width */}
+        <div className="w-full relative z-10">
+          <FadeIn delay={0.3} className="relative">
+            <div className="w-full relative h-[450px] md:h-[550px] flex items-center justify-center">
+              {/* Subtle floor reflection effect */}
+              <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[90%] h-24 bg-gradient-to-t from-[#B79272]/5 to-transparent blur-3xl rounded-full pointer-events-none" />
+              
+              <ThreeDPhotoCarousel 
+                images={[lens1Path, lens2Path, lens3Path, gallery1Path, gallery2Path, gallery3Path, gallery4Path, gallery5Path, gallery6Path]} 
+              />
+            </div>
+          </FadeIn>
         </div>
       </section>
 
-      {/* Gradient Transition */}
-      <div className="h-[15vh] bg-gradient-to-b from-[#0d0b0a] to-background" />
+ 
 
       {/* Founder / About */}
       <section className="py-32 relative overflow-hidden">
