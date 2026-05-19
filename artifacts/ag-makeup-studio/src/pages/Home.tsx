@@ -14,6 +14,7 @@ import story4Path from "@assets/story_4.png";
 import lens1Path from "@assets/lens_1.png";
 import lens2Path from "@assets/lens_2.png";
 import lens3Path from "@assets/lens_3.png";
+import heroBridePath from "@assets/hero_bride.png";
 import testimonialsBgPath from "@assets/a0dcf1bf0f646736b9552283059a83bf_1778999396158.jpg";
 import featherBgPath from "@assets/3b202712b82894b59517c133e8c2fecf_1779000059086.jpg";
 import { Menu, X } from "lucide-react";
@@ -447,22 +448,22 @@ const CinematicHeroVideo = memo(() => {
     const video = videoRef.current;
     if (!video) return;
 
-    // Ensure video stays playing
-    const handlePlay = () => {
-      if (video.paused) {
-        video.play().catch(() => {});
-      }
-    };
+    // Use Intersection Observer to only play when in view
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          video.play().catch(() => {});
+        } else {
+          video.pause();
+        }
+      },
+      { threshold: 0.1 }
+    );
 
-    window.addEventListener('focus', handlePlay);
-    window.addEventListener('scroll', handlePlay, { passive: true });
-    
-    // Force play on mount
-    handlePlay();
+    observer.observe(video);
 
     return () => {
-      window.removeEventListener('focus', handlePlay);
-      window.removeEventListener('scroll', handlePlay);
+      observer.disconnect();
     };
   }, []);
 
@@ -473,16 +474,20 @@ const CinematicHeroVideo = memo(() => {
       muted
       loop
       playsInline
-      preload="auto"
+      preload="metadata"
+      poster={heroBridePath}
       className="w-full h-full object-cover object-[75%_35%] md:object-[82%_28%] scale-[1.05] will-change-transform"
-      style={{ filter: 'contrast(1.04) saturate(1.08) brightness(1.04) sepia(0.04)' }}
+      style={{ 
+        // Move heavy filters to a CSS class or optimize here
+        filter: 'contrast(1.02) saturate(1.05) brightness(1.02)',
+      }}
       initial={{ scale: 1.05 }}
-      animate={{ scale: 1.12 }}
+      animate={{ scale: 1.08 }}
       transition={{ 
-        duration: 30,
+        duration: 20, // Reduced from 30 for snappier feel but still slow
         repeat: Infinity, 
         repeatType: "reverse", 
-        ease: "easeInOut" 
+        ease: "linear" // Linear is cheaper for continuous slow scale
       }}
     >
       <source src="/videos/bridal-hero.mp4" type="video/mp4" />

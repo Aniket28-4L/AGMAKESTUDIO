@@ -81,7 +81,7 @@ const transition = {
 }
 const transitionOverlay = { duration: 0.5, ease: [0.32, 0.72, 0, 1] as const }
 
-const Face = ({
+const Face = memo(({
   imgUrl,
   i,
   faceCount,
@@ -99,9 +99,10 @@ const Face = ({
   handleClick: (imgUrl: string, index: number) => void
 }) => {
   const angle = i * (360 / faceCount)
+  
+  // Combine transforms into a single useTransform for performance
   const transform = useTransform(rotation, (r: number) => {
     const relativeAngle = (r + angle) % 360
-    // Normalize angle to -180 to 180
     const normalizedAngle =
       relativeAngle > 180
         ? relativeAngle - 360
@@ -109,14 +110,14 @@ const Face = ({
         ? relativeAngle + 360
         : relativeAngle
 
-    // Calculate distance from front (0 degrees)
     const distance = Math.abs(normalizedAngle)
-    const scale = distance < 45 ? 1 + (45 - distance) / 200 : 1
-    const brightness = distance < 45 ? 1 + (45 - distance) / 100 : 1
     
+    // Optimized scale and translation
+    const scale = distance < 45 ? 1 + (45 - distance) / 300 : 1
     return `rotateY(${angle}deg) translateZ(${radius}px) scale(${scale})`
   })
 
+  // Separate opacity to avoid unnecessary re-renders of the whole transform if only opacity changes
   const opacity = useTransform(rotation, (r: number) => {
     const relativeAngle = (r + angle) % 360
     const normalizedAngle =
@@ -126,7 +127,7 @@ const Face = ({
         ? relativeAngle + 360
         : relativeAngle
     const distance = Math.abs(normalizedAngle)
-    return distance < 90 ? 1 : Math.max(0.1, 1 - (distance - 90) / 90)
+    return distance < 90 ? 1 : Math.max(0.05, 1 - (distance - 90) / 100)
   })
 
   return (
@@ -137,24 +138,23 @@ const Face = ({
         transform,
         opacity,
         transformStyle: "preserve-3d",
+        willChange: "transform, opacity", // Hint to GPU
       }}
       onClick={() => handleClick(imgUrl, i)}
     >
       <motion.img
         src={imgUrl}
         alt={`bridal_artistry_${i}`}
-        layoutId={`img-${imgUrl}`}
-        className="pointer-events-none w-full rounded-xl object-cover aspect-[3/4] shadow-[0_20px_50px_rgba(0,0,0,0.5)] transition-all duration-500"
-        initial={{ filter: "blur(4px)" }}
-        animate={{ filter: "blur(0px)" }}
-        transition={transition}
+        className="pointer-events-none w-full rounded-xl object-cover aspect-[3/4] shadow-[0_15px_35px_rgba(0,0,0,0.4)] transition-all duration-300"
         style={{
-          border: "1px solid rgba(255,255,255,0.08)",
+          border: "1px solid rgba(255,255,255,0.05)",
+          willChange: "transform", // Performance hint
         }}
+        loading="lazy" // Don't load all at once
       />
     </motion.div>
   )
-}
+})
 
 const Carousel = memo(
   ({
@@ -196,24 +196,28 @@ const Carousel = memo(
             rotateY: rotation,
             width: cylinderWidth,
             transformStyle: "preserve-3d",
+            willChange: "transform",
           }}
-          onDrag={(_, info) =>
-            isCarouselActive &&
-            rotation.set(rotation.get() + info.offset.x * 0.015)
-          }
-          onDragEnd={(_, info) =>
-            isCarouselActive &&
+          onDrag={(_, info) => {
+            if (!isCarouselActive) return
+            // Smoother drag response
+            rotation.set(rotation.get() + info.offset.x * 0.012)
+          }}
+          onDragEnd={(_, info) => {
+            if (!isCarouselActive) return
+            
+            // Refined physics for premium "heavy" but smooth feel
             controls.start({
-              rotateY: rotation.get() + info.velocity.x * 0.04,
+              rotateY: rotation.get() + info.velocity.x * 0.05,
               transition: {
-                type: "spring" as const,
-                stiffness: 40,
-                damping: 25,
-                mass: 1.2,
+                type: "spring",
+                stiffness: 60,
+                damping: 30,
+                mass: 1.5,
                 restDelta: 0.01,
               },
             })
-          }
+          }}
           animate={controls}
         >
           {cards.map((imgUrl, i) => (
