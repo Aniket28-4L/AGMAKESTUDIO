@@ -1,5 +1,10 @@
-import { useEffect, useRef, useState, useCallback, memo } from "react";
-import { motion, AnimatePresence, useScroll, useTransform, useInView, useSpring, useMotionValue } from "framer-motion";
+import { useEffect, useRef, useState, useCallback, memo, forwardRef } from "react";
+import { motion, AnimatePresence, useScroll, useTransform, useSpring, useMotionValue } from "framer-motion";
+import { useMotion } from "@/components/motion/motion-context";
+import gsap from "gsap";
+import { useScrollReveal, useScrollRevealBatch } from "@/hooks/useScrollReveal";
+import { useHeroMotion } from "@/hooks/useHeroMotion";
+import { MOTION } from "@/lib/motion/config";
 import gallery1Path from "@assets/gallery_1.png";
 import gallery2Path from "@assets/gallery_2.png";
 import gallery3Path from "@assets/gallery_3.png";
@@ -21,71 +26,60 @@ import { Menu, X } from "lucide-react";
 import ThreeDPhotoCarousel from "../components/ui/three-d-carousel";
 import { LeafyButton } from "../components/ui/leafy-button";
 
-// Helper for cinematic fade ins
-const FadeIn = ({ children, delay = 0, className = "", stagger = false }: { children: React.ReactNode; delay?: number; className?: string, stagger?: boolean }) => {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-10% 0px" });
-
-  if (stagger) {
-    return (
-      <motion.div
-        ref={ref}
-        initial="hidden"
-        animate={isInView ? "visible" : "hidden"}
-        variants={{
-          hidden: { opacity: 0 },
-          visible: {
-            opacity: 1,
-            transition: {
-              staggerChildren: 0.12,
-              delayChildren: delay,
-            }
-          }
-        }}
-        className={className}
-      >
-        {children}
-      </motion.div>
-    );
-  }
-
+// GSAP scroll reveals — same API, cinematic motion
+const FadeIn = ({
+  children,
+  delay = 0,
+  className = "",
+  stagger = false,
+  blur = false,
+}: {
+  children: React.ReactNode;
+  delay?: number;
+  className?: string;
+  stagger?: boolean;
+  blur?: boolean;
+}) => {
+  const ref = useRef<HTMLDivElement>(null);
+  useScrollReveal(ref, {
+    delay,
+    stagger: stagger ? MOTION.stagger.default : false,
+    variant: blur ? "blur" : "fade-up",
+  });
   return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0, y: 30 }}
-      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-      transition={{ duration: 1.4, delay, ease: [0.25, 0.1, 0.25, 1] }}
-      className={className}
-    >
+    <div ref={ref} className={className}>
       {children}
-    </motion.div>
+    </div>
   );
 };
 
-const FadeChild = ({ children, className = "" }: { children: React.ReactNode, className?: string }) => (
-  <motion.div
-    variants={{
-      hidden: { opacity: 0, y: 30 },
-      visible: { opacity: 1, y: 0, transition: { duration: 1.4, ease: [0.25, 0.1, 0.25, 1] } }
-    }}
-    className={className}
-  >
-    {children}
-  </motion.div>
+const FadeChild = ({ children, className = "" }: { children: React.ReactNode; className?: string }) => (
+  <div className={className}>{children}</div>
 );
 
 const SectionDivider = () => {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-10% 0px" });
+  const ref = useRef<HTMLDivElement>(null);
+  const { isReady } = useMotion();
+
+  useEffect(() => {
+    if (!isReady || !ref.current) return;
+    const el = ref.current;
+    gsap.set(el, { scaleX: 0, transformOrigin: "left center" });
+    const tween = gsap.to(el, {
+      scaleX: 1,
+      duration: 1.5,
+      ease: MOTION.ease.cinematic,
+      scrollTrigger: { trigger: el, start: MOTION.scroll.start, once: true },
+    });
+    return () => {
+      tween.scrollTrigger?.kill();
+      tween.kill();
+    };
+  }, [isReady]);
+
   return (
     <div className="w-full flex justify-center py-8 opacity-40">
-      <motion.div 
-        ref={ref}
-        initial={{ scaleX: 0 }}
-        animate={isInView ? { scaleX: 1 } : { scaleX: 0 }}
-        transition={{ duration: 1.5, ease: "easeInOut" }}
-        className="h-px bg-primary w-1/3 section-line" 
-      />
+      <div ref={ref} className="h-px bg-primary w-1/3 section-line" />
     </div>
   );
 };
@@ -121,23 +115,18 @@ function TransformationSlider({ beforeSrc, afterSrc }: { beforeSrc: string; afte
     };
   }, []);
 
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-10% 0px" });
+  const sectionRef = useRef<HTMLElement>(null);
+  useScrollReveal(sectionRef, { variant: "blur" });
 
   return (
-    <section ref={ref} className="py-32 relative overflow-hidden">
+    <section ref={sectionRef} className="py-32 relative overflow-hidden">
       {/* Background */}
       <div className="absolute inset-0 z-0">
         <img src={featherBgPath} alt="" className="w-full h-full object-cover" />
         <div className="absolute inset-0 bg-background/80 backdrop-blur-[2px]" />
       </div>
 
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-        transition={{ duration: 1.4, ease: [0.25, 0.1, 0.25, 1] }}
-        className="container mx-auto px-6 md:px-12 relative z-10"
-      >
+      <div className="container mx-auto px-6 md:px-12 relative z-10">
         {/* Header */}
         <div className="mb-16 text-center">
           <span className="font-sans text-[10px] tracking-[0.4em] uppercase text-primary block mb-4">The Transformation</span>
@@ -219,7 +208,7 @@ function TransformationSlider({ beforeSrc, afterSrc }: { beforeSrc: string; afte
         <p className="text-center font-serif italic text-muted-foreground mt-8 text-lg">
           "Every bride deserves to see herself transformed."
         </p>
-      </motion.div>
+      </div>
     </section>
   );
 }
@@ -441,64 +430,83 @@ function BridalQuiz({ onClose }: { onClose: () => void }) {
 }
 
 // Continuous playback cinematic background video
-const CinematicHeroVideo = memo(() => {
-  const videoRef = useRef<HTMLVideoElement>(null);
+const CinematicHeroVideo = memo(
+  forwardRef<HTMLVideoElement>((_, ref) => {
+    const videoRef = useRef<HTMLVideoElement>(null);
 
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
-
-    // Use Intersection Observer to only play when in view
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          video.play().catch(() => {});
-        } else {
-          video.pause();
-        }
-      },
-      { threshold: 0.1 }
-    );
-
-    observer.observe(video);
-
-    return () => {
-      observer.disconnect();
+    const setRef = (node: HTMLVideoElement | null) => {
+      videoRef.current = node;
+      if (typeof ref === "function") ref(node);
+      else if (ref) ref.current = node;
     };
-  }, []);
 
-  return (
-    <motion.video
-      ref={videoRef}
-      autoPlay
-      muted
-      loop
-      playsInline
-      preload="metadata"
-      poster={heroBridePath}
-      className="w-full h-full object-cover object-[75%_35%] md:object-[82%_28%] scale-[1.05] will-change-transform"
-      style={{ 
-        // Move heavy filters to a CSS class or optimize here
-        filter: 'contrast(1.02) saturate(1.05) brightness(1.02)',
-      }}
-      initial={{ scale: 1.05 }}
-      animate={{ scale: 1.08 }}
-      transition={{ 
-        duration: 20, // Reduced from 30 for snappier feel but still slow
-        repeat: Infinity, 
-        repeatType: "reverse", 
-        ease: "linear" // Linear is cheaper for continuous slow scale
-      }}
-    >
-      <source src="/videos/bridal-hero.mp4" type="video/mp4" />
-    </motion.video>
-  );
-});
+    useEffect(() => {
+      const video = videoRef.current;
+      if (!video) return;
+
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) {
+            video.play().catch(() => {});
+          } else {
+            video.pause();
+          }
+        },
+        { threshold: 0.1 }
+      );
+
+      observer.observe(video);
+
+      return () => {
+        observer.disconnect();
+      };
+    }, []);
+
+    return (
+      <video
+        ref={setRef}
+        autoPlay
+        muted
+        loop
+        playsInline
+        preload="metadata"
+        poster={heroBridePath}
+        className="w-full h-full object-cover object-[75%_35%] md:object-[82%_28%] scale-[1.05] will-change-transform"
+        style={{
+          filter: "contrast(1.02) saturate(1.05) brightness(1.02)",
+        }}
+      >
+        <source src="/videos/bridal-hero.mp4" type="video/mp4" />
+      </video>
+    );
+  })
+);
+CinematicHeroVideo.displayName = "CinematicHeroVideo";
 
 export default function Home() {
+  const { isReady, lenis } = useMotion();
   const { scrollYProgress } = useScroll();
-  const yHero = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
   const yBg = useTransform(scrollYProgress, [0, 1], ["0%", "10%"]);
+
+  const heroVideoRef = useRef<HTMLVideoElement>(null);
+  const heroTitleRef = useRef<HTMLHeadingElement>(null);
+  const heroRuleRef = useRef<HTMLDivElement>(null);
+  const heroEyebrowRef = useRef<HTMLDivElement>(null);
+  const heroCtaRef = useRef<HTMLDivElement>(null);
+  const heroSubtitleRef = useRef<HTMLDivElement>(null);
+  const heroParallaxRef = useRef<HTMLDivElement>(null);
+
+  useHeroMotion({
+    videoRef: heroVideoRef,
+    titleRef: heroTitleRef,
+    ruleRef: heroRuleRef,
+    eyebrowRef: heroEyebrowRef,
+    ctaRef: heroCtaRef,
+    subtitleRef: heroSubtitleRef,
+    parallaxRef: heroParallaxRef,
+  });
+
+  useScrollRevealBatch(isReady);
   
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [quizOpen, setQuizOpen] = useState(false);
@@ -531,14 +539,16 @@ export default function Home() {
     };
   }, [cursorX, cursorY]);
 
-  // Lock body scroll when mobile menu is open
+  // Lock scroll when mobile menu is open (Lenis + body)
   useEffect(() => {
     if (mobileMenuOpen) {
+      lenis?.stop();
       document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = "auto";
+      lenis?.start();
+      if (isReady) document.body.style.overflow = "";
     }
-  }, [mobileMenuOpen]);
+  }, [mobileMenuOpen, lenis, isReady]);
 
   return (
     <main className="min-h-screen bg-background overflow-x-hidden selection:bg-primary/20 selection:text-foreground relative">
@@ -547,9 +557,8 @@ export default function Home() {
         {quizOpen && <BridalQuiz onClose={() => setQuizOpen(false)} />}
       </AnimatePresence>
       
-      {/* Texture & Entrance Overlays */}
+      {/* Texture Overlay */}
       <div className="noise-overlay" />
-      <div className="cinematic-entrance-overlay" />
 
       {/* Ambient floating pearls - global atmospheric element */}
       <div className="fixed inset-0 pointer-events-none z-[1] overflow-hidden">
@@ -638,11 +647,11 @@ export default function Home() {
         <div className="letterbox bottom" />
         
         {/* Cinematic Video Background */}
-         <motion.div 
-           style={{ y: yHero }} 
+         <div
+           ref={heroParallaxRef}
            className="absolute inset-0 w-full h-full overflow-hidden"
          >
-           <CinematicHeroVideo />
+           <CinematicHeroVideo ref={heroVideoRef} />
  
            {/* Luxury Overlays - Ultra light and cinematic */}
            <div className="absolute inset-0 bg-black/5" /> {/* Negligible tint */}
@@ -658,7 +667,7 @@ export default function Home() {
            <div className="candlelit-overlay opacity-40" />
            <div className="vignette opacity-20" />
            <div className="dof-blur opacity-15" />
-         </motion.div>
+         </div>
 
         {/* Particles */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none z-20">
@@ -680,17 +689,13 @@ export default function Home() {
 
         <div className="relative z-30 container mx-auto px-6 md:px-16 flex flex-col pt-32 h-full justify-center">
           <div className="max-w-4xl">
-            <FadeIn delay={0.4}>
-              <div className="flex items-center gap-4 mb-8">
-                <span className="font-sans text-[9px] md:text-[10px] tracking-[0.5em] uppercase text-primary/70">AG Bridal Couture</span>
-                <div className="h-px w-10 bg-primary/30" />
-              </div>
-            </FadeIn>
+            <div ref={heroEyebrowRef} className="flex items-center gap-4 mb-8">
+              <span className="font-sans text-[9px] md:text-[10px] tracking-[0.5em] uppercase text-primary/70">AG Bridal Couture</span>
+              <div className="h-px w-10 bg-primary/30" />
+            </div>
             
-            <motion.h1 
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 2, ease: [0.25, 0.1, 0.25, 1], delay: 0.6 }}
+            <h1 
+              ref={heroTitleRef}
               className="text-white flex flex-col relative"
               style={{ 
                 fontSize: 'clamp(2.4rem, 7vw, 6.5rem)', 
@@ -701,21 +706,16 @@ export default function Home() {
             >
               <span className="font-serif font-light">Crafted For The Bride</span>
               
-              {/* Animated Horizontal Rule - Refined scale */}
-              <motion.div 
-                initial={{ scaleX: 0 }}
-                animate={{ scaleX: 1 }}
-                transition={{ duration: 1.4, delay: 0.8, ease: "easeInOut" }}
+              <div 
+                ref={heroRuleRef}
                 className="h-[1.5px] bg-primary/30 w-1/3 my-4 origin-left" 
               />
               
               <span className="font-serif italic text-white/85 translate-x-4 md:translate-x-12" style={{ textShadow: '0 2px 15px rgba(0,0,0,0.1)' }}>Who Wants To Feel Unforgettable.</span>
-            </motion.h1>
+            </h1>
             
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1.8, delay: 1.4, ease: "easeOut" }}
+            <div 
+              ref={heroCtaRef}
               className="mt-20 flex flex-col sm:flex-row gap-8 w-full sm:w-auto"
             >
               <a href="#collections" data-testid="button-explore-packages" className="w-full sm:w-auto">
@@ -732,17 +732,15 @@ export default function Home() {
                   Find Your Bridal Look
                 </LeafyButton>
               </div>
-            </motion.div>
+            </div>
 
             {/* Subtitle - More breathing room */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 2, delay: 2 }}
+            <div
+              ref={heroSubtitleRef}
               className="mt-24"
             >
               <p className="font-serif italic text-white/50 tracking-wide" style={{ fontSize: 'clamp(1rem, 2vw, 1.4rem)' }}>Beauty Designed Like A Memory.</p>
-            </motion.div>
+            </div>
           </div>
         </div>
 
@@ -786,7 +784,7 @@ export default function Home() {
           </div>
 
           {/* Pinterest-style masonry using CSS columns */}
-          <div className="columns-2 md:columns-3 gap-4 md:gap-6">
+          <div className="columns-2 md:columns-3 gap-4 md:gap-6" data-reveal-stagger>
             {[
               { src: gallery1Path, alt: "Bridal portrait", caption: "01. The Signature Look, New Delhi" },
               { src: gallery3Path, alt: "Bridal in motion", caption: "02. Veil in Flight" },
@@ -840,8 +838,8 @@ export default function Home() {
           <div className="flex flex-col md:flex-row gap-12 md:gap-20 items-stretch">
 
             {/* Left: 2×2 contact sheet — stretches to match verse column height */}
-            <FadeIn className="md:w-[42%] w-full flex-none flex flex-col">
-              <div className="grid grid-cols-2 grid-rows-2 gap-2 flex-1">
+            <div className="md:w-[42%] w-full flex-none flex flex-col">
+              <div className="grid grid-cols-2 grid-rows-2 gap-2 flex-1" data-reveal-stagger>
                 {[story1Path, story2Path, story3Path, story4Path].map((src, i) => (
                   <div key={i} className="relative overflow-hidden group min-h-0">
                     <img
@@ -857,7 +855,7 @@ export default function Home() {
                   </div>
                 ))}
               </div>
-            </FadeIn>
+            </div>
 
             {/* Right: stacked editorial verses */}
             <div className="md:w-[58%] w-full flex flex-col justify-between gap-0 md:pt-4">
@@ -1096,7 +1094,7 @@ export default function Home() {
           </FadeIn>
 
           {/* Horizontal scrolling reel strip */}
-          <div className="flex gap-4 overflow-x-auto pb-8 snap-x snap-mandatory scrollbar-hide -mx-6 px-6">
+          <div className="flex gap-4 overflow-x-auto pb-8 snap-x snap-mandatory scrollbar-hide -mx-6 px-6" data-lenis-prevent data-reveal-stagger>
             {[gallery1Path, gallery2Path, gallery3Path, gallery4Path, gallery5Path, gallery6Path].map((img, i) => (
               <div key={i} className="flex-none w-[240px] md:w-[280px] snap-center relative group" data-testid={`reel-frame-${i}`}>
                 <div className="relative overflow-hidden aspect-[9/16] bg-black">

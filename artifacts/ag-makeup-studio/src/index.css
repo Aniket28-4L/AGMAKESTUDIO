@@ -98,18 +98,305 @@
   mix-blend-mode: multiply;
 }
 
-/* Page Entrance */
-@keyframes cinematic-entrance {
-  0% { opacity: 1; background: hsl(var(--background)); }
-  100% { opacity: 0; background: hsl(var(--background)); visibility: hidden; }
-}
-.cinematic-entrance-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 10000;
-  background: hsl(var(--background));
-  animation: cinematic-entrance 0.8s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+/* Hide page until preloader completes — prevents flash of site on refresh */
+.motion-page-content[data-motion-ready="false"] {
+  visibility: hidden;
   pointer-events: none;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.motion-page-content[data-motion-ready="true"] {
+  visibility: visible;
+  pointer-events: auto;
+  height: auto;
+  overflow: visible;
+  will-change: opacity, transform, filter;
+}
+
+/* Premium Cinematic Preloader — pastel blush couture opening */
+html.preloader-active {
+  overflow: hidden;
+  background: #fce4ec;
+}
+
+.preloader-root {
+  pointer-events: all;
+}
+
+.preloader-overlay {
+  background: #fce4ec;
+  will-change: transform, opacity;
+}
+
+/* Dominant pastel blush pink field */
+.preloader-bg {
+  background: linear-gradient(
+    162deg,
+    #fff0f5 0%,
+    #fce4ec 22%,
+    #f8d7e3 48%,
+    #f3c9d9 78%,
+    #eec0d4 100%
+  );
+  will-change: transform;
+}
+
+.preloader-ambient {
+  background:
+    radial-gradient(ellipse 90% 70% at 50% 38%, rgba(255, 255, 255, 0.55) 0%, transparent 62%),
+    radial-gradient(ellipse 55% 45% at 12% 88%, rgba(255, 182, 210, 0.35) 0%, transparent 58%),
+    radial-gradient(ellipse 50% 40% at 92% 12%, rgba(248, 200, 218, 0.4) 0%, transparent 55%);
+  will-change: transform, opacity;
+}
+
+/* Slow silk light pass */
+.preloader-shimmer {
+  background: linear-gradient(
+    105deg,
+    transparent 0%,
+    transparent 38%,
+    rgba(255, 255, 255, 0.42) 48%,
+    rgba(255, 240, 248, 0.55) 50%,
+    rgba(255, 255, 255, 0.38) 52%,
+    transparent 62%,
+    transparent 100%
+  );
+  width: 80%;
+  left: -40%;
+  will-change: transform, opacity;
+}
+
+.preloader-vignette {
+  background: radial-gradient(
+    ellipse 75% 70% at 50% 50%,
+    transparent 35%,
+    rgba(235, 160, 185, 0.18) 100%
+  );
+  mix-blend-mode: multiply;
+}
+
+.preloader-sweep {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.25) 45%,
+    rgba(255, 255, 255, 0.45) 50%,
+    rgba(255, 255, 255, 0.25) 55%,
+    transparent
+  );
+  width: 55%;
+  will-change: transform, opacity;
+}
+
+.preloader-grain {
+  background-image: url('data:image/svg+xml,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)"/%3E%3C/svg%3E');
+  mix-blend-mode: soft-light;
+  opacity: 0.2;
+}
+
+.preloader-monogram {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: clamp(12rem, 38vw, 22rem);
+  font-weight: 300;
+  line-height: 1;
+  color: rgba(190, 120, 145, 0.12);
+  letter-spacing: -0.04em;
+  pointer-events: none;
+  user-select: none;
+  z-index: 1;
+}
+
+.preloader-pearls {
+  z-index: 2;
+}
+
+.preloader-pearl {
+  position: absolute;
+  width: clamp(4px, 1vw, 8px);
+  height: clamp(4px, 1vw, 8px);
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.95) 0%,
+    rgba(255, 220, 235, 0.6) 45%,
+    rgba(243, 180, 205, 0.2) 100%
+  );
+  box-shadow:
+    0 0 24px rgba(255, 240, 248, 0.8),
+    0 0 48px rgba(248, 200, 220, 0.35);
+}
+
+.preloader-frame {
+  position: absolute;
+  top: 12%;
+  bottom: 12%;
+  width: 1px;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(200, 140, 160, 0.35) 15%,
+    rgba(180, 120, 145, 0.5) 50%,
+    rgba(200, 140, 160, 0.35) 85%,
+    transparent 100%
+  );
+  z-index: 5;
+}
+
+.preloader-frame--left {
+  left: clamp(1.5rem, 6vw, 4rem);
+}
+
+.preloader-frame--right {
+  right: clamp(1.5rem, 6vw, 4rem);
+}
+
+.preloader-content {
+  overflow: hidden;
+  perspective: 800px;
+}
+
+.preloader-line {
+  height: 1px;
+  transform-origin: center center;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(200, 150, 165, 0.4) 18%,
+    rgba(175, 125, 145, 0.65) 50%,
+    rgba(200, 150, 165, 0.4) 82%,
+    transparent 100%
+  );
+  width: min(300px, 72vw);
+}
+
+.preloader-line--top {
+  margin-bottom: clamp(1.75rem, 4.5vw, 2.5rem);
+}
+
+.preloader-line--mid {
+  margin: clamp(1.25rem, 3.5vw, 2rem) 0;
+  width: min(140px, 38vw);
+}
+
+.preloader-line--bottom {
+  margin-top: clamp(1.5rem, 3.5vw, 2.25rem);
+  width: min(220px, 58vw);
+}
+
+.preloader-heading {
+  font-size: clamp(2.35rem, 5.8vw, 4rem);
+  line-height: 1.06;
+  letter-spacing: 0.02em;
+  text-wrap: balance;
+  overflow: hidden;
+  color: #6b3d4a;
+  text-shadow: 0 1px 40px rgba(255, 255, 255, 0.4);
+}
+
+.preloader-tagline {
+  font-size: clamp(0.6rem, 1.45vw, 0.75rem);
+  letter-spacing: 0.48em;
+  text-transform: uppercase;
+  line-height: 1.7;
+  overflow: hidden;
+  color: #9a6b7a;
+}
+
+.preloader-split-char {
+  display: inline-block;
+  will-change: transform, opacity;
+  transform-origin: 50% 100%;
+}
+
+.preloader-split-word {
+  display: inline-block;
+  will-change: transform, opacity, filter;
+  margin-right: 0.32em;
+}
+
+.preloader-split-word:last-child {
+  margin-right: 0;
+}
+
+.preloader-progress-wrap {
+  max-width: 420px;
+  margin: 0 auto;
+}
+
+.preloader-progress-track {
+  height: 1px;
+  background: rgba(190, 130, 150, 0.25);
+  overflow: hidden;
+}
+
+.preloader-progress-bar {
+  height: 100%;
+  width: 100%;
+  transform-origin: left center;
+  background: linear-gradient(
+    90deg,
+    rgba(220, 170, 185, 0.4),
+    rgba(175, 125, 145, 0.85),
+    rgba(220, 170, 185, 0.4)
+  );
+}
+
+.preloader-curtain {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  width: 50.5%;
+  z-index: 10002;
+  background: linear-gradient(
+    180deg,
+    #fff0f5 0%,
+    #fce4ec 45%,
+    #f5c9dc 100%
+  );
+  will-change: transform;
+  pointer-events: none;
+}
+
+.preloader-curtain--left {
+  left: 0;
+}
+
+.preloader-curtain--right {
+  right: 0;
+}
+
+/* Hero masked text reveal */
+.hero-split-line {
+  overflow: hidden;
+  display: block;
+  padding-bottom: 0.08em;
+}
+
+.hero-split-word {
+  display: inline-block;
+  will-change: transform, opacity;
+}
+
+/* Lenis smooth scroll */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
 }
 
 /* Ambient Pearls */
