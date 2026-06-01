@@ -11,7 +11,7 @@ import gallery3Path from "@assets/gallery_3.png";
 import gallery4Path from "@assets/gallery_4.png";
 import gallery5Path from "@assets/gallery_5.png";
 import gallery6Path from "@assets/gallery_6.png";
-import founderPath from "@assets/founder.png";
+import founderPath from "@assets/founder2.png";
 import story1Path from "@assets/story_1.png";
 import story2Path from "@assets/story_2.png";
 import story3Path from "@assets/story_3.png";
@@ -738,6 +738,7 @@ export default function Home() {
             <div
               ref={heroSubtitleRef}
               className="mt-24"
+              
             >
               <p className="font-serif italic text-white/50 tracking-wide" style={{ fontSize: 'clamp(1rem, 2vw, 1.4rem)' }}>Beauty Designed Like A Memory.</p>
             </div>
