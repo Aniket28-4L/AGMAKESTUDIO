@@ -145,15 +145,15 @@ export function Preloader({ onComplete }: PreloaderProps) {
         const exitTl = gsap.timeline({ onComplete: finish });
 
         exitTl
-          .to(sweep, { xPercent: 130, autoAlpha: 0.35, duration: 1.8, ease: EASE_IO }, 0)
+          .to(sweep, { xPercent: 130, autoAlpha: 0.35, duration: 1, ease: EASE_IO }, 0)
           .to(
             headingChars,
             {
               yPercent: -90,
               autoAlpha: 0,
               filter: "blur(10px)",
-              duration: 1.2,
-              stagger: 0.02,
+              duration: 0.8,
+              stagger: 0.01,
               ease: EASE_IN,
             },
             0
@@ -164,45 +164,45 @@ export function Preloader({ onComplete }: PreloaderProps) {
               yPercent: -70,
               autoAlpha: 0,
               filter: "blur(8px)",
-              duration: 1,
-              stagger: 0.05,
+              duration: 0.7,
+              stagger: 0.03,
               ease: EASE_IN,
             },
-            0.08
+            0.05
           )
           .to([lineTop, lineMid, lineBottom], {
             scaleX: 0,
             autoAlpha: 0,
-            duration: 0.9,
-            stagger: 0.04,
+            duration: 0.6,
+            stagger: 0.03,
             ease: EASE_IN,
-          }, 0.12)
+          }, 0.08)
           .to([frameLeft, frameRight], {
             scaleY: 0,
             autoAlpha: 0,
-            duration: 0.9,
-            stagger: 0.04,
+            duration: 0.6,
+            stagger: 0.03,
             ease: EASE_IN,
-          }, 0.12)
-          .to(monogram, { autoAlpha: 0, scale: 1.05, duration: 1, ease: EASE_IN }, 0.1)
-          .to(pearlEls, { autoAlpha: 0, y: -40, scale: 0.5, duration: 1, stagger: 0.04 }, 0.15)
+          }, 0.08)
+          .to(monogram, { autoAlpha: 0, scale: 1.05, duration: 0.7, ease: EASE_IN }, 0.05)
+          .to(pearlEls, { autoAlpha: 0, y: -40, scale: 0.5, duration: 0.7, stagger: 0.03 }, 0.1)
           .to(
             [curtainLeft, curtainRight],
-            { yPercent: 0, duration: 1.8, ease: EASE_IO, stagger: 0.08 },
-            0.4
+            { yPercent: 0, duration: 1.2, ease: EASE_IO, stagger: 0.05 },
+            0.2
           )
-          .to(overlay, { yPercent: -100, duration: 2.4, ease: EASE_IO }, 0.65)
-          .to(bg, { scale: 1.12, duration: 2.2, ease: EASE_IN }, 0.75)
-          .to(overlay, { autoAlpha: 0, duration: 0.7, ease: "power2.out" }, "-=0.5");
+          .to(overlay, { yPercent: -100, duration: 1.5, ease: EASE_IO }, 0.4)
+          .to(bg, { scale: 1.12, duration: 1.5, ease: EASE_IN }, 0.5)
+          .to(overlay, { autoAlpha: 0, duration: 0.5, ease: "power2.out" }, "-=0.3");
       };
 
       if (reducedMotion) {
         gsap
           .timeline({ onComplete: runExit })
-          .to(overlay, { autoAlpha: 1, duration: 0.5 })
-          .to(vignette, { autoAlpha: 1, duration: 0.5 }, 0)
-          .to([heading, tagline], { autoAlpha: 1, y: 0, duration: 0.6, stagger: 0.12 }, 0.2)
-          .to({}, { duration: 1 });
+          .to(overlay, { autoAlpha: 1, duration: 0.4 })
+          .to(vignette, { autoAlpha: 1, duration: 0.4 }, 0)
+          .to([heading, tagline], { autoAlpha: 1, y: 0, duration: 0.5, stagger: 0.1 }, 0.1)
+          .to({}, { duration: 0.5 });
         return;
       }
 
@@ -210,27 +210,27 @@ export function Preloader({ onComplete }: PreloaderProps) {
       const introTl = gsap.timeline();
 
       introTl
-        .to(overlay, { autoAlpha: 1, duration: 1.2, ease: "power2.out" })
-        .to(vignette, { autoAlpha: 1, duration: 2.4, ease: EASE_OUT }, 0.1)
-        .to(ambient, { autoAlpha: 1, scale: 1, duration: 3.6, ease: EASE_OUT }, 0)
-        .to(grain, { autoAlpha: 0.22, duration: 2.8, ease: EASE_OUT }, 0.35)
-        .to(monogram, { autoAlpha: 0.07, scale: 1, duration: 3.2, ease: EASE_OUT }, 0.5)
+        .to(overlay, { autoAlpha: 1, duration: 0.6, ease: "power2.out" })
+        .to(vignette, { autoAlpha: 1, duration: 1.2, ease: EASE_OUT }, 0.1)
+        .to(ambient, { autoAlpha: 1, scale: 1, duration: 1.5, ease: EASE_OUT }, 0)
+        .to(grain, { autoAlpha: 0.22, duration: 1.2, ease: EASE_OUT }, 0.2)
+        .to(monogram, { autoAlpha: 0.07, scale: 1, duration: 1.5, ease: EASE_OUT }, 0.2)
         .to(
           pearlEls,
           {
             autoAlpha: 0.7,
             scale: 1,
             y: 0,
-            duration: 3,
-            stagger: { each: 0.22, from: "center" },
+            duration: 1.4,
+            stagger: { each: 0.1, from: "center" },
             ease: EASE_OUT,
           },
-          0.55
+          0.3
         )
         .to(
           [frameLeft, frameRight],
-          { scaleY: 1, autoAlpha: 1, duration: 2.4, ease: EASE_IO, stagger: 0.15 },
-          0.8
+          { scaleY: 1, autoAlpha: 1, duration: 1.2, ease: EASE_IO, stagger: 0.08 },
+          0.4
         );
 
       // Silk shimmer + light sweep (continuous luxury motion)
@@ -276,53 +276,52 @@ export function Preloader({ onComplete }: PreloaderProps) {
       const typeTl = gsap.timeline();
 
       typeTl
-        .to(sweep, { xPercent: 130, autoAlpha: 0.5, duration: 2.2, ease: EASE_IO }, 0)
-        .to(sweep, { autoAlpha: 0, duration: 0.8 }, 2)
-        .to(lineTop, { scaleX: 1, autoAlpha: 1, duration: 1.8, ease: EASE_IO }, 0.15)
+        .to(sweep, { xPercent: 130, autoAlpha: 0.5, duration: 1.5, ease: EASE_IO }, 0)
+        .to(sweep, { autoAlpha: 0, duration: 0.5 }, 1.2)
+        .to(lineTop, { scaleX: 1, autoAlpha: 1, duration: 1, ease: EASE_IO }, 0.1)
         .to(
           headingChars,
           {
             yPercent: 0,
             autoAlpha: 1,
             rotateX: 0,
-            duration: 1.6,
-            stagger: 0.045,
+            duration: 1,
+            stagger: 0.03,
             ease: EASE_OUT,
           },
-          0.35
+          0.2
         )
-        .to(lineMid, { scaleX: 1, autoAlpha: 1, duration: 1.5, ease: EASE_IO }, 1.15)
+        .to(lineMid, { scaleX: 1, autoAlpha: 1, duration: 0.8, ease: EASE_IO }, 0.6)
         .to(
           taglineWords,
           {
             yPercent: 0,
             autoAlpha: 1,
             filter: "blur(0px)",
-            duration: 1.4,
-            stagger: 0.1,
+            duration: 0.8,
+            stagger: 0.05,
             ease: EASE_OUT,
           },
-          1.35
+          0.8
         )
-        .to(lineBottom, { scaleX: 1, autoAlpha: 1, duration: 1.8, ease: EASE_IO }, 1.75);
+        .to(lineBottom, { scaleX: 1, autoAlpha: 1, duration: 1, ease: EASE_IO }, 1);
 
       // —— ACT III: Lingering luxury hold ——
       const holdTl = gsap.timeline();
 
       holdTl
-        .to(progress, { scaleX: 1, duration: 3, ease: EASE_IO }, 0)
-        .to(heading, { letterSpacing: "0.04em", duration: 2.5, ease: "sine.inOut" }, 0.3)
-        .to(heading, { letterSpacing: "0.02em", duration: 2.5, ease: "sine.inOut" }, 2.8)
-        .to({}, { duration: 0.8 });
+        .to(progress, { scaleX: 1, duration: 1.2, ease: EASE_IO }, 0)
+        .to(heading, { letterSpacing: "0.03em", duration: 0.8, ease: "sine.inOut" }, 0.2)
+        .to({}, { duration: 0.3 });
 
       gsap
         .timeline({ onComplete: runExit })
         .add(introTl)
-        .add(typeTl, "-=0.6")
-        .add(holdTl);
+        .add(typeTl, "-=0.3")
+        .add(holdTl, "-=0.2");
     }, root);
 
-    const fallback = window.setTimeout(finish, 18000);
+    const fallback = window.setTimeout(finish, 6000);
 
     return () => {
       window.clearTimeout(fallback);
