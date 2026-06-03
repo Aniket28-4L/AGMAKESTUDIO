@@ -23,6 +23,7 @@ import heroBridePath from "@assets/hero_bride.png";
 import testimonialsBgPath from "@assets/a0dcf1bf0f646736b9552283059a83bf_1778999396158.jpg";
 import featherBgPath from "@assets/3b202712b82894b59517c133e8c2fecf_1779000059086.jpg";
 import { Menu, X } from "lucide-react";
+import { useLocation } from "wouter";
 import ThreeDPhotoCarousel from "../components/ui/three-d-carousel";
 import { LeafyButton } from "../components/ui/leafy-button";
 
@@ -484,6 +485,7 @@ const CinematicHeroVideo = memo(
 CinematicHeroVideo.displayName = "CinematicHeroVideo";
 
 export default function Home() {
+  const [, setLocation] = useLocation();
   const { isReady, lenis } = useMotion();
   const { scrollYProgress } = useScroll();
   const yBg = useTransform(scrollYProgress, [0, 1], ["0%", "10%"]);
@@ -809,7 +811,11 @@ export default function Home() {
           </div>
           
           <FadeIn delay={0.4} className="mt-24 text-center">
-            <button data-testid="button-view-all-gallery" className="text-xs uppercase tracking-[0.2em] font-sans border-b border-primary/30 pb-2 hover:border-primary transition-colors text-foreground">
+            <button 
+              onClick={() => setLocation("/archive")}
+              data-testid="button-view-all-gallery" 
+              className="text-xs uppercase tracking-[0.2em] font-sans border-b border-primary/30 pb-2 hover:border-primary transition-colors text-foreground"
+            >
               Explore Full Archive
             </button>
           </FadeIn>
