@@ -22,7 +22,7 @@ import lens3Path from "@assets/lens_3.png";
 import heroBridePath from "@assets/hero_bride.png";
 import testimonialsBgPath from "@assets/a0dcf1bf0f646736b9552283059a83bf_1778999396158.jpg";
 import featherBgPath from "@assets/3b202712b82894b59517c133e8c2fecf_1779000059086.jpg";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Instagram, Youtube, ExternalLink, ArrowUpRight, Mail, MapPin } from "lucide-react";
 import { useLocation } from "wouter";
 import ThreeDPhotoCarousel from "../components/ui/three-d-carousel";
 import InstagramReelsSection from "../components/InstagramReelsSection";
@@ -1323,24 +1323,112 @@ export default function Home() {
       </a>
 
       {/* Footer */}
-      <footer className="bg-[#1A1614] text-[#F5F0EB] py-32 relative overflow-hidden">
-        {/* Large BG letters */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[30vw] font-serif font-light text-[#F5F0EB]/5 pointer-events-none leading-none">
+      <footer className="bg-[#1A1614] text-[#F5F0EB] py-32 md:py-48 relative overflow-hidden">
+        {/* Large BG letters - perfectly centered and reduced opacity */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[50vw] font-serif font-light text-[#F5F0EB]/[0.05] pointer-events-none leading-none select-none z-0 text-center w-full">
           AG
         </div>
 
-        <div className="container mx-auto px-6 md:px-12 relative z-10 flex flex-col items-center text-center">
-          <div className="font-serif text-5xl tracking-widest uppercase text-white mb-8">AG</div>
-          <p className="font-serif italic text-2xl mb-20 text-[#B79272] max-w-md">Artistry designed for unforgettable memories.</p>
-          
-          <div className="flex gap-12 text-[10px] uppercase tracking-[0.3em] font-sans mb-24">
-            <a href="#" data-testid="link-instagram" className="hover:text-[#B79272] transition-colors nav-link pb-2">Instagram</a>
-            <a href="#" data-testid="link-pinterest" className="hover:text-[#B79272] transition-colors nav-link pb-2">Pinterest</a>
-            <a href="#" data-testid="link-contact" className="hover:text-[#B79272] transition-colors nav-link pb-2">Contact</a>
+        <div className="container mx-auto px-6 md:px-12 relative z-10">
+          <div className="grid grid-cols-1 lg:grid-cols-[40%_20%_40%] gap-20 lg:gap-0 items-start">
+            
+            {/* LEFT COLUMN: Location Card & Details */}
+            <FadeIn className="flex flex-col gap-10 order-2 lg:order-1">
+              <div className="flex flex-col gap-8">
+                <div className="relative group rounded-[24px] overflow-hidden border border-[#B79272]/20 bg-white/[0.03] backdrop-blur-md transition-all duration-700 hover:border-[#B79272]/40 hover:shadow-[0_20px_50px_rgba(183,146,114,0.15)] h-[320px]">
+                  <iframe 
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3687.261234471011!2d70.0435123759247!3d22.456747437151046!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x395715569485764d%3A0xc3929f635f799863!2sAG%20Makeup%20Studio!5e0!3m2!1sen!2sin!4v1717500000000!5m2!1sen!2sin" 
+                    width="100%" 
+                    height="100%" 
+                    style={{ border: 0, filter: 'invert(90%) hue-rotate(180deg) brightness(95%) contrast(90%)' }} 
+                    allowFullScreen={false} 
+                    loading="lazy" 
+                    referrerPolicy="no-referrer-when-downgrade"
+                    className="opacity-70 group-hover:opacity-90 transition-opacity duration-700"
+                  />
+                  <div className="absolute inset-0 pointer-events-none border border-white/5 rounded-[24px]" />
+                </div>
+
+                <div className="space-y-6">
+                  <div className="space-y-2">
+                    <span className="font-sans text-[11px] tracking-[0.5em] uppercase text-[#B79272] block font-semibold">AG MAKEUP STUDIO</span>
+                    <p className="font-serif text-xl md:text-2xl leading-relaxed opacity-90 text-white/80">
+                      Chitrakoot Society, Jamnagar Road<br />
+                      Behind Crystal Mall<br />
+                      Jamnagar, Gujarat 361002
+                    </p>
+                  </div>
+                  
+                  <a 
+                    href="https://www.google.com/maps/dir/?api=1&destination=AG+Makeup+Studio+Chitrakoot+Society+Jamnagar+Gujarat+361002"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-3 px-10 py-4 bg-transparent border border-[#B79272]/30 text-[#B79272] font-sans text-[11px] tracking-[0.3em] uppercase hover:bg-[#B79272] hover:text-white transition-all duration-500 rounded-full group/btn shadow-lg"
+                  >
+                    Get Directions
+                    <ArrowUpRight size={14} className="transform group-hover/btn:translate-x-1 group-hover/btn:-translate-y-1 transition-transform" />
+                  </a>
+                </div>
+              </div>
+            </FadeIn>
+
+            {/* CENTER COLUMN: Logo & Tagline */}
+            <FadeIn delay={0.1} className="flex flex-col items-center text-center lg:pt-16 order-1 lg:order-2 px-4">
+              <div className="font-serif text-7xl md:text-9xl tracking-widest uppercase text-white mb-12">AG</div>
+              <div className="w-20 h-[1px] bg-[#B79272]/40 mb-12" />
+              <p className="font-serif italic text-2xl md:text-4xl text-[#B79272]/80 max-w-sm leading-relaxed mb-16">
+                "Artistry designed for unforgettable memories."
+              </p>
+              <div className="space-y-4 font-sans text-[11px] tracking-[0.5em] uppercase text-white/30">
+                <p className="hover:text-[#B79272] transition-colors duration-300">Bridal Makeup</p>
+                <p className="hover:text-[#B79272] transition-colors duration-300">Editorial Beauty</p>
+                <p className="hover:text-[#B79272] transition-colors duration-300">Luxury Transformations</p>
+              </div>
+            </FadeIn>
+
+            {/* RIGHT COLUMN: Luxury Social Panel */}
+            <FadeIn delay={0.2} className="flex flex-col gap-0 lg:pl-16 order-3 lg:order-3">
+              <span className="font-sans text-[11px] tracking-[0.7em] uppercase text-[#B79272] block mb-16 font-semibold">CONNECT</span>
+              {[
+                { name: 'Instagram', url: '#' },
+                { name: 'Pinterest', url: '#' },
+                { name: 'Behance', url: '#' }
+              ].map((social, i) => (
+                <a 
+                  key={social.name}
+                  href={social.url}
+                  className="group flex items-center justify-between py-10 border-b border-white/10 last:border-0 relative overflow-hidden"
+                >
+                  <span className="font-serif text-3xl md:text-4xl tracking-wide text-white/60 group-hover:text-[#B79272] transition-all duration-500 transform group-hover:translate-x-4">
+                    {social.name}
+                  </span>
+                  <div className="flex items-center gap-6">
+                    <div className="h-[1px] w-0 bg-[#B79272]/40 group-hover:w-16 transition-all duration-700" />
+                    <ArrowUpRight 
+                      size={28} 
+                      className="text-[#B79272]/40 group-hover:text-[#B79272] transition-all duration-500 transform group-hover:translate-x-2" 
+                    />
+                  </div>
+                  {/* Subtle luxury hover glow */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-[#B79272]/0 via-[#B79272]/[0.02] to-[#B79272]/[0.05] translate-x-[-100%] group-hover:translate-x-0 transition-transform duration-1000 ease-out" />
+                </a>
+              ))}
+              
+              <div className="mt-24 space-y-3">
+                <span className="font-sans text-[10px] tracking-[0.5em] uppercase text-white/20 block">Private Inquiries</span>
+                <a href="mailto:hello@agmakeupstudio.com" className="font-serif text-2xl text-white/80 hover:text-[#B79272] transition-colors duration-500 border-b border-[#B79272]/10 pb-2 inline-block">
+                  hello@agmakeupstudio.com
+                </a>
+              </div>
+            </FadeIn>
+
           </div>
 
-          <div className="text-[9px] tracking-[0.4em] font-sans text-white/30 uppercase">
-            &copy; {new Date().getFullYear()} AG Makeup Studio. All Rights Reserved.
+          {/* Copyright Bottom */}
+          <div className="mt-32 md:mt-48 pt-16 border-t border-white/5 flex flex-col items-center">
+            <div className="text-[11px] tracking-[0.6em] font-sans text-white/10 uppercase">
+              &copy; {new Date().getFullYear()} AG Makeup Studio. Crafted for Elegance.
+            </div>
           </div>
         </div>
       </footer>

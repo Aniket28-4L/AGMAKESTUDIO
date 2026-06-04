@@ -406,7 +406,9 @@ const InstagramReelsSection: React.FC = () => {
         className="flex gap-6 md:gap-10 overflow-x-auto py-10 snap-x snap-mandatory luxury-scrollbar cursor-grab active:cursor-grabbing" 
         data-lenis-prevent
         style={{
-          touchAction: 'pan-y'
+          touchAction: 'pan-y',
+          overscrollBehaviorX: 'contain',
+          WebkitOverflowScrolling: 'touch'
         }}
       >
         {/* Extra padding for first/last cards to center on mobile if needed */}
