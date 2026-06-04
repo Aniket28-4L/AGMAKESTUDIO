@@ -1,93 +1,61 @@
-import { useState, useRef, useEffect, memo } from "react";
+import { useState, useEffect, memo, useCallback } from "react";
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLocation } from "wouter";
-import { X, Volume2, VolumeX, ArrowLeft, ArrowRight } from "lucide-react";
-
-// Asset Imports - Videos
-import vid1 from "@assets/vid1.MP4";
-import vid2 from "@assets/vid2.MP4";
-import vid3 from "@assets/vid3.MOV";
-import vid4 from "@assets/vid4.MOV";
+import { X, ArrowLeft, ArrowRight } from "lucide-react";
 
 // Asset Imports - Images (30 images)
-import img2 from "@assets/img2.JPG";
-import img3 from "@assets/img3.JPG";
-import img4 from "@assets/img4.JPG";
-import img5 from "@assets/img5.JPG";
-import img6 from "@assets/img6.JPG";
-import img7 from "@assets/img7.JPG";
-import img8 from "@assets/img8.JPG";
-import img9 from "@assets/img9.JPG";
-import img10 from "@assets/img10.JPG";
-import img11 from "@assets/img11.JPG";
-import img12 from "@assets/img12.JPG";
-import img13 from "@assets/img13.JPG";
-import img14 from "@assets/img14.JPG";
-import img15 from "@assets/img15.JPG";
-import img16 from "@assets/img16.JPG";
-import img17 from "@assets/img17.JPG";
-import img18 from "@assets/img18.JPG";
-import img19 from "@assets/img19.JPG";
-import img20 from "@assets/img20.JPG";
-import img21 from "@assets/img21.PNG";
-import img22 from "@assets/img22.JPG";
-import img23 from "@assets/img23.PNG";
-import img24 from "@assets/img24.JPG";
-import img25 from "@assets/img25.JPG";
-import img26 from "@assets/img26.JPG";
-import img27 from "@assets/img27.JPG";
-import img28 from "@assets/img28.JPG";
-import img29 from "@assets/img29.JPG";
-import img30 from "@assets/img30.PNG";
-
-const VIDEOS = [
-  { id: 1, src: vid1, poster: "" },
-  { id: 2, src: vid2, poster: "" },
-  { id: 3, src: vid3, poster: "" },
-  { id: 4, src: vid4, poster: "" },
-];
+import img1 from "@assets/img1.jpg";
+import img2 from "@assets/img2.jpg";
+import img3 from "@assets/img3.jpg";
+import img4 from "@assets/img4.jpg";
+import img5 from "@assets/img5.jpg";
+import img6 from "@assets/img6.jpg";
+import img7 from "@assets/img7.jpg";
+import img8 from "@assets/img8.jpg";
+import img9 from "@assets/img9.jpg";
+import img10 from "@assets/img10.jpg";
+import img11 from "@assets/img11.jpg";
+import img12 from "@assets/img12.jpg";
+import img13 from "@assets/img13.jpg";
+import img14 from "@assets/img14.jpg";
+import img15 from "@assets/img15.jpg";
+import img16 from "@assets/img16.jpg";
+import img17 from "@assets/img17.jpg";
+import img18 from "@assets/img18.jpg";
+import img19 from "@assets/img19.jpg";
+import img20 from "@assets/img20.jpg";
+import img21 from "@assets/img21.jpg";
+import img22 from "@assets/img22.jpg";
+import img23 from "@assets/img23.jpg";
+import img24 from "@assets/img24.jpg";
+import img25 from "@assets/img25.jpg";
+import img26 from "@assets/img26.jpg";
+import img27 from "@assets/img27.jpg";
+import img28 from "@assets/img28.jpg";
+import img29 from "@assets/img29.jpg";
+import img30 from "@assets/img30.jpg";
 
 const IMAGES = [
-  img2, img3, img4, img5, img6, img7, img8, img9, img10,
+  img1, img2, img3, img4, img5, img6, img7, img8, img9, img10,
   img11, img12, img13, img14, img15, img16, img17, img18, img19, img20,
   img21, img22, img23, img24, img25, img26, img27, img28, img29, img30
 ];
 
-const VideoItem = memo(({ video, onClick }: { video: any, onClick: () => void }) => {
+const Thumbnail = memo(({ src, index, onClick }: { src: string, index: number, onClick: (index: number) => void }) => {
   return (
     <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
       whileHover={{ scale: 1.02 }}
-      whileTap={{ scale: 0.98 }}
-      className="relative aspect-video md:aspect-square overflow-hidden rounded-2xl cursor-pointer shadow-xl group"
-      onClick={onClick}
-    >
-      <video
-        src={video.src}
-        autoPlay
-        muted
-        loop
-        playsInline
-        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-      />
-      <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors duration-500" />
-    </motion.div>
-  );
-});
-
-const ImageItem = memo(({ src, onClick }: { src: string, onClick: () => void }) => {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      whileHover={{ y: -5 }}
-      className="break-inside-avoid mb-6 rounded-2xl overflow-hidden shadow-lg cursor-pointer group"
-      onClick={onClick}
+      className="relative aspect-[3/4] overflow-hidden rounded-lg cursor-pointer bg-neutral-100 shadow-sm"
+      onClick={() => onClick(index)}
     >
       <img
         src={src}
-        alt="Bridal Archive"
-        className="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-105"
+        alt={`Bridal Look ${index + 1}`}
+        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+        loading="lazy"
       />
     </motion.div>
   );
@@ -95,175 +63,166 @@ const ImageItem = memo(({ src, onClick }: { src: string, onClick: () => void }) 
 
 export default function Archive() {
   const [, setLocation] = useLocation();
-  const [selectedVideo, setSelectedVideo] = useState<any>(null);
-  const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
-  const [isMuted, setIsMuted] = useState(true);
+  const [selectedIdx, setSelectedIdx] = useState<number | null>(null);
 
-  const nextImage = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (selectedImageIndex !== null) {
-      setSelectedImageIndex((selectedImageIndex + 1) % IMAGES.length);
-    }
-  };
+  // Navigation handlers
+  const handleNext = useCallback(() => {
+    setSelectedIdx((prev) => (prev !== null ? (prev + 1) % IMAGES.length : null));
+  }, []);
 
-  const prevImage = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (selectedImageIndex !== null) {
-      setSelectedImageIndex((selectedImageIndex - 1 + IMAGES.length) % IMAGES.length);
+  const handlePrev = useCallback(() => {
+    setSelectedIdx((prev) => (prev !== null ? (prev - 1 + IMAGES.length) % IMAGES.length : null));
+  }, []);
+
+  const handleClose = useCallback(() => {
+    setSelectedIdx(null);
+  }, []);
+
+  // Keyboard navigation
+  useEffect(() => {
+    if (selectedIdx === null) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") handleClose();
+      if (e.key === "ArrowRight") handleNext();
+      if (e.key === "ArrowLeft") handlePrev();
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [selectedIdx, handleNext, handlePrev, handleClose]);
+
+  // Scroll Lock
+  useEffect(() => {
+    if (selectedIdx !== null) {
+      const originalStyle = window.getComputedStyle(document.body).overflow;
+      document.body.style.overflow = "hidden";
+      return () => { document.body.style.overflow = originalStyle; };
     }
-  };
+  }, [selectedIdx]);
 
   return (
-    <div className="min-h-screen bg-[#fce4ec] selection:bg-primary/20">
-      {/* Top Navigation Bar */}
-      <header className="fixed top-0 left-0 right-0 z-[100] px-6 py-6 md:px-12 flex items-center justify-between backdrop-blur-md bg-white/10">
-        <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
+    <div className="min-h-screen bg-[#fce4ec] relative">
+      {/* Fixed Header */}
+      <header className="fixed top-0 left-0 right-0 z-[100] px-4 py-4 md:px-12 flex items-center justify-between bg-white/30 backdrop-blur-xl border-b border-white/10">
+        <button
           onClick={() => setLocation("/")}
-          className="flex items-center gap-2 px-6 py-3 rounded-full bg-white/20 border border-white/30 text-primary font-sans text-[10px] tracking-[0.2em] uppercase hover:bg-white/40 transition-all shadow-sm"
+          className="flex items-center gap-2 px-5 py-2 rounded-full bg-white/40 text-primary font-sans text-[10px] tracking-[0.2em] uppercase hover:bg-white/60 transition-all border border-white/20 shadow-sm"
         >
           <ArrowLeft size={14} />
-          Back to Studio
-        </motion.button>
-
-        <h1 className="absolute left-1/2 -translate-x-1/2 font-serif text-2xl md:text-3xl tracking-tight text-primary">
+          <span className="hidden sm:inline">Back to Studio</span>
+          <span className="sm:hidden">Back</span>
+        </button>
+        <h1 className="absolute left-1/2 -translate-x-1/2 font-serif text-xl md:text-2xl text-primary whitespace-nowrap tracking-tight">
           AG Bridal Archive
         </h1>
+        <div className="w-24" />
       </header>
 
-      <main className="pt-32 pb-20 px-6 md:px-12 max-w-7xl mx-auto">
-        {/* Video Hero Grid */}
-        <section className="mb-20">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {VIDEOS.map((video) => (
-              <VideoItem
-                key={video.id}
-                video={video}
-                onClick={() => {
-                  setSelectedVideo(video);
-                  setIsMuted(true);
-                }}
-              />
-            ))}
-          </div>
-        </section>
-
-        {/* Image Masonry Grid */}
-        <section>
-          <div className="columns-2 md:columns-3 lg:columns-4 gap-6">
-            {IMAGES.map((src, index) => (
-              <ImageItem
-                key={index}
-                src={src}
-                onClick={() => setSelectedImageIndex(index)}
-              />
-            ))}
-          </div>
-        </section>
+      {/* Main Grid Section */}
+      <main className="pt-28 pb-20 px-4 md:px-12 max-w-7xl mx-auto">
+        <div className="grid grid-cols-4 gap-3 md:gap-6">
+          {IMAGES.map((src, idx) => (
+            <Thumbnail
+              key={idx}
+              index={idx}
+              src={src}
+              onClick={(index) => setSelectedIdx(index)}
+            />
+          ))}
+        </div>
       </main>
 
-      {/* Video Lightbox */}
-      <AnimatePresence>
-        {selectedVideo && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[1000] flex items-center justify-center bg-black/95 p-4 md:p-10 backdrop-blur-xl"
-            onClick={() => setSelectedVideo(null)}
-          >
+      {/* NEW LIGHTBOX ARCHITECTURE - GUARANTEED CENTERING VIA PORTAL */}
+      {typeof document !== 'undefined' && createPortal(
+        <AnimatePresence>
+          {selectedIdx !== null && (
             <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              className="relative w-full max-w-5xl aspect-video rounded-3xl overflow-hidden shadow-2xl"
-              onClick={(e) => e.stopPropagation()}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/95 backdrop-blur-2xl select-none touch-none"
+              style={{ 
+                position: 'fixed', 
+                top: 0, 
+                left: 0, 
+                width: '100vw', 
+                height: '100vh',
+                zIndex: 99999
+              }}
+              onClick={handleClose}
             >
-              <video
-                src={selectedVideo.src}
-                autoPlay
-                muted={isMuted}
-                loop
-                playsInline
-                className="w-full h-full object-cover"
-              />
-              
-              {/* Controls */}
-              <div className="absolute top-6 right-6 flex items-center gap-4">
+              {/* 1. Close Button - Fixed in Viewport */}
+              <button
+                onClick={handleClose}
+                className="absolute top-6 right-6 z-[100001] p-3 text-white/50 hover:text-white transition-colors bg-white/5 hover:bg-white/10 rounded-full"
+              >
+                <X size={32} strokeWidth={1.5} />
+              </button>
+
+              {/* 2. Navigation Arrows - Fixed in Viewport Sidebars */}
+              <div className="absolute inset-y-0 left-0 w-20 md:w-32 flex items-center justify-center z-[100001] pointer-events-none">
                 <button
-                  onClick={() => setIsMuted(!isMuted)}
-                  className="p-3 rounded-full bg-white/10 border border-white/20 text-white hover:bg-white/20 transition-all backdrop-blur-md"
+                  onClick={(e) => { e.stopPropagation(); handlePrev(); }}
+                  className="p-5 text-white/30 hover:text-white transition-all bg-white/5 hover:bg-white/10 rounded-full pointer-events-auto"
                 >
-                  {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
+                  <ArrowLeft size={40} strokeWidth={1} />
                 </button>
+              </div>
+              <div className="absolute inset-y-0 right-0 w-20 md:w-32 flex items-center justify-center z-[100001] pointer-events-none">
                 <button
-                  onClick={() => setSelectedVideo(null)}
-                  className="p-3 rounded-full bg-white/10 border border-white/20 text-white hover:bg-white/20 transition-all backdrop-blur-md"
+                  onClick={(e) => { e.stopPropagation(); handleNext(); }}
+                  className="p-5 text-white/30 hover:text-white transition-all bg-white/5 hover:bg-white/10 rounded-full pointer-events-auto"
                 >
-                  <X size={20} />
+                  <ArrowRight size={40} strokeWidth={1} />
                 </button>
               </div>
 
-              <div className="absolute bottom-8 left-8 text-white/60 font-sans text-[10px] tracking-[0.3em] uppercase">
-                Bridal Look Collection
+              {/* 3. Centered Viewport Image Container */}
+              <div 
+                className="absolute inset-0 flex items-center justify-center pointer-events-none p-4 md:p-12 lg:p-20"
+                style={{ width: '100vw', height: '100vh' }}
+              >
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={selectedIdx}
+                    initial={{ opacity: 0, x: 20, scale: 0.98 }}
+                    animate={{ opacity: 1, x: 0, scale: 1 }}
+                    exit={{ opacity: 0, x: -20, scale: 0.98 }}
+                    transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                    drag="x"
+                    dragConstraints={{ left: 0, right: 0 }}
+                    dragElastic={0.4}
+                    onDragEnd={(_, info) => {
+                      if (info.offset.x > 80) handlePrev();
+                      else if (info.offset.x < -80) handleNext();
+                    }}
+                    className="relative w-full h-full flex items-center justify-center pointer-events-auto cursor-grab active:cursor-grabbing"
+                  >
+                    <img
+                      src={IMAGES[selectedIdx]}
+                      alt={`Bridal Look Detail ${selectedIdx + 1}`}
+                      className="max-w-[90vw] max-h-[90vh] object-contain drop-shadow-[0_30px_60px_rgba(0,0,0,0.5)] select-none pointer-events-none"
+                      style={{ 
+                        display: 'block',
+                        margin: 'auto'
+                      }}
+                    />
+                  </motion.div>
+                </AnimatePresence>
+              </div>
+
+              {/* 4. Counter - Fixed at Bottom */}
+              <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-[100001]">
+                <div className="px-6 py-2 bg-white/5 backdrop-blur-2xl border border-white/10 rounded-full shadow-2xl">
+                  <span className="text-white/80 font-sans text-[12px] tracking-[0.5em] font-extralight uppercase">
+                    {selectedIdx + 1} <span className="text-white/20 mx-3">/</span> {IMAGES.length}
+                  </span>
+                </div>
               </div>
             </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Image Lightbox */}
-      <AnimatePresence>
-        {selectedImageIndex !== null && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[1000] flex items-center justify-center bg-[#fce4ec]/95 backdrop-blur-2xl p-4 md:p-10"
-            onClick={() => setSelectedImageIndex(null)}
-          >
-            <button
-              onClick={() => setSelectedImageIndex(null)}
-              className="absolute top-8 right-8 z-[1010] p-4 text-primary hover:scale-110 transition-transform"
-            >
-              <X size={32} />
-            </button>
-
-            <div className="relative w-full h-full flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
-              <motion.button
-                whileHover={{ scale: 1.1, x: -5 }}
-                onClick={prevImage}
-                className="absolute left-0 z-10 p-4 text-primary/50 hover:text-primary transition-colors hidden md:block"
-              >
-                <ArrowLeft size={48} strokeWidth={1} />
-              </motion.button>
-
-              <motion.img
-                key={selectedImageIndex}
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                src={IMAGES[selectedImageIndex]}
-                alt="Archive Detail"
-                className="max-w-full max-h-[85vh] object-contain rounded-lg shadow-2xl"
-              />
-
-              <motion.button
-                whileHover={{ scale: 1.1, x: 5 }}
-                onClick={nextImage}
-                className="absolute right-0 z-10 p-4 text-primary/50 hover:text-primary transition-colors hidden md:block"
-              >
-                <ArrowRight size={48} strokeWidth={1} />
-              </motion.button>
-              
-              <div className="absolute bottom-0 left-1/2 -translate-x-1/2 text-primary/30 font-sans text-[10px] tracking-[0.4em] uppercase py-4">
-                {selectedImageIndex + 1} / {IMAGES.length}
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
     </div>
   );
 }

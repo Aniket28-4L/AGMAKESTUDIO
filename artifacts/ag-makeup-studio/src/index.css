@@ -111,7 +111,6 @@
   pointer-events: auto;
   height: auto;
   overflow: visible;
-  will-change: opacity, transform, filter;
 }
 
 /* Premium Cinematic Preloader — pastel blush couture opening */

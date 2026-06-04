@@ -25,6 +25,7 @@ import featherBgPath from "@assets/3b202712b82894b59517c133e8c2fecf_177900005908
 import { Menu, X } from "lucide-react";
 import { useLocation } from "wouter";
 import ThreeDPhotoCarousel from "../components/ui/three-d-carousel";
+import InstagramReelsSection from "../components/InstagramReelsSection";
 import { LeafyButton } from "../components/ui/leafy-button";
 
 // GSAP scroll reveals — same API, cinematic motion
@@ -822,6 +823,69 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Founder / About - MOVED HERE after Portfolio */}
+      <section className="py-32 relative overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none">
+          <img src={featherBgPath} alt="" className="w-full h-full object-cover object-right" />
+          <div className="absolute inset-0 bg-[#F7F1EB]/88" />
+        </div>
+        <div className="absolute -left-40 top-20 text-[20rem] font-serif italic text-foreground opacity-[0.03] whitespace-nowrap pointer-events-none z-10">
+          Artistry
+        </div>
+
+        <div className="container mx-auto px-6 md:px-12 relative z-10">
+          <div className="flex flex-col md:flex-row gap-16 md:gap-24 items-start">
+            <div className="md:w-1/2 w-full">
+              <FadeIn>
+                <div className="relative overflow-hidden w-full aspect-[4/5] bg-muted">
+                  <img src={founderPath} alt="Anu Giri" className="w-full h-full object-cover filter contrast-125 saturate-110" />
+                  <div className="absolute inset-0 bg-primary/10 mix-blend-color" />
+                </div>
+              </FadeIn>
+            </div>
+            
+            <div className="md:w-1/2 w-full md:mt-32">
+              <FadeIn stagger={true}>
+                <FadeChild>
+                  <div className="flex items-center gap-4 mb-6">
+                    <span className="font-sans text-[10px] tracking-[0.4em] uppercase text-primary">The Founder</span>
+                    <div className="h-px w-16 bg-primary" />
+                  </div>
+                </FadeChild>
+                <FadeChild>
+                  <h2 className="font-serif text-5xl md:text-7xl mb-10">Anu Giri</h2>
+                </FadeChild>
+                <FadeChild>
+                  <div className="font-sans font-light text-muted-foreground leading-[2] space-y-6 max-w-lg text-lg">
+                    <p>
+                      With over a decade of dedication to the art of luxury bridal makeup, my philosophy is rooted in a simple truth: we are designing for unforgettable memories.
+                    </p>
+                    <p>
+                      The AG approach blends the flawless techniques of editorial fashion with the emotional resonance of a wedding day. We do not mask; we elevate. We bring forward the radiant, timeless version of you that will be cherished in photographs for generations.
+                    </p>
+                  </div>
+                </FadeChild>
+                
+                <FadeChild className="mt-16 pt-16 border-t border-border flex gap-16">
+                  <div>
+                    <div className="font-serif text-5xl text-foreground">10<span className="text-primary">+</span></div>
+                    <div className="font-sans text-[9px] uppercase tracking-[0.3em] text-muted-foreground mt-4">Years Mastery</div>
+                  </div>
+                  <div>
+                    <div className="font-serif text-5xl text-foreground">500<span className="text-primary">+</span></div>
+                    <div className="font-sans text-[9px] uppercase tracking-[0.3em] text-muted-foreground mt-4">Couture Brides</div>
+                  </div>
+                  <div>
+                    <div className="font-serif text-5xl text-foreground">15</div>
+                    <div className="font-sans text-[9px] uppercase tracking-[0.3em] text-muted-foreground mt-4">Industry Awards</div>
+                  </div>
+                </FadeChild>
+              </FadeIn>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Transformation Reveal */}
       <TransformationSlider beforeSrc={gallery4Path} afterSrc={gallery1Path} />
 
@@ -1027,110 +1091,27 @@ export default function Home() {
 
  
 
-      {/* Founder / About */}
-      <section className="py-32 relative overflow-hidden">
-        <div className="absolute inset-0 pointer-events-none">
-          <img src={featherBgPath} alt="" className="w-full h-full object-cover object-right" />
-          <div className="absolute inset-0 bg-[#F7F1EB]/88" />
-        </div>
-        <div className="absolute -left-40 top-20 text-[20rem] font-serif italic text-foreground opacity-[0.03] whitespace-nowrap pointer-events-none z-10">
-          Artistry
-        </div>
-
-        <div className="container mx-auto px-6 md:px-12 relative z-10">
-          <div className="flex flex-col md:flex-row gap-16 md:gap-24 items-start">
-            <div className="md:w-1/2 w-full">
-              <FadeIn>
-                <div className="relative overflow-hidden w-full aspect-[4/5] bg-muted">
-                  <img src={founderPath} alt="Anu Giri" className="w-full h-full object-cover filter contrast-125 saturate-110" />
-                  <div className="absolute inset-0 bg-primary/10 mix-blend-color" />
-                </div>
-              </FadeIn>
-            </div>
-            
-            <div className="md:w-1/2 w-full md:mt-32">
-              <FadeIn stagger={true}>
-                <FadeChild>
-                  <div className="flex items-center gap-4 mb-6">
-                    <span className="font-sans text-[10px] tracking-[0.4em] uppercase text-primary">The Founder</span>
-                    <div className="h-px w-16 bg-primary" />
-                  </div>
-                </FadeChild>
-                <FadeChild>
-                  <h2 className="font-serif text-5xl md:text-7xl mb-10">Anu Giri</h2>
-                </FadeChild>
-                <FadeChild>
-                  <div className="font-sans font-light text-muted-foreground leading-[2] space-y-6 max-w-lg text-lg">
-                    <p>
-                      With over a decade of dedication to the art of luxury bridal makeup, my philosophy is rooted in a simple truth: we are designing for unforgettable memories.
-                    </p>
-                    <p>
-                      The AG approach blends the flawless techniques of editorial fashion with the emotional resonance of a wedding day. We do not mask; we elevate. We bring forward the radiant, timeless version of you that will be cherished in photographs for generations.
-                    </p>
-                  </div>
-                </FadeChild>
-                
-                <FadeChild className="mt-16 pt-16 border-t border-border flex gap-16">
-                  <div>
-                    <div className="font-serif text-5xl text-foreground">10<span className="text-primary">+</span></div>
-                    <div className="font-sans text-[9px] uppercase tracking-[0.3em] text-muted-foreground mt-4">Years Mastery</div>
-                  </div>
-                  <div>
-                    <div className="font-serif text-5xl text-foreground">500<span className="text-primary">+</span></div>
-                    <div className="font-sans text-[9px] uppercase tracking-[0.3em] text-muted-foreground mt-4">Couture Brides</div>
-                  </div>
-                  <div>
-                    <div className="font-serif text-5xl text-foreground">15</div>
-                    <div className="font-sans text-[9px] uppercase tracking-[0.3em] text-muted-foreground mt-4">Industry Awards</div>
-                  </div>
-                </FadeChild>
-              </FadeIn>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* NEW SECTION 3: REELS WALL */}
-      <section className="py-40 bg-background relative overflow-hidden">
-        <div className="container mx-auto px-6 md:px-12">
-          <FadeIn className="mb-20">
+      <section className="py-40 bg-[#0a0a0a] relative overflow-hidden">
+        <div className="container mx-auto px-6 md:px-12 relative z-10">
+          <FadeIn className="mb-24">
             <span className="font-sans text-[9px] tracking-[0.4em] text-primary uppercase block mb-4">The Archive in Motion</span>
-            <h2 className="font-serif text-5xl md:text-7xl font-light text-foreground leading-[0.9]">
-              Moments<br/><em className="text-muted-foreground">Frozen in Light</em>
+            <h2 className="font-serif text-5xl md:text-7xl font-light text-white leading-[0.9]">
+              Moments<br/><em className="text-[#B79272]/60">Frozen in Light</em>
             </h2>
           </FadeIn>
 
           {/* Horizontal scrolling reel strip */}
-          <div className="flex gap-4 overflow-x-auto pb-8 snap-x snap-mandatory scrollbar-hide -mx-6 px-6" data-lenis-prevent data-reveal-stagger>
-            {[gallery1Path, gallery2Path, gallery3Path, gallery4Path, gallery5Path, gallery6Path].map((img, i) => (
-              <div key={i} className="flex-none w-[240px] md:w-[280px] snap-center relative group" data-testid={`reel-frame-${i}`}>
-                <div className="relative overflow-hidden aspect-[9/16] bg-black">
-                  <img src={img} className="w-full h-full object-cover editorial-image-hover opacity-90 group-hover:opacity-100 transition-opacity duration-700" />
-                  {/* Reel overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20" />
-                  {/* Reel frame lines */}
-                  <div className="absolute inset-0 border border-white/5 m-2 pointer-events-none" />
-                  {/* Simulated play button on hover */}
-                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                    <div className="w-14 h-14 rounded-full backdrop-blur-sm bg-white/10 border border-white/30 flex items-center justify-center">
-                      <div className="w-0 h-0 border-t-[6px] border-t-transparent border-l-[10px] border-l-white border-b-[6px] border-b-transparent ml-1" />
-                    </div>
-                  </div>
-                  {/* Caption */}
-                  <div className="absolute bottom-4 left-4 right-4">
-                    <p className="font-sans text-[8px] tracking-[0.2em] text-white/50 uppercase">AG Bridal Film · 0{i + 1}</p>
-                  </div>
-                  {/* Glow on hover */}
-                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" style={{ boxShadow: 'inset 0 0 40px rgba(183,146,114,0.15)' }} />
-                </div>
-              </div>
-            ))}
-          </div>
+          <InstagramReelsSection />
           
-          <p className="font-sans text-[9px] tracking-[0.3em] text-muted-foreground uppercase mt-8 text-center">
-            Follow @agmakeupstudio for the full story
+          <p className="font-sans text-[9px] tracking-[0.4em] text-white/40 uppercase mt-12 text-center">
+            Follow <span className="text-[#B79272]">@agmakeupstudio</span> for the full story
           </p>
         </div>
+
+        {/* Cinematic Background Elements */}
+        <div className="absolute top-1/4 -right-20 w-96 h-96 bg-[#B79272]/5 blur-[120px] rounded-full pointer-events-none" />
+        <div className="absolute bottom-1/4 -left-20 w-96 h-96 bg-[#B79272]/5 blur-[120px] rounded-full pointer-events-none" />
       </section>
 
       {/* Recognition & Testimonials */}
