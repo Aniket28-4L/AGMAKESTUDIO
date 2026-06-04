@@ -219,12 +219,16 @@ const ReelModal: React.FC<ReelModalProps> = ({ isOpen, onClose, reelUrl }) => {
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.9, opacity: 0, y: 20 }}
             transition={{ type: "spring", damping: 25, stiffness: 200 }}
-            className="relative w-full max-w-2xl bg-neutral-900/40 border border-[#B79272]/20 rounded-[32px] overflow-hidden p-8 md:p-16 text-center"
+            className="relative w-full max-w-2xl bg-neutral-900/40 border border-[#B79272]/20 rounded-[32px] overflow-hidden p-8 md:p-16 text-center pointer-events-auto touch-auto"
           >
             {/* Close Button */}
             <button 
-              onClick={onClose}
-              className="absolute top-8 right-8 text-white/40 hover:text-white transition-colors"
+              onClick={(e) => {
+                e.stopPropagation();
+                onClose();
+              }}
+              className="absolute top-8 right-8 text-white/40 hover:text-white transition-colors z-[100] pointer-events-auto cursor-pointer p-2"
+              aria-label="Close modal"
             >
               <X size={24} />
             </button>
@@ -299,10 +303,20 @@ const InstagramReelsSection: React.FC = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [selectedReel, setSelectedReel] = useState<string | null>(null);
 
+  // Detect touch device to disable mouse drag events which might interfere with native touch scrolling
+  const [isTouchDevice, setIsTouchDevice] = useState(false);
+
+  useEffect(() => {
+    setIsTouchDevice(
+      'ontouchstart' in window || 
+      navigator.maxTouchPoints > 0
+    );
+  }, []);
+
   // Smooth wheel scroll support with scroll handoff
   useEffect(() => {
     const el = scrollRef.current;
-    if (!el) return;
+    if (!el || isTouchDevice) return; // Only apply wheel logic to non-touch devices
 
     const onWheel = (e: WheelEvent) => {
       // Only handle horizontal scrolling if the user is scrolling vertically with wheel
@@ -327,25 +341,32 @@ const InstagramReelsSection: React.FC = () => {
 
     el.addEventListener('wheel', onWheel, { passive: false });
     return () => el.removeEventListener('wheel', onWheel);
-  }, []);
+  }, [isTouchDevice]);
 
-  // Mouse Drag to Scroll
+  // Mouse Drag to Scroll (Desktop Only)
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
 
   const handleMouseDown = (e: React.MouseEvent) => {
-    if (!scrollRef.current) return;
+    if (!scrollRef.current || isTouchDevice) return;
     setIsDragging(true);
     setStartX(e.pageX - scrollRef.current.offsetLeft);
     setScrollLeft(scrollRef.current.scrollLeft);
   };
 
-  const handleMouseLeave = () => setIsDragging(false);
-  const handleMouseUp = () => setIsDragging(false);
+  const handleMouseLeave = () => {
+    if (isTouchDevice) return;
+    setIsDragging(false);
+  };
+
+  const handleMouseUp = () => {
+    if (isTouchDevice) return;
+    setIsDragging(false);
+  };
 
   const handleMouseMove = (e: React.MouseEvent) => {
-    if (!isDragging || !scrollRef.current) return;
+    if (!isDragging || !scrollRef.current || isTouchDevice) return;
     e.preventDefault();
     const x = e.pageX - scrollRef.current.offsetLeft;
     const walk = (x - startX) * 2; // Scroll speed
@@ -384,6 +405,9 @@ const InstagramReelsSection: React.FC = () => {
         onMouseMove={handleMouseMove}
         className="flex gap-6 md:gap-10 overflow-x-auto py-10 snap-x snap-mandatory luxury-scrollbar cursor-grab active:cursor-grabbing" 
         data-lenis-prevent
+        style={{
+          touchAction: 'pan-y'
+        }}
       >
         {/* Extra padding for first/last cards to center on mobile if needed */}
         <div className="flex-none w-1 md:hidden" />

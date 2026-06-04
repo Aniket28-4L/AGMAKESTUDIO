@@ -65,6 +65,15 @@ export default function Archive() {
   const [, setLocation] = useLocation();
   const [selectedIdx, setSelectedIdx] = useState<number | null>(null);
 
+  // Scroll to top on mount - FIX ISSUE 3
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: "instant"
+    });
+  }, []);
+
   // Navigation handlers
   const handleNext = useCallback(() => {
     setSelectedIdx((prev) => (prev !== null ? (prev + 1) % IMAGES.length : null));
