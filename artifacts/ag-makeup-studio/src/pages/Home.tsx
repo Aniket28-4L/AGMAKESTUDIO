@@ -22,9 +22,8 @@ import lens3Path from "@assets/lens_3.png";
 import heroBridePath from "@assets/hero_bride.png";
 import testimonialsBgPath from "@assets/a0dcf1bf0f646736b9552283059a83bf_1778999396158.jpg";
 import featherBgPath from "@assets/3b202712b82894b59517c133e8c2fecf_1779000059086.jpg";
-import { Menu, X, Instagram, Youtube, ExternalLink, ArrowUpRight, Mail, MapPin } from "lucide-react";
+import { Menu, X, Instagram, Youtube, ExternalLink, ArrowUpRight, Mail, MapPin, Trophy, Users, Globe, Star, Gem, ArrowRight } from "lucide-react";
 import { useLocation } from "wouter";
-import ThreeDPhotoCarousel from "../components/ui/three-d-carousel";
 import InstagramReelsSection from "../components/InstagramReelsSection";
 import { LeafyButton } from "../components/ui/leafy-button";
 
@@ -1051,39 +1050,89 @@ export default function Home() {
 
 
 
-      {/* NEW SECTION 2: AS SEEN THROUGH THE LENS */}
-      <section className="py-24 relative overflow-hidden">
-        {/* Background */}
+      {/* AWARDS & RECOGNITION SECTION */}
+      <section className="py-32 md:py-48 relative overflow-hidden">
+        {/* Background - Preserved from existing aesthetic */}
         <div className="absolute inset-0 z-0">
           <img 
             src={featherBgPath} 
             alt="" 
             className="w-full h-full object-cover" 
           />
-          {/* Soft overlay to ensure content pops */}
-          <div className="absolute inset-0 bg-white/60 backdrop-blur-[2px]" />
+          <div className="absolute inset-0 bg-[#F7F1EB]/90 backdrop-blur-[2px]" />
         </div>
 
         <div className="container mx-auto px-6 md:px-12 relative z-10">
-          <FadeIn className="mb-16 flex flex-col items-center text-center">
-            <span className="font-sans text-[9px] tracking-[0.4em] text-[#B79272] uppercase mb-6">As Seen Through The Lens</span>
-            <h2 className="font-serif text-5xl md:text-8xl font-light text-foreground leading-[0.9]">
-              Through the<br/><em className="text-[#B79272]">DSLR</em>
+          {/* Header */}
+          <FadeIn className="mb-24 flex flex-col items-center text-center">
+            <span className="font-sans text-[10px] tracking-[0.5em] text-[#B79272] uppercase mb-6 font-medium">Recognition Earned Through Passion</span>
+            <h2 className="font-serif text-5xl md:text-8xl font-light text-foreground leading-[0.9] mb-8">
+              Awards &  <em className="text-[#B79272]">Recognition</em>
             </h2>
-            <p className="font-sans font-light text-muted-foreground mt-8 text-sm tracking-[0.2em]">Every bride captured in her most luminous moment.</p>
+            <p className="font-serif italic text-xl md:text-2xl text-muted-foreground max-w-2xl">
+              "Honoured by industry experts and bridal beauty leaders for excellence in bridal artistry."
+            </p>
           </FadeIn>
-        </div>
 
-        {/* 3D Carousel - Moved outside restricted container for more width */}
-        <div className="w-full relative z-10">
-          <FadeIn delay={0.3} className="relative">
-            <div className="w-full relative h-[450px] md:h-[550px] flex items-center justify-center">
-              {/* Subtle floor reflection effect */}
-              <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[90%] h-24 bg-gradient-to-t from-[#B79272]/5 to-transparent blur-3xl rounded-full pointer-events-none" />
-              
-              <ThreeDPhotoCarousel 
-                images={[lens1Path, lens2Path, lens3Path, gallery1Path, gallery2Path, gallery3Path, gallery4Path, gallery5Path, gallery6Path]} 
-              />
+          {/* Awards Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 lg:gap-16 mb-32">
+            {[
+              {
+                title: "International Bridal Excellence",
+                desc: "Recognized for exceptional bridal transformations.",
+                loc: "Dubai • 2024",
+                img: lens1Path
+              },
+              {
+                title: "Global Beauty Leader",
+                desc: "Honoured for influence in luxury bridal artistry.",
+                loc: "London • 2023",
+                img: lens2Path
+              },
+              {
+                title: "Master of Bridal Artistry",
+                desc: "Excellence in couture bridal transformations.",
+                loc: "Mumbai • 2024",
+                img: lens3Path
+              }
+            ].map((award, i) => (
+              <FadeIn key={i} delay={i * 0.1} className="group">
+                <div className="relative mb-8 overflow-hidden rounded-[24px] border border-[#B79272]/10 bg-white/5 backdrop-blur-sm transition-all duration-700 hover:-translate-y-2 hover:border-[#B79272]/30 hover:shadow-[0_20px_50px_rgba(183,146,114,0.15)]">
+                  <div className="aspect-[4/5] overflow-hidden">
+                    <img 
+                      src={award.img} 
+                      alt={award.title} 
+                      className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
+                    />
+                  </div>
+                </div>
+                <div className="text-center px-4">
+                  <h3 className="font-serif text-2xl mb-3 text-foreground">{award.title}</h3>
+                  <p className="font-sans text-[11px] tracking-widest uppercase text-muted-foreground mb-4 leading-relaxed">{award.desc}</p>
+                  <div className="font-sans text-[10px] tracking-[0.3em] text-[#B79272] uppercase font-medium">{award.loc}</div>
+                </div>
+              </FadeIn>
+            ))}
+          </div>
+
+          {/* Trust Indicators Strip */}
+          <FadeIn delay={0.4} className="border-t border-[#B79272]/20 pt-20">
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-y-12 gap-x-8">
+              {[
+                { icon: Trophy, title: "Award Winning", desc: "Recognized globally for excellence" },
+                { icon: Users, title: "500+ Brides", desc: "A legacy of unforgettable memories" },
+                { icon: Globe, title: "International", desc: "Artistry that transcends borders" },
+                { icon: Star, title: "Industry Expert", desc: "As seen in leading publications" },
+                { icon: Gem, title: "Luxury Experience", desc: "Bespoke beauty for your day" }
+              ].map((item, i) => (
+                <div key={i} className="flex flex-col items-center text-center group">
+                  <div className="mb-6 p-4 rounded-full border border-[#B79272]/10 bg-[#B79272]/5 transition-all duration-500 group-hover:bg-[#B79272]/10 group-hover:scale-110">
+                    <item.icon size={20} className="text-[#B79272]" strokeWidth={1.5} />
+                  </div>
+                  <h4 className="font-serif text-lg mb-2 text-foreground">{item.title}</h4>
+                  <p className="font-sans text-[8px] tracking-[0.2em] uppercase text-muted-foreground leading-relaxed px-2">{item.desc}</p>
+                </div>
+              ))}
             </div>
           </FadeIn>
         </div>

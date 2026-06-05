@@ -63,7 +63,7 @@ const ReelCard: React.FC<ReelCardProps> = ({ thumbnail, index, onClick }) => {
   return (
     <motion.div
       onClick={onClick}
-      className="flex-none w-[75vw] md:w-[calc(25%-30px)] aspect-[9/16] relative group rounded-[24px] overflow-hidden border border-[#B79272]/10 snap-center cursor-pointer bg-neutral-900 shadow-2xl"
+      className="flex-none w-full md:w-[calc(25%-30px)] aspect-[9/16] relative group rounded-[24px] overflow-hidden border border-[#B79272]/10 md:snap-center cursor-pointer bg-neutral-900 shadow-2xl"
       initial={{ opacity: 0, y: 40 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-50px" }}
@@ -396,24 +396,20 @@ const InstagramReelsSection: React.FC = () => {
         }
       `}</style>
 
-      {/* Horizontal scrolling container */}
+      {/* Container - Responsive Grid on Mobile, Horizontal Carousel on Desktop */}
       <div 
         ref={scrollRef}
         onMouseDown={handleMouseDown}
         onMouseLeave={handleMouseLeave}
         onMouseUp={handleMouseUp}
         onMouseMove={handleMouseMove}
-        className="flex gap-6 md:gap-10 overflow-x-auto py-10 snap-x snap-mandatory luxury-scrollbar cursor-grab active:cursor-grabbing" 
-        data-lenis-prevent
+        className="grid grid-cols-2 md:flex gap-4 md:gap-10 md:overflow-x-auto overflow-y-visible py-10 md:snap-x md:snap-mandatory luxury-scrollbar md:cursor-grab md:active:cursor-grabbing" 
         style={{
-          touchAction: 'pan-y',
-          overscrollBehaviorX: 'contain',
+          touchAction: isTouchDevice ? 'pan-y' : 'pan-x pan-y',
+          overscrollBehavior: isTouchDevice ? 'auto' : 'auto',
           WebkitOverflowScrolling: 'touch'
         }}
       >
-        {/* Extra padding for first/last cards to center on mobile if needed */}
-        <div className="flex-none w-1 md:hidden" />
-        
         {REELS_DATA.map((reel, i) => (
           <ReelCard 
             key={i} 
@@ -423,8 +419,6 @@ const InstagramReelsSection: React.FC = () => {
             onClick={() => setSelectedReel(reel.reelUrl)}
           />
         ))}
-        
-        <div className="flex-none w-1 md:hidden" />
       </div>
 
       {/* Center highlight mask effect (subtle) */}
