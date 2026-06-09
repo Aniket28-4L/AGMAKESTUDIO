@@ -14,12 +14,19 @@ interface MotionProviderProps {
 
 export function MotionProvider({ children }: MotionProviderProps) {
   const [isReady, setIsReady] = useState(false);
+  const [showPreloader, setShowPreloader] = useState(true);
   const [lenisInstance, setLenisInstance] = useState<Lenis | null>(null);
   const rafRef = useRef<number>(0);
   const pageRef = useRef<HTMLDivElement>(null);
 
-  const handlePreloaderComplete = useCallback(() => {
+  const handlePreloaderReady = useCallback(() => {
+    console.log("MotionProvider: handlePreloaderReady called");
     setIsReady(true);
+  }, []);
+
+  const handlePreloaderDone = useCallback(() => {
+    console.log("MotionProvider: handlePreloaderDone called");
+    setShowPreloader(false);
   }, []);
 
   useEffect(() => {
@@ -86,28 +93,26 @@ export function MotionProvider({ children }: MotionProviderProps) {
       return;
     }
 
-    gsap.set(page, { autoAlpha: 0, scale: 1.02, filter: "blur(10px)" });
+    gsap.set(page, { autoAlpha: 0 });
     gsap.to(page, {
       autoAlpha: 1,
-      scale: 1,
-      filter: "blur(0px)",
-      duration: 2,
-      ease: "expo.out",
-      delay: 0.2,
+      duration: 1.5,
+      ease: "power2.out",
       onComplete: () => {
-        gsap.set(page, { clearProps: "filter,scale" });
+        gsap.set(page, { clearProps: "all" });
       },
     });
   }, [isReady]);
 
+  console.log("MotionProvider rendering, showPreloader:", showPreloader);
+
   return (
     <MotionContext.Provider value={{ isReady, lenis: lenisInstance }}>
-      {!isReady && <Preloader onComplete={handlePreloaderComplete} />}
+      {showPreloader && <Preloader onReady={handlePreloaderReady} onDone={handlePreloaderDone} />}
       <div
         ref={pageRef}
         className="motion-page-content"
         data-motion-ready={isReady ? "true" : "false"}
-        aria-hidden={!isReady}
       >
         {children}
       </div>

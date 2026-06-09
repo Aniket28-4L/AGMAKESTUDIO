@@ -84,7 +84,7 @@ export function useHeroMotion(refs: HeroMotionRefs) {
 
       const tl = gsap.timeline({
         defaults: { ease: MOTION.ease.luxury },
-        delay: 0.35,
+        delay: 0.1, // Slight delay to let the curtains begin moving
       });
 
       if (eyebrowRef.current) {

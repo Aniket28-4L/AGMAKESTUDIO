@@ -1,24 +1,25 @@
 import { useEffect, useRef, useState, useCallback, memo, forwardRef } from "react";
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence, useScroll, useTransform, useSpring, useMotionValue } from "framer-motion";
 import { useMotion } from "@/components/motion/motion-context";
 import gsap from "gsap";
 import { useScrollReveal, useScrollRevealBatch } from "@/hooks/useScrollReveal";
 import { useHeroMotion } from "@/hooks/useHeroMotion";
 import { MOTION } from "@/lib/motion/config";
-import gallery1Path from "@assets/gallery_1.png";
-import gallery2Path from "@assets/gallery_2.png";
-import gallery3Path from "@assets/gallery_3.png";
-import gallery4Path from "@assets/gallery_4.png";
-import gallery5Path from "@assets/gallery_5.png";
-import gallery6Path from "@assets/gallery_6.png";
+import gallery1Path from "@assets/gallery_1.jpeg";
+import gallery2Path from "@assets/gallery_2.jpeg";
+import gallery3Path from "@assets/gallery_3.jpeg";
+import gallery4Path from "@assets/gallery_4.jpeg";
+import gallery5Path from "@assets/gallery_5.jpeg";
+import gallery6Path from "@assets/gallery_6.jpeg";
 import founderPath from "@assets/founder2.png";
 import story1Path from "@assets/story_1.png";
 import story2Path from "@assets/story_2.png";
 import story3Path from "@assets/story_3.png";
 import story4Path from "@assets/story_4.png";
-import lens1Path from "@assets/lens_1.png";
-import lens2Path from "@assets/lens_2.png";
-import lens3Path from "@assets/lens_3.png";
+import lens1Path from "@assets/awards1.jpeg";
+import lens2Path from "@assets/awards2.jpeg";
+import lens3Path from "@assets/awards3.jpeg";
 import heroBridePath from "@assets/hero_bride.png";
 import testimonialsBgPath from "@assets/a0dcf1bf0f646736b9552283059a83bf_1778999396158.jpg";
 import featherBgPath from "@assets/3b202712b82894b59517c133e8c2fecf_1779000059086.jpg";
@@ -293,14 +294,14 @@ function BridalQuiz({ onClose }: { onClose: () => void }) {
 
   const result = step === 3 ? QUIZ_RESULTS[getResult(answers)] : null;
 
-  return (
+  return createPortal(
     <motion.div
       key="quiz-overlay"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.6 }}
-      className="fixed inset-0 z-[9998] flex items-center justify-center"
+      className="fixed inset-0 z-[100000] flex items-center justify-center"
       style={{ background: "rgba(15,10,8,0.97)" }}
     >
       {/* Noise grain */}
@@ -426,7 +427,8 @@ function BridalQuiz({ onClose }: { onClose: () => void }) {
           )}
         </AnimatePresence>
       </div>
-    </motion.div>
+    </motion.div>,
+    document.body
   );
 }
 
@@ -434,6 +436,7 @@ function BridalQuiz({ onClose }: { onClose: () => void }) {
 const CinematicHeroVideo = memo(
   forwardRef<HTMLVideoElement>((_, ref) => {
     const videoRef = useRef<HTMLVideoElement>(null);
+    const { isReady } = useMotion();
 
     const setRef = (node: HTMLVideoElement | null) => {
       videoRef.current = node;
@@ -444,6 +447,12 @@ const CinematicHeroVideo = memo(
     useEffect(() => {
       const video = videoRef.current;
       if (!video) return;
+
+      // Ensure video is paused until ready
+      if (!isReady) {
+        video.pause();
+        return;
+      }
 
       const observer = new IntersectionObserver(
         ([entry]) => {
@@ -457,16 +466,18 @@ const CinematicHeroVideo = memo(
       );
 
       observer.observe(video);
+      // Play immediately if intersecting when ready
+      video.play().catch(() => {});
 
       return () => {
         observer.disconnect();
       };
-    }, []);
+    }, [isReady]);
 
     return (
       <video
         ref={setRef}
-        autoPlay
+        autoPlay={isReady}
         muted
         loop
         playsInline
@@ -580,7 +591,10 @@ export default function Home() {
       </div>
 
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-[60] py-3 md:py-4 px-6 md:px-12 flex justify-between items-center bg-white/[0.01] backdrop-blur-[6px] border-b border-white/[0.04] text-white transition-all duration-500">
+      <nav 
+        className="fixed top-0 left-0 right-0 z-[60] py-3 md:py-4 px-6 md:px-12 flex justify-between items-center bg-white/[0.01] backdrop-blur-[6px] border-b border-white/[0.04] text-white transition-all duration-1000 ease-out"
+        style={{ opacity: isReady ? 1 : 0, transform: isReady ? 'none' : 'translateY(-10px)' }}
+      >
         <div className="flex flex-col items-start cursor-pointer group">
           <span className="font-serif text-xl md:text-2xl leading-none tracking-tight">AG</span>
           <span className="font-sans text-[6px] md:text-[7px] tracking-[0.6em] mt-1 group-hover:text-primary transition-colors uppercase opacity-70">Makeup Studio</span>
@@ -973,17 +987,18 @@ export default function Home() {
         </div>
         
         <div className="container mx-auto px-6 md:px-12 relative z-10">
-          <FadeIn className="mb-24 md:ml-24">
+          <FadeIn className="mb-20 text-center flex flex-col items-center">
             <div className="flex items-center gap-4 mb-6">
+              <div className="h-px w-12 bg-primary" />
               <span className="font-sans text-[10px] tracking-[0.4em] uppercase text-primary">Our Offerings</span>
-              <div className="h-px w-24 bg-primary" />
+              <div className="h-px w-12 bg-primary" />
             </div>
-            <h2 className="font-serif text-5xl md:text-7xl max-w-2xl leading-[1.1]">
+            <h2 className="font-serif text-5xl md:text-7xl leading-[1.1]">
               Couture Bridal <br/><span className="italic text-muted-foreground">Experiences</span>
             </h2>
           </FadeIn>
 
-          <div className="flex flex-col gap-2">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 lg:gap-x-16 gap-y-16 md:gap-y-20 max-w-6xl mx-auto" data-reveal-stagger>
             {[
               {
                 num: "01",
@@ -1014,35 +1029,42 @@ export default function Home() {
                 alt: "Modern Muse",
               },
             ].map((col, i) => (
-              <FadeIn key={i} delay={i * 0.08}>
-                <div className="flex flex-col md:flex-row items-stretch border-t border-primary/20 py-10 gap-8 group">
-                  {/* Number */}
-                  <div className="md:w-16 flex-none flex items-start pt-1">
-                    <span className="font-sans text-[11px] tracking-[0.35em] text-primary">{col.num}</span>
+              <div 
+                key={i} 
+                className="flex flex-col group h-full"
+                data-reveal="fade-up"
+              >
+                {/* Image - Supportive and Refined */}
+                <div className="relative aspect-[16/10] mb-8 overflow-hidden rounded-[4px] bg-muted shadow-md transition-all duration-700 group-hover:shadow-xl">
+                  <img
+                    src={col.img}
+                    alt={col.alt}
+                    className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
+                  />
+                </div>
+
+                {/* Text Content */}
+                <div className="flex flex-col flex-1">
+                  <div className="flex items-center gap-3 mb-4">
+                    <span className="font-sans text-[10px] tracking-[0.3em] text-primary/60 font-medium">{col.num}</span>
+                    <div className="h-px w-6 bg-primary/30 transition-all duration-700 group-hover:w-12 group-hover:bg-primary" />
                   </div>
-                  {/* Image */}
-                  <div className="md:w-[38%] flex-none h-64 md:h-72 overflow-hidden bg-muted">
-                    <img
-                      src={col.img}
-                      alt={col.alt}
-                      className="w-full h-full object-cover editorial-image-hover"
-                    />
-                  </div>
-                  {/* Text */}
-                  <div className="flex-1 flex flex-col justify-center md:pl-12">
-                    <div className="w-8 h-px bg-primary mb-6" />
-                    <h3 className="font-serif text-3xl md:text-4xl mb-5 tracking-wide">{col.name}</h3>
-                    <p className="font-sans font-light text-muted-foreground leading-loose mb-8 max-w-md">{col.desc}</p>
+                  <h3 className="font-serif text-2xl md:text-3xl mb-4 tracking-wide text-foreground">{col.name}</h3>
+                  <p className="font-sans font-light text-muted-foreground leading-relaxed mb-8 text-sm md:text-base">
+                    {col.desc}
+                  </p>
+                  <div className="mt-auto">
                     <a
                       href="#book"
                       data-testid={`link-collection-${col.num}`}
-                      className="text-[10px] uppercase tracking-[0.25em] border-b border-foreground/30 pb-1 hover:text-primary hover:border-primary transition-colors w-fit"
+                      className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.3em] border-b border-foreground/20 pb-1 hover:text-primary hover:border-primary transition-all duration-500 group/link"
                     >
                       Request Consultation
+                      <ArrowUpRight size={12} className="transform group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5 transition-transform" />
                     </a>
                   </div>
                 </div>
-              </FadeIn>
+              </div>
             ))}
           </div>
         </div>

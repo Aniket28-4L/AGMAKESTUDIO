@@ -1,4 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Play, X, Calendar, ArrowRight, ImageOff } from 'lucide-react';
 
@@ -195,14 +196,15 @@ const ReelModal: React.FC<ReelModalProps> = ({ isOpen, onClose, reelUrl }) => {
     onClose();
   };
 
-  return (
+  return createPortal(
     <AnimatePresence>
       {isOpen && (
         <motion.div
+          key="reel-modal-overlay"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[9999] flex items-center justify-center p-6 md:p-12"
+          className="fixed inset-0 z-[100000] flex items-center justify-center p-6 md:p-12"
         >
           {/* Backdrop */}
           <motion.div 
@@ -295,7 +297,8 @@ const ReelModal: React.FC<ReelModalProps> = ({ isOpen, onClose, reelUrl }) => {
           </motion.div>
         </motion.div>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
 };
 
