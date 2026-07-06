@@ -27,6 +27,19 @@ import { Menu, X, Instagram, Youtube, ExternalLink, ArrowUpRight, Mail, MapPin, 
 import { useLocation } from "wouter";
 import InstagramReelsSection from "../components/InstagramReelsSection";
 import { LeafyButton } from "../components/ui/leafy-button";
+import { client } from "../lib/sanity.client";
+import { urlFor } from "../lib/imageUrl";
+import {
+  HOME_PAGE_QUERY,
+  PORTFOLIO_QUERY,
+  BEFORE_AFTER_QUERY,
+  BRIDAL_MOMENTS_QUERY,
+  OFFERINGS_QUERY,
+  AWARDS_QUERY,
+  TESTIMONIALS_QUERY,
+  ARCHIVE_IN_MOTION_QUERY,
+  SITE_SETTINGS_QUERY,
+} from "../../../../services/sanity-studio/lib/groq";
 
 // GSAP scroll reveals — same API, cinematic motion
 const FadeIn = ({
@@ -434,69 +447,279 @@ function BridalQuiz({ onClose }: { onClose: () => void }) {
 
 // Continuous playback cinematic background video
 const CinematicHeroVideo = memo(
-  forwardRef<HTMLVideoElement>((_, ref) => {
-    const videoRef = useRef<HTMLVideoElement>(null);
-    const { isReady } = useMotion();
+  forwardRef<HTMLVideoElement, { videoUrl?: string; posterUrl?: string }>(
+    ({ videoUrl, posterUrl }, ref) => {
+      const videoRef = useRef<HTMLVideoElement>(null);
+      const { isReady } = useMotion();
 
-    const setRef = (node: HTMLVideoElement | null) => {
-      videoRef.current = node;
-      if (typeof ref === "function") ref(node);
-      else if (ref) ref.current = node;
-    };
-
-    useEffect(() => {
-      const video = videoRef.current;
-      if (!video) return;
-
-      // Ensure video is paused until ready
-      if (!isReady) {
-        video.pause();
-        return;
-      }
-
-      const observer = new IntersectionObserver(
-        ([entry]) => {
-          if (entry.isIntersecting) {
-            video.play().catch(() => {});
-          } else {
-            video.pause();
-          }
-        },
-        { threshold: 0.1 }
-      );
-
-      observer.observe(video);
-      // Play immediately if intersecting when ready
-      video.play().catch(() => {});
-
-      return () => {
-        observer.disconnect();
+      const setRef = (node: HTMLVideoElement | null) => {
+        videoRef.current = node;
+        if (typeof ref === "function") ref(node);
+        else if (ref) ref.current = node;
       };
-    }, [isReady]);
 
-    return (
-      <video
-        ref={setRef}
-        autoPlay={isReady}
-        muted
-        loop
-        playsInline
-        preload="metadata"
-        poster={heroBridePath}
-        className="w-full h-full object-cover object-[75%_35%] md:object-[82%_28%] scale-[1.05] will-change-transform"
-        style={{
-          filter: "contrast(1.02) saturate(1.05) brightness(1.02)",
-        }}
-      >
-        <source src="/videos/bridal-hero.mp4" type="video/mp4" />
-      </video>
-    );
-  })
+      useEffect(() => {
+        const video = videoRef.current;
+        if (!video) return;
+
+        // Ensure video is paused until ready
+        if (!isReady) {
+          video.pause();
+          return;
+        }
+
+        const observer = new IntersectionObserver(
+          ([entry]) => {
+            if (entry.isIntersecting) {
+              video.play().catch(() => {});
+            } else {
+              video.pause();
+            }
+          },
+          { threshold: 0.1 }
+        );
+
+        observer.observe(video);
+        // Play immediately if intersecting when ready
+        video.play().catch(() => {});
+
+        return () => {
+          observer.disconnect();
+        };
+      }, [isReady]);
+
+      useEffect(() => {
+        const video = videoRef.current;
+        if (video) {
+          video.load();
+          if (isReady) {
+            video.play().catch(() => {});
+          }
+        }
+      }, [videoUrl, posterUrl, isReady]);
+
+      return (
+        <video
+          ref={setRef}
+          autoPlay={isReady}
+          muted
+          loop
+          playsInline
+          preload="metadata"
+          poster={posterUrl || heroBridePath}
+          className="w-full h-full object-cover object-[75%_35%] md:object-[82%_28%] scale-[1.05] will-change-transform"
+          style={{
+            filter: "contrast(1.02) saturate(1.05) brightness(1.02)",
+          }}
+        >
+          <source src={videoUrl || "/videos/bridal-hero.mp4"} type="video/mp4" />
+        </video>
+      );
+    }
+  )
 );
 CinematicHeroVideo.displayName = "CinematicHeroVideo";
 
+async function fetchHomeData() {
+  const [
+    homepage,
+    portfolio,
+    beforeAfter,
+    bridalMoments,
+    offerings,
+    awards,
+    testimonials,
+    archiveInMotion,
+    siteSettings,
+  ] = await Promise.all([
+    client.fetch(HOME_PAGE_QUERY),
+    client.fetch(PORTFOLIO_QUERY),
+    client.fetch(BEFORE_AFTER_QUERY),
+    client.fetch(BRIDAL_MOMENTS_QUERY),
+    client.fetch(OFFERINGS_QUERY),
+    client.fetch(AWARDS_QUERY),
+    client.fetch(TESTIMONIALS_QUERY),
+    client.fetch(ARCHIVE_IN_MOTION_QUERY),
+    client.fetch(SITE_SETTINGS_QUERY),
+  ]);
+
+  if (
+    homepage === undefined ||
+    portfolio === undefined ||
+    beforeAfter === undefined ||
+    bridalMoments === undefined ||
+    offerings === undefined ||
+    awards === undefined ||
+    testimonials === undefined ||
+    archiveInMotion === undefined ||
+    siteSettings === undefined
+  ) {
+    throw new Error("One or more Sanity client fetches returned undefined.");
+  }
+
+  return {
+    homepage,
+    portfolio,
+    beforeAfter,
+    bridalMoments,
+    offerings,
+    awards,
+    testimonials,
+    archiveInMotion,
+    siteSettings,
+  };
+}
+
 export default function Home() {
+  const [sanityData, setSanityData] = useState<any>(null);
   const [, setLocation] = useLocation();
+
+  const homepage = sanityData?.homepage;
+
+  // While loading, use static values
+  const heroEyebrow = homepage ? homepage.heroEyebrow : "AG Bridal Couture";
+  const heroTitleText = homepage ? homepage.heroTitle : "Crafted For The Bride Who Wants To Feel Unforgettable.";
+  const heroSubtitle = homepage ? homepage.heroSubtitle : "Beauty Designed Like A Memory.";
+  const primaryCta = homepage ? homepage.primaryCta : "Explore Collections";
+  const secondaryCta = homepage ? homepage.secondaryCta : "Find Your Bridal Look";
+  const heroVideo = homepage ? homepage.heroVideo : "/videos/bridal-hero.mp4";
+  const heroPosterUrl = homepage?.heroPosterImage ? urlFor(homepage.heroPosterImage).url() : undefined;
+
+  // Portfolio Section Variables
+  const portfolioData = sanityData?.portfolio;
+  const portfolioEyebrowVal = homepage ? (homepage.portfolioEyebrow || "The Archive") : "The Archive";
+  const portfolioTitleVal = homepage ? (homepage.portfolioTitle || "Editorial Radiance") : "Editorial Radiance";
+  const portfolioSubtitleVal = homepage ? (homepage.portfolioSubtitle || "Capturing the essence of modern Indian royalty.") : "Capturing the essence of modern Indian royalty.";
+
+  const portfolioItems = portfolioData && portfolioData.length > 0
+    ? portfolioData
+    : [
+        { isStatic: true, src: gallery1Path, alt: "Bridal portrait", caption: "01. The Signature Look, New Delhi" },
+        { isStatic: true, src: gallery3Path, alt: "Bridal in motion", caption: "02. Veil in Flight" },
+        { isStatic: true, src: gallery4Path, alt: "Makeup closeup", caption: "03. Luminous Finish" },
+        { isStatic: true, src: gallery2Path, alt: "Bridal hands", caption: "04. Mehndi & Pearls" },
+        { isStatic: true, src: gallery6Path, alt: "Bridal Joy", caption: "05. Candid Radiance" },
+        { isStatic: true, src: gallery5Path, alt: "Jewelry", caption: "06. Heritage Adornments" },
+      ];
+
+  const getPortfolioImgSrc = (item: any) => {
+    if (item.isStatic) return item.src;
+    return item.image ? urlFor(item.image).url() : "";
+  };
+
+  const getPortfolioImgAlt = (item: any) => {
+    if (item.isStatic) return item.alt;
+    return item.altText || item.title || "";
+  };
+
+  // Founder Section Variables
+  const founderEyebrowVal = homepage ? (homepage.founderEyebrow || "The Founder") : "The Founder";
+  const founderNameVal = homepage ? (homepage.founderName || "Anu Giri") : "Anu Giri";
+  const founderImgUrl = homepage?.founderImage ? urlFor(homepage.founderImage).url() : founderPath;
+  const founderImgAlt = homepage?.founderImage?.alt || founderNameVal;
+
+  const biographyParagraphs = homepage?.founderBiography
+    ? homepage.founderBiography.split(/\n\s*\n/).filter((p: string) => p.trim() !== "")
+    : [
+        "With over a decade of dedication to the art of luxury bridal makeup, my philosophy is rooted in a simple truth: we are designing for unforgettable memories.",
+        "The AG approach blends the flawless techniques of editorial fashion with the emotional resonance of a wedding day. We do not mask; we elevate. We bring forward the radiant, timeless version of you that will be cherished in photographs for generations."
+      ];
+
+  const fallbackStats = [
+    { value: "10+", label: "Years Mastery" },
+    { value: "500+", label: "Couture Brides" },
+    { value: "15", label: "Industry Awards" },
+  ];
+  const founderStats = homepage?.founderStatistics && homepage.founderStatistics.length > 0
+    ? homepage.founderStatistics
+    : fallbackStats;
+
+  const renderStatValue = (val: string) => {
+    if (val.endsWith('+')) {
+      return (
+        <>
+          {val.slice(0, -1)}
+          <span className="text-primary">+</span>
+        </>
+      );
+    }
+    return val;
+  };
+
+  let heroTitlePart1 = heroTitleText;
+  let heroTitlePart2 = "";
+
+  if (heroTitleText.includes("|")) {
+    const parts = heroTitleText.split("|");
+    heroTitlePart1 = parts[0].trim();
+    heroTitlePart2 = parts.slice(1).join("|").trim();
+  } else if (heroTitleText.includes("\n")) {
+    const parts = heroTitleText.split("\n");
+    heroTitlePart1 = parts[0].trim();
+    heroTitlePart2 = parts.slice(1).join("\n").trim();
+  } else {
+    const splitIndex = heroTitleText.indexOf("Who Wants");
+    if (splitIndex !== -1) {
+      heroTitlePart1 = heroTitleText.substring(0, splitIndex).trim();
+      heroTitlePart2 = heroTitleText.substring(splitIndex).trim();
+    } else {
+      const words = heroTitleText.split(" ");
+      const half = Math.ceil(words.length / 2);
+      heroTitlePart1 = words.slice(0, half).join(" ");
+      heroTitlePart2 = words.slice(half).join(" ");
+    }
+  }
+
+  useEffect(() => {
+    async function verify() {
+      try {
+        const data = await fetchHomeData();
+        console.log("Fetched Sanity Data:", data);
+
+        const checks = {
+          homepage: { name: "Homepage ........", expected: "object", actual: typeof data.homepage, count: null },
+          portfolio: { name: "Portfolio ........", expected: "array", actual: Array.isArray(data.portfolio) ? "array" : typeof data.portfolio, count: Array.isArray(data.portfolio) ? data.portfolio.length : null },
+          beforeAfter: { name: "BeforeAfter ......", expected: "array", actual: Array.isArray(data.beforeAfter) ? "array" : typeof data.beforeAfter, count: Array.isArray(data.beforeAfter) ? data.beforeAfter.length : null },
+          bridalMoments: { name: "BridalMoments ....", expected: "array", actual: Array.isArray(data.bridalMoments) ? "array" : typeof data.bridalMoments, count: Array.isArray(data.bridalMoments) ? data.bridalMoments.length : null },
+          offerings: { name: "Offerings ........", expected: "array", actual: Array.isArray(data.offerings) ? "array" : typeof data.offerings, count: Array.isArray(data.offerings) ? data.offerings.length : null },
+          awards: { name: "Awards ...........", expected: "array", actual: Array.isArray(data.awards) ? "array" : typeof data.awards, count: Array.isArray(data.awards) ? data.awards.length : null },
+          testimonials: { name: "Testimonials .....", expected: "array", actual: Array.isArray(data.testimonials) ? "array" : typeof data.testimonials, count: Array.isArray(data.testimonials) ? data.testimonials.length : null },
+          archiveInMotion: { name: "ArchiveMotion ....", expected: "array", actual: Array.isArray(data.archiveInMotion) ? "array" : typeof data.archiveInMotion, count: Array.isArray(data.archiveInMotion) ? data.archiveInMotion.length : null },
+          siteSettings: { name: "SiteSettings .....", expected: "object", actual: typeof data.siteSettings, count: null }
+        };
+
+        let report = "\n=== SANITY DATA VERIFICATION REPORT ===\n";
+        let mismatchCount = 0;
+
+        for (const [key, check] of Object.entries(checks)) {
+          const isMatch = check.actual === check.expected && data[key as keyof typeof data] !== null;
+          if (isMatch) {
+            if (check.count !== null) {
+              report += `${check.name} PASS (${check.count})\n`;
+            } else {
+              report += `${check.name} PASS\n`;
+            }
+          } else {
+            mismatchCount++;
+            report += `${check.name} FAIL (Expected: ${check.expected}, Got: ${check.actual} / null check)\n`;
+          }
+        }
+
+        console.log(report);
+        (window as any).__sanityData = data;
+        (window as any).__sanityReport = report;
+        setSanityData(data);
+        if (mismatchCount > 0) {
+          console.error(`Verification completed with ${mismatchCount} mismatch(es).`);
+        } else {
+          console.log("Verification completed successfully.");
+        }
+      } catch (error) {
+        console.error("Sanity data fetch failed:", error);
+      }
+    }
+    verify();
+  }, []);
   const { isReady, lenis } = useMotion();
   const { scrollYProgress } = useScroll();
   const yBg = useTransform(scrollYProgress, [0, 1], ["0%", "10%"]);
@@ -667,7 +890,7 @@ export default function Home() {
            ref={heroParallaxRef}
            className="absolute inset-0 w-full h-full overflow-hidden"
          >
-           <CinematicHeroVideo ref={heroVideoRef} />
+           <CinematicHeroVideo ref={heroVideoRef} videoUrl={heroVideo} posterUrl={heroPosterUrl} />
  
            {/* Luxury Overlays - Ultra light and cinematic */}
            <div className="absolute inset-0 bg-black/5" /> {/* Negligible tint */}
@@ -706,7 +929,7 @@ export default function Home() {
         <div className="relative z-30 container mx-auto px-6 md:px-16 flex flex-col pt-32 h-full justify-center">
           <div className="max-w-4xl">
             <div ref={heroEyebrowRef} className="flex items-center gap-4 mb-8">
-              <span className="font-sans text-[9px] md:text-[10px] tracking-[0.5em] uppercase text-primary/70">AG Bridal Couture</span>
+              <span className="font-sans text-[9px] md:text-[10px] tracking-[0.5em] uppercase text-primary/70">{heroEyebrow}</span>
               <div className="h-px w-10 bg-primary/30" />
             </div>
             
@@ -720,14 +943,14 @@ export default function Home() {
                 textShadow: '0 4px 30px rgba(0,0,0,0.15)' 
               }}
             >
-              <span className="font-serif font-light">Crafted For The Bride</span>
+              <span className="font-serif font-light">{heroTitlePart1}</span>
               
               <div 
                 ref={heroRuleRef}
                 className="h-[1.5px] bg-primary/30 w-1/3 my-4 origin-left" 
               />
               
-              <span className="font-serif italic text-white/85 translate-x-4 md:translate-x-12" style={{ textShadow: '0 2px 15px rgba(0,0,0,0.1)' }}>Who Wants To Feel Unforgettable.</span>
+              <span className="font-serif italic text-white/85 translate-x-4 md:translate-x-12" style={{ textShadow: '0 2px 15px rgba(0,0,0,0.1)' }}>{heroTitlePart2}</span>
             </h1>
             
             <div 
@@ -736,7 +959,7 @@ export default function Home() {
             >
               <a href="#collections" data-testid="button-explore-packages" className="w-full sm:w-auto">
                 <LeafyButton className="btn-frosted w-full sm:w-auto">
-                  Explore Collections
+                  {primaryCta}
                 </LeafyButton>
               </a>
               <div className="w-full sm:w-auto">
@@ -745,7 +968,7 @@ export default function Home() {
                   onClick={() => setQuizOpen(true)}
                   className="btn-frosted w-full sm:w-auto !text-[#C9A98A]"
                 >
-                  Find Your Bridal Look
+                  {secondaryCta}
                 </LeafyButton>
               </div>
             </div>
@@ -756,7 +979,7 @@ export default function Home() {
               className="mt-24"
               
             >
-              <p className="font-serif italic text-white/50 tracking-wide" style={{ fontSize: 'clamp(1rem, 2vw, 1.4rem)' }}>Beauty Designed Like A Memory.</p>
+              <p className="font-serif italic text-white/50 tracking-wide" style={{ fontSize: 'clamp(1rem, 2vw, 1.4rem)' }}>{heroSubtitle}</p>
             </div>
           </div>
         </div>
@@ -783,14 +1006,14 @@ export default function Home() {
           <div className="relative mb-32 flex flex-col md:flex-row justify-between items-end">
             <FadeIn>
               <div className="flex items-center gap-4 mb-6">
-                <span className="font-sans text-[10px] tracking-[0.4em] uppercase text-primary">The Archive</span>
+                <span className="font-sans text-[10px] tracking-[0.4em] uppercase text-primary">{portfolioEyebrowVal}</span>
                 <div className="h-px w-16 bg-primary" />
               </div>
-              <h2 className="font-serif text-5xl md:text-7xl">Editorial Radiance</h2>
+              <h2 className="font-serif text-5xl md:text-7xl">{portfolioTitleVal}</h2>
             </FadeIn>
             <FadeIn delay={0.2} className="mt-8 md:mt-0">
               <p className="font-serif italic text-2xl text-muted-foreground max-w-sm text-right">
-                Capturing the essence of modern Indian royalty.
+                {portfolioSubtitleVal}
               </p>
             </FadeIn>
             
@@ -802,19 +1025,12 @@ export default function Home() {
 
           {/* Pinterest-style masonry using CSS columns */}
           <div className="columns-2 md:columns-3 gap-4 md:gap-6" data-reveal-stagger>
-            {[
-              { src: gallery1Path, alt: "Bridal portrait", caption: "01. The Signature Look, New Delhi" },
-              { src: gallery3Path, alt: "Bridal in motion", caption: "02. Veil in Flight" },
-              { src: gallery4Path, alt: "Makeup closeup", caption: "03. Luminous Finish" },
-              { src: gallery2Path, alt: "Bridal hands", caption: "04. Mehndi & Pearls" },
-              { src: gallery6Path, alt: "Bridal Joy", caption: "05. Candid Radiance" },
-              { src: gallery5Path, alt: "Jewelry", caption: "06. Heritage Adornments" },
-            ].map((item, i) => (
-              <div key={i} className="break-inside-avoid mb-4 md:mb-6 group relative overflow-hidden" data-testid={`gallery-item-${i}`}>
+            {portfolioItems.map((item: any, i: number) => (
+              <div key={item._id || i} className="break-inside-avoid mb-4 md:mb-6 group relative overflow-hidden" data-testid={`gallery-item-${i}`}>
                 <div className="relative overflow-hidden">
                   <img
-                    src={item.src}
-                    alt={item.alt}
+                    src={getPortfolioImgSrc(item)}
+                    alt={getPortfolioImgAlt(item)}
                     className="w-full h-auto block editorial-image-hover"
                   />
                   <div className="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 mix-blend-overlay transition-opacity duration-700 pointer-events-none" />
@@ -851,7 +1067,7 @@ export default function Home() {
             <div className="md:w-1/2 w-full">
               <FadeIn>
                 <div className="relative overflow-hidden w-full aspect-[4/5] bg-muted">
-                  <img src={founderPath} alt="Anu Giri" className="w-full h-full object-cover filter contrast-125 saturate-110" />
+                  <img src={founderImgUrl} alt={founderImgAlt} className="w-full h-full object-cover filter contrast-125 saturate-110" />
                   <div className="absolute inset-0 bg-primary/10 mix-blend-color" />
                 </div>
               </FadeIn>
@@ -861,37 +1077,32 @@ export default function Home() {
               <FadeIn stagger={true}>
                 <FadeChild>
                   <div className="flex items-center gap-4 mb-6">
-                    <span className="font-sans text-[10px] tracking-[0.4em] uppercase text-primary">The Founder</span>
+                    <span className="font-sans text-[10px] tracking-[0.4em] uppercase text-primary">{founderEyebrowVal}</span>
                     <div className="h-px w-16 bg-primary" />
                   </div>
                 </FadeChild>
                 <FadeChild>
-                  <h2 className="font-serif text-5xl md:text-7xl mb-10">Anu Giri</h2>
+                  <h2 className="font-serif text-5xl md:text-7xl mb-10">{founderNameVal}</h2>
                 </FadeChild>
                 <FadeChild>
                   <div className="font-sans font-light text-muted-foreground leading-[2] space-y-6 max-w-lg text-lg">
-                    <p>
-                      With over a decade of dedication to the art of luxury bridal makeup, my philosophy is rooted in a simple truth: we are designing for unforgettable memories.
-                    </p>
-                    <p>
-                      The AG approach blends the flawless techniques of editorial fashion with the emotional resonance of a wedding day. We do not mask; we elevate. We bring forward the radiant, timeless version of you that will be cherished in photographs for generations.
-                    </p>
+                    {biographyParagraphs.map((paragraph: string, index: number) => (
+                      <p key={index}>{paragraph}</p>
+                    ))}
                   </div>
                 </FadeChild>
                 
                 <FadeChild className="mt-16 pt-16 border-t border-border flex gap-16">
-                  <div>
-                    <div className="font-serif text-5xl text-foreground">10<span className="text-primary">+</span></div>
-                    <div className="font-sans text-[9px] uppercase tracking-[0.3em] text-muted-foreground mt-4">Years Mastery</div>
-                  </div>
-                  <div>
-                    <div className="font-serif text-5xl text-foreground">500<span className="text-primary">+</span></div>
-                    <div className="font-sans text-[9px] uppercase tracking-[0.3em] text-muted-foreground mt-4">Couture Brides</div>
-                  </div>
-                  <div>
-                    <div className="font-serif text-5xl text-foreground">15</div>
-                    <div className="font-sans text-[9px] uppercase tracking-[0.3em] text-muted-foreground mt-4">Industry Awards</div>
-                  </div>
+                  {founderStats.map((stat: any, index: number) => (
+                    <div key={index}>
+                      <div className="font-serif text-5xl text-foreground">
+                        {renderStatValue(stat.value)}
+                      </div>
+                      <div className="font-sans text-[9px] uppercase tracking-[0.3em] text-muted-foreground mt-4">
+                        {stat.label}
+                      </div>
+                    </div>
+                  ))}
                 </FadeChild>
               </FadeIn>
             </div>

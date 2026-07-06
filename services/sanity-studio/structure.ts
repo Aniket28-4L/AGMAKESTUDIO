@@ -23,6 +23,7 @@ export const structure: StructureResolver = (S) =>
       ),
     S.divider(),
     S.documentTypeListItem('portfolio').title('Portfolio'),
+    S.documentTypeListItem('archive').title('Archive'),
     S.documentTypeListItem('beforeAfter').title('Before After'),
     S.documentTypeListItem('bridalMoment').title('Bridal Moment'),
     S.documentTypeListItem('offering').title('Offerings'),

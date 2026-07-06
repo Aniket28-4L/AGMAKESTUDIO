@@ -28,5 +28,21 @@ export default defineType({
       title: 'Instagram URL',
       type: 'url',
     }),
+    defineField({
+      name: 'displayOrder',
+      title: 'Display Order',
+      type: 'number',
+      initialValue: 0,
+    }),
+  ],
+  orderings: [
+    {
+      title: 'Display Order',
+      name: 'displayOrder',
+      by: [
+        { field: 'displayOrder', direction: 'asc' },
+        { field: '_createdAt', direction: 'desc' },
+      ],
+    },
   ],
 })

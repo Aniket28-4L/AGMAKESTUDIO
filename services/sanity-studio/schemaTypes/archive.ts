@@ -1,8 +1,8 @@
 import { defineField, defineType } from 'sanity'
 
 export default defineType({
-  name: 'portfolio',
-  title: 'Portfolio',
+  name: 'archive',
+  title: 'Archive',
   type: 'document',
   fields: [
     defineField({
@@ -16,17 +16,6 @@ export default defineType({
       name: 'altText',
       title: 'Alt Text',
       type: 'string',
-    }),
-    defineField({
-      name: 'caption',
-      title: 'Caption',
-      type: 'string',
-    }),
-    defineField({
-      name: 'featured',
-      title: 'Featured',
-      type: 'boolean',
-      initialValue: false,
     }),
     defineField({
       name: 'displayOrder',

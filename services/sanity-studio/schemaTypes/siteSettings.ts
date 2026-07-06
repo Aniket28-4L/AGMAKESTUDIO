@@ -17,6 +17,38 @@ export default defineType({
       type: 'email',
     }),
     defineField({
+      name: 'address',
+      title: 'Address',
+      type: 'object',
+      fields: [
+        defineField({
+          name: 'street',
+          title: 'Street',
+          type: 'string',
+        }),
+        defineField({
+          name: 'city',
+          title: 'City',
+          type: 'string',
+        }),
+        defineField({
+          name: 'postcode',
+          title: 'Postcode',
+          type: 'string',
+        }),
+      ],
+    }),
+    defineField({
+      name: 'copyrightText',
+      title: 'Copyright Text',
+      type: 'string',
+    }),
+    defineField({
+      name: 'mapEmbedUrl',
+      title: 'Map Embed URL',
+      type: 'url',
+    }),
+    defineField({
       name: 'socialLinks',
       title: 'Social Links',
       type: 'array',
@@ -35,6 +67,7 @@ export default defineType({
                   { title: 'Facebook', value: 'facebook' },
                   { title: 'TikTok', value: 'tiktok' },
                   { title: 'Pinterest', value: 'pinterest' },
+                  { title: 'Behance', value: 'behance' },
                 ],
               },
             }),
@@ -46,11 +79,6 @@ export default defineType({
           ],
         },
       ],
-    }),
-    defineField({
-      name: 'mapUrl',
-      title: 'Map URL',
-      type: 'url',
     }),
     defineField({
       name: 'footerContent',

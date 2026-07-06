@@ -3,12 +3,17 @@
   "private": true,
   "version": "1.0.0",
   "main": "package.json",
+  "exports": {
+    "./groq": "./lib/groq.ts"
+  },
   "license": "UNLICENSED",
   "scripts": {
     "build": "sanity build",
     "deploy": "sanity deploy",
     "deploy-graphql": "sanity graphql deploy",
     "dev": "sanity dev",
+    "seed": "tsx scripts/seed.ts",
+    "cleanup": "tsx scripts/cleanup.ts",
     "start": "sanity start",
     "typegen": "sanity typegen generate"
   },
@@ -23,10 +28,13 @@
     "styled-components": "^6.1.18"
   },
   "devDependencies": {
+    "@sanity/client": "^7.22.1",
     "@sanity/eslint-config-studio": "^6.0.0",
     "@types/react": "^19.2.14",
+    "dotenv": "^17.4.2",
     "eslint": "^9.28",
     "prettier": "^3.5",
+    "tsx": "catalog:",
     "typescript": "^5.8"
   },
   "prettier": {
