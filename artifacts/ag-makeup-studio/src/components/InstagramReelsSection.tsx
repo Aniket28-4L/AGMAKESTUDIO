@@ -302,9 +302,19 @@ const ReelModal: React.FC<ReelModalProps> = ({ isOpen, onClose, reelUrl }) => {
   );
 };
 
-const InstagramReelsSection: React.FC = () => {
+interface InstagramReelsSectionProps {
+  reels?: Array<{
+    thumbnail: string;
+    reelUrl: string;
+    reelTitle?: string;
+  }>;
+}
+
+const InstagramReelsSection: React.FC<InstagramReelsSectionProps> = ({ reels }) => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [selectedReel, setSelectedReel] = useState<string | null>(null);
+
+  const finalReels = reels && reels.length > 0 ? reels : REELS_DATA;
 
   // Detect touch device to disable mouse drag events which might interfere with native touch scrolling
   const [isTouchDevice, setIsTouchDevice] = useState(false);
@@ -413,7 +423,7 @@ const InstagramReelsSection: React.FC = () => {
           WebkitOverflowScrolling: 'touch'
         }}
       >
-        {REELS_DATA.map((reel, i) => (
+        {finalReels.map((reel, i) => (
           <ReelCard 
             key={i} 
             index={i}

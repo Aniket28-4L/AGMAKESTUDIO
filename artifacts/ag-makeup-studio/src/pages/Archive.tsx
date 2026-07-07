@@ -3,6 +3,9 @@ import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLocation } from "wouter";
 import { X, ArrowLeft, ArrowRight } from "lucide-react";
+import { client } from "../lib/sanity.client";
+import { urlFor } from "../lib/imageUrl";
+import { ARCHIVE_QUERY } from "../../../../services/sanity-studio/lib/groq";
 
 // Asset Imports - Images (30 images)
 import img1 from "@assets/img1.jpg";
@@ -42,7 +45,7 @@ const IMAGES = [
   img21, img22, img23, img24, img25, img26, img27, img28, img29, img30
 ];
 
-const Thumbnail = memo(({ src, index, onClick }: { src: string, index: number, onClick: (index: number) => void }) => {
+const Thumbnail = memo(({ src, alt, index, onClick }: { src: string, alt: string, index: number, onClick: (index: number) => void }) => {
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -53,7 +56,7 @@ const Thumbnail = memo(({ src, index, onClick }: { src: string, index: number, o
     >
       <img
         src={src}
-        alt={`Bridal Look ${index + 1}`}
+        alt={alt}
         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
         loading="lazy"
       />
@@ -64,6 +67,32 @@ const Thumbnail = memo(({ src, index, onClick }: { src: string, index: number, o
 export default function Archive() {
   const [, setLocation] = useLocation();
   const [selectedIdx, setSelectedIdx] = useState<number | null>(null);
+  const [archiveItems, setArchiveItems] = useState<any[]>([]);
+
+  useEffect(() => {
+    async function fetchArchive() {
+      try {
+        const data = await client.fetch(ARCHIVE_QUERY);
+        setArchiveItems(data || []);
+      } catch (err) {
+        console.error("Failed to fetch archive:", err);
+      }
+    }
+    fetchArchive();
+  }, []);
+
+  const hasData = archiveItems && archiveItems.length > 0;
+  const displayImages = hasData
+    ? archiveItems.map((item: any) => ({
+        src: item.image ? urlFor(item.image).url() : "",
+        alt: item.altText || "Bridal Look"
+      }))
+    : IMAGES.map((src, idx) => ({
+        src,
+        alt: `Bridal Look ${idx + 1}`
+      }));
+
+  const totalImages = displayImages.length;
 
   // Scroll to top on mount - FIX ISSUE 3
   useEffect(() => {
@@ -76,12 +105,12 @@ export default function Archive() {
 
   // Navigation handlers
   const handleNext = useCallback(() => {
-    setSelectedIdx((prev) => (prev !== null ? (prev + 1) % IMAGES.length : null));
-  }, []);
+    setSelectedIdx((prev) => (prev !== null ? (prev + 1) % totalImages : null));
+  }, [totalImages]);
 
   const handlePrev = useCallback(() => {
-    setSelectedIdx((prev) => (prev !== null ? (prev - 1 + IMAGES.length) % IMAGES.length : null));
-  }, []);
+    setSelectedIdx((prev) => (prev !== null ? (prev - 1 + totalImages) % totalImages : null));
+  }, [totalImages]);
 
   const handleClose = useCallback(() => {
     setSelectedIdx(null);
@@ -101,11 +130,10 @@ export default function Archive() {
 
   // Scroll Lock
   useEffect(() => {
-    if (selectedIdx !== null) {
-      const originalStyle = window.getComputedStyle(document.body).overflow;
-      document.body.style.overflow = "hidden";
-      return () => { document.body.style.overflow = originalStyle; };
-    }
+    if (selectedIdx === null) return;
+    const originalStyle = window.getComputedStyle(document.body).overflow;
+    document.body.style.overflow = "hidden";
+    return () => { document.body.style.overflow = originalStyle; };
   }, [selectedIdx]);
 
   return (
@@ -129,11 +157,12 @@ export default function Archive() {
       {/* Main Grid Section */}
       <main className="pt-28 pb-20 px-4 md:px-12 max-w-7xl mx-auto">
         <div className="grid grid-cols-4 gap-3 md:gap-6">
-          {IMAGES.map((src, idx) => (
+          {displayImages.map((img, idx) => (
             <Thumbnail
               key={idx}
               index={idx}
-              src={src}
+              src={img.src}
+              alt={img.alt}
               onClick={(index) => setSelectedIdx(index)}
             />
           ))}
@@ -207,8 +236,8 @@ export default function Archive() {
                     className="relative w-full h-full flex items-center justify-center pointer-events-auto cursor-grab active:cursor-grabbing"
                   >
                     <img
-                      src={IMAGES[selectedIdx]}
-                      alt={`Bridal Look Detail ${selectedIdx + 1}`}
+                      src={displayImages[selectedIdx].src}
+                      alt={displayImages[selectedIdx].alt}
                       className="max-w-[90vw] max-h-[90vh] object-contain drop-shadow-[0_30px_60px_rgba(0,0,0,0.5)] select-none pointer-events-none"
                       style={{ 
                         display: 'block',
@@ -223,7 +252,7 @@ export default function Archive() {
               <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-[100001]">
                 <div className="px-6 py-2 bg-white/5 backdrop-blur-2xl border border-white/10 rounded-full shadow-2xl">
                   <span className="text-white/80 font-sans text-[12px] tracking-[0.5em] font-extralight uppercase">
-                    {selectedIdx + 1} <span className="text-white/20 mx-3">/</span> {IMAGES.length}
+                    {selectedIdx + 1} <span className="text-white/20 mx-3">/</span> {totalImages}
                   </span>
                 </div>
               </div>

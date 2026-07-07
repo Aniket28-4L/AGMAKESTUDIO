@@ -99,7 +99,21 @@ const SectionDivider = () => {
   );
 };
 
-function TransformationSlider({ beforeSrc, afterSrc }: { beforeSrc: string; afterSrc: string }) {
+function TransformationSlider({
+  beforeSrc,
+  afterSrc,
+  eyebrow,
+  title,
+  subtitle,
+  quote,
+}: {
+  beforeSrc: string;
+  afterSrc: string;
+  eyebrow?: string;
+  title?: string;
+  subtitle?: string;
+  quote?: string;
+}) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [pos, setPos] = useState(50);
   const isDragging = useRef(false);
@@ -133,6 +147,19 @@ function TransformationSlider({ beforeSrc, afterSrc }: { beforeSrc: string; afte
   const sectionRef = useRef<HTMLElement>(null);
   useScrollReveal(sectionRef, { variant: "blur" });
 
+  const renderTitle = () => {
+    const t = title || "Before & After";
+    if (t.includes("&")) {
+      const parts = t.split("&");
+      return (
+        <>
+          {parts[0].trim()} &amp; <em className="text-muted-foreground">{parts[1].trim()}</em>
+        </>
+      );
+    }
+    return t;
+  };
+
   return (
     <section ref={sectionRef} className="py-32 relative overflow-hidden">
       {/* Background */}
@@ -144,11 +171,15 @@ function TransformationSlider({ beforeSrc, afterSrc }: { beforeSrc: string; afte
       <div className="container mx-auto px-6 md:px-12 relative z-10">
         {/* Header */}
         <div className="mb-16 text-center">
-          <span className="font-sans text-[10px] tracking-[0.4em] uppercase text-primary block mb-4">The Transformation</span>
+          <span className="font-sans text-[10px] tracking-[0.4em] uppercase text-primary block mb-4">
+            {eyebrow || "The Transformation"}
+          </span>
           <h2 className="font-serif text-5xl md:text-7xl font-light leading-[0.9]">
-            Before &amp; <em className="text-muted-foreground">After</em>
+            {renderTitle()}
           </h2>
-          <p className="font-sans font-light text-muted-foreground mt-6 text-sm tracking-[0.15em]">Drag the divider to reveal the artistry.</p>
+          <p className="font-sans font-light text-muted-foreground mt-6 text-sm tracking-[0.15em]">
+            {subtitle || "Drag the divider to reveal the artistry."}
+          </p>
         </div>
 
         {/* Slider */}
@@ -220,13 +251,16 @@ function TransformationSlider({ beforeSrc, afterSrc }: { beforeSrc: string; afte
         </div>
 
         {/* Bottom note */}
-        <p className="text-center font-serif italic text-muted-foreground mt-8 text-lg">
-          "Every bride deserves to see herself transformed."
-        </p>
+        {quote && (
+          <p className="text-center font-serif italic text-muted-foreground mt-8 text-lg">
+            "{quote}"
+          </p>
+        )}
       </div>
     </section>
   );
 }
+
 
 // ── Bridal Quiz ─────────────────────────────────────────────────────────────
 const QUIZ_QUESTIONS = [
@@ -645,6 +679,247 @@ export default function Home() {
     }
     return val;
   };
+
+  // Before & After Section Variables
+  const beforeAfterDoc = sanityData?.beforeAfter?.[0];
+  const beforeAfterEyebrowVal = homepage ? (homepage.beforeAfterEyebrow || "The Transformation") : "The Transformation";
+  const beforeAfterTitleVal = beforeAfterDoc ? (beforeAfterDoc.title || "Before & After") : "Before & After";
+  const beforeAfterSubtitleVal = homepage ? (homepage.beforeAfterSubtitle || "Drag the divider to reveal the artistry.") : "Drag the divider to reveal the artistry.";
+  const beforeAfterQuoteVal = homepage ? (homepage.beforeAfterQuote || "Every bride deserves to see herself transformed.") : "Every bride deserves to see herself transformed.";
+
+  const beforeAfterBeforeImg = beforeAfterDoc?.beforeImage
+    ? urlFor(beforeAfterDoc.beforeImage).url()
+    : gallery4Path;
+
+  const beforeAfterAfterImg = beforeAfterDoc?.afterImage
+    ? urlFor(beforeAfterDoc.afterImage).url()
+    : gallery1Path;
+
+  // Bridal Moments Section Variables
+  const bridalMomentsData = sanityData?.bridalMoments?.[0];
+  const bridalMomentEyebrowVal = homepage ? (homepage.bridalMomentEyebrow || "The Bridal Moment") : "The Bridal Moment";
+  
+  const bridalMomentImages = bridalMomentsData?.images && bridalMomentsData.images.length === 4
+    ? bridalMomentsData.images.map((img: any) => urlFor(img).url())
+    : [story1Path, story2Path, story3Path, story4Path];
+
+  const bridalMomentAlts = bridalMomentsData?.images && bridalMomentsData.images.length === 4
+    ? bridalMomentsData.images.map((img: any, i: number) => img.alt || ["Anticipation", "Artistry", "Revelation", "Bride"][i])
+    : ["Anticipation", "Artistry", "Revelation", "Bride"];
+
+  const fallbackVerses = [
+    { num: "I",   title: "The Anticipation", lines: ["She has", "always known", "this moment."] },
+    { num: "II",  title: "The Artistry",     lines: ["Each stroke,", "a memory", "being born."] },
+    { num: "III", title: "The Revelation",   lines: ["The mirror reflects", "what she", "always was."] },
+    { num: "IV",  title: "The Bride",        lines: ["Unforgettable.", "Always."] },
+  ];
+
+  const bridalMomentVerses = bridalMomentsData?.verses && bridalMomentsData.verses.length > 0
+    ? bridalMomentsData.verses.map((v: any) => ({
+        num: v.verseNumber || "",
+        title: v.verseTitle || "",
+        lines: v.verseLines || []
+      }))
+    : fallbackVerses;
+
+  // Collections (Offerings) Section Variables
+  const collectionsEyebrowVal = homepage ? (homepage.collectionsEyebrow || "Our Offerings") : "Our Offerings";
+  const collectionsTitleVal = homepage ? (homepage.collectionsTitle || "Couture Bridal Experiences") : "Couture Bridal Experiences";
+  
+  const offeringsData = sanityData?.offerings;
+  const offeringsItems = offeringsData && offeringsData.length > 0
+    ? offeringsData
+    : [
+        { isStatic: true, number: 1, name: "The Signature Bride", description: "Our most requested comprehensive bridal styling. Flawless HD makeup, advanced draping, and intricate hairstyling designed for a majestic, commanding presence.", image: { isStatic: true, src: gallery2Path }, ctaText: "Request Consultation" },
+        { isStatic: true, number: 2, name: "The Timeless Bride", description: "A classic, elegant aesthetic focusing on glowing skin and traditional elements that transcend fleeting trends. Pure, radiant, eternal.", image: { isStatic: true, src: gallery3Path }, ctaText: "Request Consultation" },
+        { isStatic: true, number: 3, name: "The Royal Glow", description: "Premium airbrush techniques paired with luxury 24k gold infused skincare prep for the ultimate illuminated finish. For the bride who demands absolute perfection.", image: { isStatic: true, src: gallery1Path }, ctaText: "Request Consultation" },
+        { isStatic: true, number: 4, name: "The Modern Muse", description: "For the contemporary bride — minimalist, editorial-style makeup that highlights natural bone structure and lets your inner radiance lead.", image: { isStatic: true, src: gallery4Path }, ctaText: "Request Consultation" }
+      ];
+
+  const renderCollectionsTitle = (title: string) => {
+    if (title.includes("\n")) {
+      const parts = title.split("\n");
+      return (
+        <>
+          {parts[0]} <br /><span className="italic text-muted-foreground">{parts[1]}</span>
+        </>
+      );
+    }
+    const words = title.split(" ");
+    if (words.length > 1) {
+      const lastWord = words.pop();
+      return (
+        <>
+          {words.join(" ")} <br /><span className="italic text-muted-foreground">{lastWord}</span>
+        </>
+      );
+    }
+    return title;
+  };
+
+  const getOfferingImgSrc = (item: any) => {
+    if (item.isStatic) return item.image.src;
+    return item.image ? urlFor(item.image).url() : "";
+  };
+
+  const getOfferingImgAlt = (item: any) => {
+    if (item.isStatic) return item.name;
+    return item.image?.alt || item.name || "";
+  };
+
+  const formatOfferingNumber = (num: number | string) => {
+    const n = Number(num);
+    if (isNaN(n)) return String(num);
+    return n < 10 ? `0${n}` : `${n}`;
+  };
+
+  // Awards Section Variables
+  const awardsEyebrowVal = homepage ? (homepage.awardsEyebrow || "Recognition Earned Through Passion") : "Recognition Earned Through Passion";
+  const awardsTitleVal = homepage ? (homepage.awardsTitle || "Awards & Recognition") : "Awards & Recognition";
+  const awardsQuoteVal = homepage ? (homepage.awardsQuote || "Honoured by industry experts and bridal beauty leaders for excellence in bridal artistry.") : "Honoured by industry experts and bridal beauty leaders for excellence in bridal artistry.";
+
+  const renderAwardsTitle = (title: string) => {
+    if (title.includes("&")) {
+      const parts = title.split("&");
+      return (
+        <>
+          {parts[0]} &amp; <em className="text-[#B79272]">{parts[1]}</em>
+        </>
+      );
+    }
+    return title;
+  };
+
+  const awardsData = sanityData?.awards;
+  const awardsItems = awardsData && awardsData.length > 0
+    ? awardsData
+    : [
+        { isStatic: true, title: "International Bridal Excellence", description: "Recognized for exceptional bridal transformations.", location: "Dubai", year: 2024, image: { isStatic: true, src: lens1Path } },
+        { isStatic: true, title: "Global Beauty Leader", description: "Honoured for influence in luxury bridal artistry.", location: "London", year: 2023, image: { isStatic: true, src: lens2Path } },
+        { isStatic: true, title: "Master of Bridal Artistry", description: "Excellence in couture bridal transformations.", location: "Mumbai", year: 2024, image: { isStatic: true, src: lens3Path } }
+      ];
+
+  const getAwardImgSrc = (item: any) => {
+    if (item.isStatic) return item.image.src;
+    return item.image ? urlFor(item.image).url() : "";
+  };
+
+  const getAwardImgAlt = (item: any) => {
+    if (item.isStatic) return item.title;
+    return item.image?.alt || item.title || "";
+  };
+
+  const getAwardLocationAndYear = (item: any) => {
+    if (item.isStatic) return `${item.location} • ${item.year}`;
+    return `${item.location || ""} • ${item.year || ""}`;
+  };
+
+  const fallbackTrustIndicators = [
+    { icon: "trophy", title: "Award Winning", description: "Recognized globally for excellence" },
+    { icon: "users", title: "500+ Brides", description: "A legacy of unforgettable memories" },
+    { icon: "globe", title: "International", description: "Artistry that transcends borders" },
+    { icon: "star", title: "Industry Expert", description: "As seen in leading publications" },
+    { icon: "gem", title: "Luxury Experience", description: "Bespoke beauty for your day" }
+  ];
+
+  const awardsTrustIndicatorsVal = homepage?.awardsTrustIndicators && homepage.awardsTrustIndicators.length > 0
+    ? homepage.awardsTrustIndicators
+    : fallbackTrustIndicators;
+
+  const iconComponentMap: Record<string, any> = {
+    trophy: Trophy,
+    users: Users,
+    globe: Globe,
+    star: Star,
+    gem: Gem,
+  };
+
+  // Testimonials Section Variables
+  const testimonialsData = sanityData?.testimonials || [];
+  const featuredTestimonial = testimonialsData.find((t: any) => t.featured) || testimonialsData[0] || {
+    quote: "Anu didn't just do my makeup; she crafted a vision. I felt like I stepped out of a Vogue India editorial. Truly unforgettable.",
+    brideName: "Priyanka S.",
+    brideType: "Destination Bride"
+  };
+
+  const remainingTestimonials = testimonialsData.filter((t: any) => t._id !== featuredTestimonial._id).slice(0, 2);
+  const finalRemainingTestimonials = remainingTestimonials.length >= 2
+    ? remainingTestimonials
+    : [
+        {
+          quote: "The detail, the care, the luxury experience. The AG team understands how to make a bride feel like absolute royalty.",
+          brideName: "Meera R.",
+          brideType: "Royal Palace Bride"
+        },
+        {
+          quote: "My makeup lasted flawlessly through tears, laughter, and a night of dancing. She is an absolute master of her craft.",
+          brideName: "Aisha M.",
+          brideType: "Classic Bride"
+        }
+      ];
+
+  const testimonialsBrandStripVal = homepage?.testimonialsBrandStrip && homepage.testimonialsBrandStrip.length > 0
+    ? [...homepage.testimonialsBrandStrip, ...homepage.testimonialsBrandStrip]
+    : ['Vogue India', 'Elle Weddings', 'Brides Today', 'WedMeGood', 'The Wed', 'Bridal Asia', 'Vogue India', 'Elle Weddings', 'Brides Today', 'WedMeGood', 'The Wed', 'Bridal Asia'];
+
+  // Archive In Motion Variables
+  const archiveInMotionEyebrowVal = homepage ? (homepage.archiveInMotionEyebrow || "The Archive in Motion") : "The Archive in Motion";
+  const archiveInMotionCaptionVal = homepage ? (homepage.archiveInMotionCaption || "Follow @agmakeupstudio for the full story") : "Follow @agmakeupstudio for the full story";
+  
+  const archiveInMotionData = sanityData?.archiveInMotion;
+  const archiveInMotionItems = archiveInMotionData && archiveInMotionData.length > 0
+    ? archiveInMotionData.map((item: any) => ({
+        thumbnail: item.thumbnail ? urlFor(item.thumbnail).url() : "",
+        reelUrl: item.instagramUrl || "",
+        reelTitle: item.reelTitle || ""
+      }))
+    : undefined;
+
+  // Atelier Section Variables
+  const atelierEyebrowVal = homepage?.atelierContent?.eyebrow || "The Atelier";
+  const atelierQuoteVal = homepage?.atelierContent?.quote || "Crafted exclusively with the world's most prestigious beauty houses to ensure a enduring, flawless finish.";
+  const atelierFooterTextVal = homepage?.atelierContent?.footerText || "Curated for the AG Makeup Studio";
+  
+  const atelierBrands = homepage?.atelierContent?.brands && homepage.atelierContent.brands.length > 0
+    ? homepage.atelierContent.brands
+    : ["DIOR", "CHARLOTTE TILBURY", "M·A·C", "ESTÉE LAUDER", "NARS", "TOM FORD", "HUDA BEAUTY", "BOBBI BROWN"];
+
+  const row1Brands = atelierBrands.slice(0, 2);
+  const row2Brands = atelierBrands.slice(2, 5);
+  const row3Brands = atelierBrands.slice(5);
+
+  // Booking Section Variables
+  const bookingFormEyebrowVal = homepage?.bookingFormEyebrow || "Inquiries";
+  const bookingFormTitleVal = homepage?.bookingFormTitle || "Begin Your Story";
+  const bookingFormSubtitleVal = homepage?.bookingFormSubtitle || "We accept a limited number of brides per season to ensure the highest level of artistry and attention.";
+
+  // Floating WhatsApp Variables
+  const whatsappNumberVal = homepage?.whatsappNumber || "919999999999";
+  const whatsappLink = `https://wa.me/${whatsappNumberVal.replace(/\D/g, '')}?text=Hi%2C%20I%27d%20love%20to%20book%20a%20bridal%20consultation%20with%20AG%20Makeup%20Studio`;
+
+  // Footer Section Variables
+  const siteSettings = sanityData?.siteSettings;
+  const addressStreet = siteSettings?.address?.street || "Chitrakoot Society, Jamnagar Road";
+  const addressCity = siteSettings?.address?.city || "Behind Crystal Mall";
+  const addressPostcode = siteSettings?.address?.postcode || "Jamnagar, Gujarat 361002";
+  
+  const mapDirectionsUrl = `https://www.google.com/maps/dir/?api=1&destination=AG+Makeup+Studio+${encodeURIComponent(addressStreet + ' ' + addressCity + ' ' + addressPostcode)}`;
+  const mapEmbedUrlVal = siteSettings?.mapEmbedUrl || "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3687.261234471011!2d70.0435123759247!3d22.456747437151046!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x395715569485764d%3A0xc3929f635f799863!2sAG%20Makeup%20Studio!5e0!3m2!1sen!2sin!4v1717500000000!5m2!1sen!2sin";
+  
+  const socialLinksVal = siteSettings?.socialLinks && siteSettings.socialLinks.length > 0
+    ? siteSettings.socialLinks.map((s: any) => ({
+        name: s.platform ? s.platform.charAt(0).toUpperCase() + s.platform.slice(1) : "",
+        url: s.url || "#"
+      }))
+    : [
+        { name: 'Instagram', url: '#' },
+        { name: 'Pinterest', url: '#' },
+        { name: 'Behance', url: '#' }
+      ];
+
+  const footerContentVal = siteSettings?.footerContent || "Artistry designed for unforgettable memories.";
+  const contactEmailVal = siteSettings?.contactEmail || "hello@agmakeupstudio.com";
+  const copyrightTextVal = siteSettings?.copyrightText || "Crafted for Elegance.";
 
   let heroTitlePart1 = heroTitleText;
   let heroTitlePart2 = "";
@@ -1111,7 +1386,14 @@ export default function Home() {
       </section>
 
       {/* Transformation Reveal */}
-      <TransformationSlider beforeSrc={gallery4Path} afterSrc={gallery1Path} />
+      <TransformationSlider
+        beforeSrc={beforeAfterBeforeImg}
+        afterSrc={beforeAfterAfterImg}
+        eyebrow={beforeAfterEyebrowVal}
+        title={beforeAfterTitleVal}
+        subtitle={beforeAfterSubtitleVal}
+        quote={beforeAfterQuoteVal}
+      />
 
       {/* THE BRIDAL MOMENT — compact editorial spread */}
       <section className="relative bg-background overflow-hidden">
@@ -1126,7 +1408,7 @@ export default function Home() {
           {/* Section eyebrow */}
           <FadeIn className="flex items-center gap-4 mb-16 md:mb-20">
             <div className="h-px w-8 bg-[#B79272]/40" />
-            <span className="font-sans text-[9px] tracking-[0.5em] text-[#B79272] uppercase">The Bridal Moment</span>
+            <span className="font-sans text-[9px] tracking-[0.5em] text-[#B79272] uppercase">{bridalMomentEyebrowVal}</span>
           </FadeIn>
 
           {/* Two-column layout: images left, verses right — both stretch to same height */}
@@ -1135,17 +1417,17 @@ export default function Home() {
             {/* Left: 2×2 contact sheet — stretches to match verse column height */}
             <div className="md:w-[42%] w-full flex-none flex flex-col">
               <div className="grid grid-cols-2 grid-rows-2 gap-2 flex-1" data-reveal-stagger>
-                {[story1Path, story2Path, story3Path, story4Path].map((src, i) => (
+                {bridalMomentImages.map((src: string, i: number) => (
                   <div key={i} className="relative overflow-hidden group min-h-0">
                     <img
                       src={src}
-                      alt={["Anticipation", "Artistry", "Revelation", "Bride"][i]}
+                      alt={bridalMomentAlts[i]}
                       className="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-700"
                       style={{ filter: "saturate(0.85)" }}
                     />
                     <div className="absolute inset-0 border border-black/[0.05] pointer-events-none" />
                     <div className="absolute top-3 left-3 font-serif italic text-[10px] text-[#B79272]/70 pointer-events-none">
-                      {["I", "II", "III", "IV"][i]}
+                      {bridalMomentVerses[i]?.num || ["I", "II", "III", "IV"][i]}
                     </div>
                   </div>
                 ))}
@@ -1154,19 +1436,14 @@ export default function Home() {
 
             {/* Right: stacked editorial verses */}
             <div className="md:w-[58%] w-full flex flex-col justify-between gap-0 md:pt-4">
-              {[
-                { num: "I",   title: "The Anticipation", lines: ["She has", "always known", "this moment."] },
-                { num: "II",  title: "The Artistry",     lines: ["Each stroke,", "a memory", "being born."] },
-                { num: "III", title: "The Revelation",   lines: ["The mirror reflects", "what she", "always was."] },
-                { num: "IV",  title: "The Bride",        lines: ["Unforgettable.", "Always."] },
-              ].map((verse, i) => (
+              {bridalMomentVerses.map((verse: any, i: number) => (
                 <FadeIn key={i} delay={i * 0.1} className="flex-1 flex flex-col justify-center">
                   <div className="py-6 border-t border-black/[0.08] flex gap-8 items-start">
                     <span className="font-sans text-[9px] tracking-[0.3em] text-[#B79272]/50 w-6 flex-none pt-1">{verse.num}</span>
                     <div className="flex-1">
                       <span className="font-sans text-[8px] tracking-[0.35em] text-muted-foreground uppercase block mb-3">{verse.title}</span>
                       <h3 className="font-serif font-light text-foreground leading-[1.15]" style={{ fontSize: "clamp(1.4rem, 3vw, 2.5rem)" }}>
-                        {verse.lines.map((line, li) => (
+                        {verse.lines.map((line: string, li: number) => (
                           <span key={li} className="block">
                             {li === verse.lines.length - 1 ? <em className="text-primary/80">{line}</em> : line}
                           </span>
@@ -1201,55 +1478,26 @@ export default function Home() {
           <FadeIn className="mb-20 text-center flex flex-col items-center">
             <div className="flex items-center gap-4 mb-6">
               <div className="h-px w-12 bg-primary" />
-              <span className="font-sans text-[10px] tracking-[0.4em] uppercase text-primary">Our Offerings</span>
+              <span className="font-sans text-[10px] tracking-[0.4em] uppercase text-primary">{collectionsEyebrowVal}</span>
               <div className="h-px w-12 bg-primary" />
             </div>
             <h2 className="font-serif text-5xl md:text-7xl leading-[1.1]">
-              Couture Bridal <br/><span className="italic text-muted-foreground">Experiences</span>
+              {renderCollectionsTitle(collectionsTitleVal)}
             </h2>
           </FadeIn>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 lg:gap-x-16 gap-y-16 md:gap-y-20 max-w-6xl mx-auto" data-reveal-stagger>
-            {[
-              {
-                num: "01",
-                name: "The Signature Bride",
-                desc: "Our most requested comprehensive bridal styling. Flawless HD makeup, advanced draping, and intricate hairstyling designed for a majestic, commanding presence.",
-                img: gallery2Path,
-                alt: "Signature Bride",
-              },
-              {
-                num: "02",
-                name: "The Timeless Bride",
-                desc: "A classic, elegant aesthetic focusing on glowing skin and traditional elements that transcend fleeting trends. Pure, radiant, eternal.",
-                img: gallery3Path,
-                alt: "Timeless Bride",
-              },
-              {
-                num: "03",
-                name: "The Royal Glow",
-                desc: "Premium airbrush techniques paired with luxury 24k gold infused skincare prep for the ultimate illuminated finish. For the bride who demands absolute perfection.",
-                img: gallery1Path,
-                alt: "Royal Glow",
-              },
-              {
-                num: "04",
-                name: "The Modern Muse",
-                desc: "For the contemporary bride — minimalist, editorial-style makeup that highlights natural bone structure and lets your inner radiance lead.",
-                img: gallery4Path,
-                alt: "Modern Muse",
-              },
-            ].map((col, i) => (
+            {offeringsItems.map((col: any, i: number) => (
               <div 
-                key={i} 
+                key={col._id || i} 
                 className="flex flex-col group h-full"
                 data-reveal="fade-up"
               >
                 {/* Image - Supportive and Refined */}
                 <div className="relative aspect-[16/10] mb-8 overflow-hidden rounded-[4px] bg-muted shadow-md transition-all duration-700 group-hover:shadow-xl">
                   <img
-                    src={col.img}
-                    alt={col.alt}
+                    src={getOfferingImgSrc(col)}
+                    alt={getOfferingImgAlt(col)}
                     className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
                   />
                 </div>
@@ -1257,20 +1505,20 @@ export default function Home() {
                 {/* Text Content */}
                 <div className="flex flex-col flex-1">
                   <div className="flex items-center gap-3 mb-4">
-                    <span className="font-sans text-[10px] tracking-[0.3em] text-primary/60 font-medium">{col.num}</span>
+                    <span className="font-sans text-[10px] tracking-[0.3em] text-primary/60 font-medium">{formatOfferingNumber(col.number)}</span>
                     <div className="h-px w-6 bg-primary/30 transition-all duration-700 group-hover:w-12 group-hover:bg-primary" />
                   </div>
                   <h3 className="font-serif text-2xl md:text-3xl mb-4 tracking-wide text-foreground">{col.name}</h3>
                   <p className="font-sans font-light text-muted-foreground leading-relaxed mb-8 text-sm md:text-base">
-                    {col.desc}
+                    {col.description}
                   </p>
                   <div className="mt-auto">
                     <a
                       href="#book"
-                      data-testid={`link-collection-${col.num}`}
+                      data-testid={`link-collection-${formatOfferingNumber(col.number)}`}
                       className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.3em] border-b border-foreground/20 pb-1 hover:text-primary hover:border-primary transition-all duration-500 group/link"
                     >
-                      Request Consultation
+                      {col.ctaText || "Request Consultation"}
                       <ArrowUpRight size={12} className="transform group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5 transition-transform" />
                     </a>
                   </div>
@@ -1298,51 +1546,32 @@ export default function Home() {
         <div className="container mx-auto px-6 md:px-12 relative z-10">
           {/* Header */}
           <FadeIn className="mb-24 flex flex-col items-center text-center">
-            <span className="font-sans text-[10px] tracking-[0.5em] text-[#B79272] uppercase mb-6 font-medium">Recognition Earned Through Passion</span>
+            <span className="font-sans text-[10px] tracking-[0.5em] text-[#B79272] uppercase mb-6 font-medium">{awardsEyebrowVal}</span>
             <h2 className="font-serif text-5xl md:text-8xl font-light text-foreground leading-[0.9] mb-8">
-              Awards &  <em className="text-[#B79272]">Recognition</em>
+              {renderAwardsTitle(awardsTitleVal)}
             </h2>
             <p className="font-serif italic text-xl md:text-2xl text-muted-foreground max-w-2xl">
-              "Honoured by industry experts and bridal beauty leaders for excellence in bridal artistry."
+              "{awardsQuoteVal}"
             </p>
           </FadeIn>
 
           {/* Awards Grid */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12 lg:gap-16 mb-32">
-            {[
-              {
-                title: "International Bridal Excellence",
-                desc: "Recognized for exceptional bridal transformations.",
-                loc: "Dubai • 2024",
-                img: lens1Path
-              },
-              {
-                title: "Global Beauty Leader",
-                desc: "Honoured for influence in luxury bridal artistry.",
-                loc: "London • 2023",
-                img: lens2Path
-              },
-              {
-                title: "Master of Bridal Artistry",
-                desc: "Excellence in couture bridal transformations.",
-                loc: "Mumbai • 2024",
-                img: lens3Path
-              }
-            ].map((award, i) => (
-              <FadeIn key={i} delay={i * 0.1} className="group">
+            {awardsItems.map((award: any, i: number) => (
+              <FadeIn key={award._id || i} delay={i * 0.1} className="group">
                 <div className="relative mb-8 overflow-hidden rounded-[24px] border border-[#B79272]/10 bg-white/5 backdrop-blur-sm transition-all duration-700 hover:-translate-y-2 hover:border-[#B79272]/30 hover:shadow-[0_20px_50px_rgba(183,146,114,0.15)]">
                   <div className="aspect-[4/5] overflow-hidden">
                     <img 
-                      src={award.img} 
-                      alt={award.title} 
+                      src={getAwardImgSrc(award)} 
+                      alt={getAwardImgAlt(award)} 
                       className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
                     />
                   </div>
                 </div>
                 <div className="text-center px-4">
                   <h3 className="font-serif text-2xl mb-3 text-foreground">{award.title}</h3>
-                  <p className="font-sans text-[11px] tracking-widest uppercase text-muted-foreground mb-4 leading-relaxed">{award.desc}</p>
-                  <div className="font-sans text-[10px] tracking-[0.3em] text-[#B79272] uppercase font-medium">{award.loc}</div>
+                  <p className="font-sans text-[11px] tracking-widest uppercase text-muted-foreground mb-4 leading-relaxed">{award.description}</p>
+                  <div className="font-sans text-[10px] tracking-[0.3em] text-[#B79272] uppercase font-medium">{getAwardLocationAndYear(award)}</div>
                 </div>
               </FadeIn>
             ))}
@@ -1351,21 +1580,18 @@ export default function Home() {
           {/* Trust Indicators Strip */}
           <FadeIn delay={0.4} className="border-t border-[#B79272]/20 pt-20">
             <div className="grid grid-cols-2 md:grid-cols-5 gap-y-12 gap-x-8">
-              {[
-                { icon: Trophy, title: "Award Winning", desc: "Recognized globally for excellence" },
-                { icon: Users, title: "500+ Brides", desc: "A legacy of unforgettable memories" },
-                { icon: Globe, title: "International", desc: "Artistry that transcends borders" },
-                { icon: Star, title: "Industry Expert", desc: "As seen in leading publications" },
-                { icon: Gem, title: "Luxury Experience", desc: "Bespoke beauty for your day" }
-              ].map((item, i) => (
-                <div key={i} className="flex flex-col items-center text-center group">
-                  <div className="mb-6 p-4 rounded-full border border-[#B79272]/10 bg-[#B79272]/5 transition-all duration-500 group-hover:bg-[#B79272]/10 group-hover:scale-110">
-                    <item.icon size={20} className="text-[#B79272]" strokeWidth={1.5} />
+              {awardsTrustIndicatorsVal.map((item: any, i: number) => {
+                const IconComponent = iconComponentMap[item.icon] || Trophy;
+                return (
+                  <div key={i} className="flex flex-col items-center text-center group">
+                    <div className="mb-6 p-4 rounded-full border border-[#B79272]/10 bg-[#B79272]/5 transition-all duration-500 group-hover:bg-[#B79272]/10 group-hover:scale-110">
+                      <IconComponent size={20} className="text-[#B79272]" strokeWidth={1.5} />
+                    </div>
+                    <h4 className="font-serif text-lg mb-2 text-foreground">{item.title}</h4>
+                    <p className="font-sans text-[8px] tracking-[0.2em] uppercase text-muted-foreground leading-relaxed px-2">{item.description}</p>
                   </div>
-                  <h4 className="font-serif text-lg mb-2 text-foreground">{item.title}</h4>
-                  <p className="font-sans text-[8px] tracking-[0.2em] uppercase text-muted-foreground leading-relaxed px-2">{item.desc}</p>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </FadeIn>
         </div>
@@ -1377,17 +1603,17 @@ export default function Home() {
       <section className="py-40 bg-[#0a0a0a] relative overflow-hidden">
         <div className="container mx-auto px-6 md:px-12 relative z-10">
           <FadeIn className="mb-24">
-            <span className="font-sans text-[9px] tracking-[0.4em] text-primary uppercase block mb-4">The Archive in Motion</span>
+            <span className="font-sans text-[9px] tracking-[0.4em] text-primary uppercase block mb-4">{archiveInMotionEyebrowVal}</span>
             <h2 className="font-serif text-5xl md:text-7xl font-light text-white leading-[0.9]">
               Moments<br/><em className="text-[#B79272]/60">Frozen in Light</em>
             </h2>
           </FadeIn>
 
           {/* Horizontal scrolling reel strip */}
-          <InstagramReelsSection />
+          <InstagramReelsSection reels={archiveInMotionItems} />
           
           <p className="font-sans text-[9px] tracking-[0.4em] text-white/40 uppercase mt-12 text-center">
-            Follow <span className="text-[#B79272]">@agmakeupstudio</span> for the full story
+            {archiveInMotionCaptionVal}
           </p>
         </div>
 
@@ -1413,7 +1639,7 @@ export default function Home() {
         {/* Brand Trust Strip */}
         <div className="w-full overflow-hidden mb-24 border-t border-b border-[#B79272]/20 py-6 relative z-10">
           <div className="scroll-strip">
-            {['Vogue India', 'Elle Weddings', 'Brides Today', 'WedMeGood', 'The Wed', 'Bridal Asia', 'Vogue India', 'Elle Weddings', 'Brides Today', 'WedMeGood', 'The Wed', 'Bridal Asia'].map((brand, i) => (
+            {testimonialsBrandStripVal.map((brand: string, i: number) => (
               <span key={i} className="font-serif italic text-2xl text-muted-foreground mx-12 whitespace-nowrap">{brand}</span>
             ))}
           </div>
@@ -1426,33 +1652,28 @@ export default function Home() {
             <FadeIn>
               <div className="font-serif text-8xl text-primary/50 leading-none h-16">"</div>
               <p className="font-serif italic text-3xl md:text-5xl text-foreground leading-[1.3] mb-12">
-                Anu didn't just do my makeup; she crafted a vision. I felt like I stepped out of a Vogue India editorial. Truly unforgettable.
+                {featuredTestimonial.quote}
               </p>
               <div className="flex items-center gap-6">
                 <div className="h-px w-12 bg-primary" />
                 <div>
-                  <div className="font-serif text-xl">Priyanka S.</div>
-                  <div className="font-sans text-[9px] uppercase tracking-[0.3em] text-muted-foreground mt-1">Destination Bride</div>
+                  <div className="font-serif text-xl">{featuredTestimonial.brideName}</div>
+                  <div className="font-sans text-[9px] uppercase tracking-[0.3em] text-muted-foreground mt-1">{featuredTestimonial.brideType}</div>
                 </div>
               </div>
             </FadeIn>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-16 mt-32 max-w-5xl mx-auto border-t border-[#B79272]/25 pt-16">
-            <FadeIn delay={0.1}>
-              <p className="font-serif italic text-2xl text-foreground/70 mb-8 leading-relaxed">
-                "The detail, the care, the luxury experience. The AG team understands how to make a bride feel like absolute royalty."
-              </p>
-              <div className="font-serif text-lg">Meera R.</div>
-              <div className="font-sans text-[9px] uppercase tracking-[0.3em] text-muted-foreground mt-1">Royal Palace Bride</div>
-            </FadeIn>
-            <FadeIn delay={0.2}>
-              <p className="font-serif italic text-2xl text-foreground/70 mb-8 leading-relaxed">
-                "My makeup lasted flawlessly through tears, laughter, and a night of dancing. She is an absolute master of her craft."
-              </p>
-              <div className="font-serif text-lg">Aisha M.</div>
-              <div className="font-sans text-[9px] uppercase tracking-[0.3em] text-muted-foreground mt-1">Classic Bride</div>
-            </FadeIn>
+            {finalRemainingTestimonials.map((t: any, i: number) => (
+              <FadeIn key={t._id || i} delay={0.1 + i * 0.1}>
+                <p className="font-serif italic text-2xl text-foreground/70 mb-8 leading-relaxed">
+                  "{t.quote}"
+                </p>
+                <div className="font-serif text-lg">{t.brideName}</div>
+                <div className="font-sans text-[9px] uppercase tracking-[0.3em] text-muted-foreground mt-1">{t.brideType}</div>
+              </FadeIn>
+            ))}
           </div>
         </div>
       </section>
@@ -1473,37 +1694,66 @@ export default function Home() {
           <FadeIn>
             <div className="flex items-center justify-center gap-4 mb-6">
               <div className="h-px w-8 bg-primary/40" />
-              <span className="font-sans text-[10px] tracking-[0.4em] uppercase text-foreground">The Atelier</span>
+              <span className="font-sans text-[10px] tracking-[0.4em] uppercase text-foreground">{atelierEyebrowVal}</span>
               <div className="h-px w-8 bg-primary/40" />
             </div>
             
             <p className="font-serif italic text-3xl md:text-5xl mt-8 mb-24 text-foreground max-w-4xl mx-auto leading-tight">
-              Crafted exclusively with the world's most prestigious beauty houses to ensure a flawless, enduring finish.
+              {atelierQuoteVal}
             </p>
 
             {/* Editorial Brand Showcase */}
             <div className="w-full max-w-5xl mx-auto mt-16 mb-4">
               {/* Row 1 */}
               <FadeIn delay={0} className="flex items-baseline justify-center gap-8 md:gap-16 mb-10 flex-wrap">
-                <span className="font-serif text-3xl md:text-5xl tracking-[0.25em] text-foreground/75 hover:text-foreground transition-colors duration-500 cursor-default whitespace-nowrap">DIOR</span>
-                <span className="font-serif text-xl md:text-2xl tracking-widest text-foreground/50 hover:text-foreground/80 transition-colors duration-500 cursor-default whitespace-nowrap">CHARLOTTE TILBURY</span>
+                {row1Brands.map((brand: string, idx: number) => (
+                  <span 
+                    key={idx} 
+                    className={idx % 2 === 0 
+                      ? "font-serif text-3xl md:text-5xl tracking-[0.25em] text-foreground/75 hover:text-foreground transition-colors duration-500 cursor-default whitespace-nowrap" 
+                      : "font-serif text-xl md:text-2xl tracking-widest text-foreground/50 hover:text-foreground/80 transition-colors duration-500 cursor-default whitespace-nowrap"
+                    }
+                  >
+                    {brand}
+                  </span>
+                ))}
               </FadeIn>
               {/* Row 2 */}
               <FadeIn delay={0.1} className="flex items-baseline justify-center gap-8 md:gap-20 mb-10 flex-wrap">
-                <span className="font-sans text-2xl md:text-4xl tracking-[0.35em] font-medium text-foreground/80 hover:text-foreground transition-colors duration-500 cursor-default whitespace-nowrap">M·A·C</span>
-                <span className="font-serif text-2xl md:text-3xl tracking-widest text-foreground/55 hover:text-foreground/80 transition-colors duration-500 cursor-default whitespace-nowrap">ESTÉE LAUDER</span>
-                <span className="font-sans text-xl md:text-2xl tracking-[0.4em] text-foreground/45 hover:text-foreground/70 transition-colors duration-500 cursor-default whitespace-nowrap">NARS</span>
+                {row2Brands.map((brand: string, idx: number) => (
+                  <span 
+                    key={idx} 
+                    className={idx === 0 
+                      ? "font-sans text-2xl md:text-4xl tracking-[0.35em] font-medium text-foreground/80 hover:text-foreground transition-colors duration-500 cursor-default whitespace-nowrap" 
+                      : idx === 1 
+                        ? "font-serif text-2xl md:text-3xl tracking-widest text-foreground/55 hover:text-foreground/80 transition-colors duration-500 cursor-default whitespace-nowrap" 
+                        : "font-sans text-xl md:text-2xl tracking-[0.4em] text-foreground/45 hover:text-foreground/70 transition-colors duration-500 cursor-default whitespace-nowrap"
+                    }
+                  >
+                    {brand}
+                  </span>
+                ))}
               </FadeIn>
               {/* Row 3 */}
               <FadeIn delay={0.2} className="flex items-baseline justify-center gap-8 md:gap-16 flex-wrap">
-                <span className="font-sans text-lg md:text-xl tracking-[0.3em] text-foreground/40 hover:text-foreground/65 transition-colors duration-500 cursor-default whitespace-nowrap">TOM FORD</span>
-                <span className="font-serif text-xl md:text-2xl tracking-widest text-foreground/50 hover:text-foreground/75 transition-colors duration-500 cursor-default whitespace-nowrap">HUDA BEAUTY</span>
-                <span className="font-sans text-sm md:text-base tracking-[0.4em] text-foreground/35 hover:text-foreground/60 transition-colors duration-500 cursor-default whitespace-nowrap">BOBBI BROWN</span>
+                {row3Brands.map((brand: string, idx: number) => (
+                  <span 
+                    key={idx} 
+                    className={idx === 0 
+                      ? "font-sans text-lg md:text-xl tracking-[0.3em] text-foreground/40 hover:text-foreground/65 transition-colors duration-500 cursor-default whitespace-nowrap" 
+                      : idx === 1 
+                        ? "font-serif text-xl md:text-2xl tracking-widest text-[#B79272] transition-colors duration-500 cursor-default whitespace-nowrap" 
+                        : "font-sans text-sm md:text-base tracking-[0.4em] text-foreground/35 hover:text-foreground/60 transition-colors duration-500 cursor-default whitespace-nowrap"
+                    }
+                  >
+                    {brand}
+                  </span>
+                ))}
               </FadeIn>
             </div>
             
             <p className="font-sans text-[9px] uppercase tracking-[0.3em] text-foreground/50 mt-12">
-              Curated for the AG Makeup Studio
+              {atelierFooterTextVal}
             </p>
           </FadeIn>
         </div>
@@ -1521,11 +1771,11 @@ export default function Home() {
         <div className="container mx-auto px-6 md:px-12 max-w-3xl relative z-10">
           <FadeIn className="text-center mb-20">
             <div className="flex items-center justify-center gap-4 mb-6">
-              <span className="font-sans text-[10px] tracking-[0.4em] uppercase text-primary">Inquiries</span>
+              <span className="font-sans text-[10px] tracking-[0.4em] uppercase text-primary">{bookingFormEyebrowVal}</span>
             </div>
-            <h2 className="font-serif text-6xl md:text-8xl mb-8 text-foreground">Begin Your Story</h2>
+            <h2 className="font-serif text-6xl md:text-8xl mb-8 text-foreground">{bookingFormTitleVal}</h2>
             <p className="font-sans font-light text-muted-foreground text-lg">
-              We accept a limited number of brides per season to ensure the highest level of artistry and attention.
+              {bookingFormSubtitleVal}
             </p>
           </FadeIn>
 
@@ -1570,7 +1820,7 @@ export default function Home() {
 
       {/* WhatsApp Floating Button */}
       <a
-        href="https://wa.me/919999999999?text=Hi%2C%20I%27d%20love%20to%20book%20a%20bridal%20consultation%20with%20AG%20Makeup%20Studio"
+        href={whatsappLink}
         target="_blank"
         rel="noopener noreferrer"
         data-testid="button-whatsapp"
@@ -1619,7 +1869,7 @@ export default function Home() {
               <div className="flex flex-col gap-8">
                 <div className="relative group rounded-[24px] overflow-hidden border border-[#B79272]/20 bg-white/[0.03] backdrop-blur-md transition-all duration-700 hover:border-[#B79272]/40 hover:shadow-[0_20px_50px_rgba(183,146,114,0.15)] h-[320px]">
                   <iframe 
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3687.261234471011!2d70.0435123759247!3d22.456747437151046!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x395715569485764d%3A0xc3929f635f799863!2sAG%20Makeup%20Studio!5e0!3m2!1sen!2sin!4v1717500000000!5m2!1sen!2sin" 
+                    src={mapEmbedUrlVal} 
                     width="100%" 
                     height="100%" 
                     style={{ border: 0, filter: 'invert(90%) hue-rotate(180deg) brightness(95%) contrast(90%)' }} 
@@ -1633,16 +1883,16 @@ export default function Home() {
 
                 <div className="space-y-6">
                   <div className="space-y-2">
-                    <span className="font-sans text-[11px] tracking-[0.5em] uppercase text-[#B79272] block font-semibold">AG MAKEUP STUDIO</span>
+                    <span className="font-sans text-[11px] tracking-[0.5em] uppercase text-[#B79272] block font-semibold">{siteSettings?.businessName || "AG MAKEUP STUDIO"}</span>
                     <p className="font-serif text-xl md:text-2xl leading-relaxed opacity-90 text-white/80">
-                      Chitrakoot Society, Jamnagar Road<br />
-                      Behind Crystal Mall<br />
-                      Jamnagar, Gujarat 361002
+                      {addressStreet}<br />
+                      {addressCity}<br />
+                      {addressPostcode}
                     </p>
                   </div>
                   
                   <a 
-                    href="https://www.google.com/maps/dir/?api=1&destination=AG+Makeup+Studio+Chitrakoot+Society+Jamnagar+Gujarat+361002"
+                    href={mapDirectionsUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-3 px-10 py-4 bg-transparent border border-[#B79272]/30 text-[#B79272] font-sans text-[11px] tracking-[0.3em] uppercase hover:bg-[#B79272] hover:text-white transition-all duration-500 rounded-full group/btn shadow-lg"
@@ -1659,7 +1909,7 @@ export default function Home() {
               <div className="font-serif text-7xl md:text-9xl tracking-widest uppercase text-white mb-12">AG</div>
               <div className="w-20 h-[1px] bg-[#B79272]/40 mb-12" />
               <p className="font-serif italic text-2xl md:text-4xl text-[#B79272]/80 max-w-sm leading-relaxed mb-16">
-                "Artistry designed for unforgettable memories."
+                "{footerContentVal}"
               </p>
               <div className="space-y-4 font-sans text-[11px] tracking-[0.5em] uppercase text-white/30">
                 <p className="hover:text-[#B79272] transition-colors duration-300">Bridal Makeup</p>
@@ -1671,13 +1921,9 @@ export default function Home() {
             {/* RIGHT COLUMN: Luxury Social Panel */}
             <FadeIn delay={0.2} className="flex flex-col gap-0 lg:pl-16 order-3 lg:order-3">
               <span className="font-sans text-[11px] tracking-[0.7em] uppercase text-[#B79272] block mb-16 font-semibold">CONNECT</span>
-              {[
-                { name: 'Instagram', url: '#' },
-                { name: 'Pinterest', url: '#' },
-                { name: 'Behance', url: '#' }
-              ].map((social, i) => (
+              {socialLinksVal.map((social: any, i: number) => (
                 <a 
-                  key={social.name}
+                  key={social.name || i}
                   href={social.url}
                   className="group flex items-center justify-between py-10 border-b border-white/10 last:border-0 relative overflow-hidden"
                 >
@@ -1698,8 +1944,8 @@ export default function Home() {
               
               <div className="mt-24 space-y-3">
                 <span className="font-sans text-[10px] tracking-[0.5em] uppercase text-white/20 block">Private Inquiries</span>
-                <a href="mailto:hello@agmakeupstudio.com" className="font-serif text-2xl text-white/80 hover:text-[#B79272] transition-colors duration-500 border-b border-[#B79272]/10 pb-2 inline-block">
-                  hello@agmakeupstudio.com
+                <a href={`mailto:${contactEmailVal}`} className="font-serif text-2xl text-white/80 hover:text-[#B79272] transition-colors duration-500 border-b border-[#B79272]/10 pb-2 inline-block">
+                  {contactEmailVal}
                 </a>
               </div>
             </FadeIn>
@@ -1709,7 +1955,7 @@ export default function Home() {
           {/* Copyright Bottom */}
           <div className="mt-32 md:mt-48 pt-16 border-t border-white/5 flex flex-col items-center">
             <div className="text-[11px] tracking-[0.6em] font-sans text-white/10 uppercase">
-              &copy; {new Date().getFullYear()} AG Makeup Studio. Crafted for Elegance.
+              &copy; {new Date().getFullYear()} {siteSettings?.businessName || "AG Makeup Studio"}. {copyrightTextVal}
             </div>
           </div>
         </div>
