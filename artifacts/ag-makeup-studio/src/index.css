@@ -1,4 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@300;400&display=swap');
 @import "tailwindcss";
 @import "tw-animate-css";
 @plugin "@tailwindcss/typography";
@@ -43,27 +42,31 @@
 
 :root {
   /* AG Makeup Studio Color System - Refined Luxury */
-  --primary: 30 25% 65%; /* Soft Champagne */
+  --primary: 30 25% 65%;
+  /* Soft Champagne */
   --primary-foreground: 30 46% 95%;
-  
-  --secondary: 12 25% 72%; /* Dusty Blush */
+
+  --secondary: 12 25% 72%;
+  /* Dusty Blush */
   --secondary-foreground: 21 30% 22%;
-  
-  --background: 35 30% 97%; /* Deep Pearl Ivory */
-  --foreground: 20 20% 15%; /* Espresso Cocoa */
-  
+
+  --background: 35 30% 97%;
+  /* Deep Pearl Ivory */
+  --foreground: 20 20% 15%;
+  /* Espresso Cocoa */
+
   --muted: 31 36% 89%;
   --muted-foreground: 20 15% 43%;
 
   --card: 35 30% 97%;
   --card-foreground: 20 20% 15%;
-  
+
   --popover: 35 30% 97%;
   --popover-foreground: 20 20% 15%;
 
   --border: 30 20% 80%;
   --input: 30 20% 80%;
-  
+
   --accent: 30 36% 66%;
   --accent-foreground: 20 20% 15%;
 
@@ -78,11 +81,17 @@
   * {
     @apply border-border;
   }
+
   body {
     @apply font-sans antialiased bg-background text-foreground;
   }
-  
-  h1, h2, h3, h4, h5, h6 {
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     @apply font-serif font-light;
   }
 }
@@ -98,142 +107,6 @@
   mix-blend-mode: multiply;
 }
 
-/* Luxury Couture Preloader — Anu Giri Studio */
-html.preloader-active {
-  overflow: hidden;
-  background: #faf7f2;
-}
-
-.preloader-root {
-  pointer-events: all;
-  z-index: 10001;
-  position: fixed;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #faf7f2;
-  opacity: 1;
-  visibility: visible;
-}
-
-/* Vertical Split Panels (Luxury Curtains) */
-.preloader-curtain {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 50.5%;
-  background: #faf7f2;
-  will-change: transform;
-  z-index: 5;
-}
-
-.preloader-curtain--left {
-  left: 0;
-  border-right: 1px solid rgba(183, 146, 114, 0.08);
-}
-
-.preloader-curtain--right {
-  right: 0;
-  border-left: 1px solid rgba(183, 146, 114, 0.08);
-}
-
-/* Ambient glow and depth */
-.preloader-glow {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 70vw;
-  height: 70vw;
-  max-width: 900px;
-  max-height: 900px;
-  background: radial-gradient(
-    circle at center,
-    rgba(212, 175, 55, 0.12) 0%,
-    transparent 70%
-  );
-  pointer-events: none;
-  z-index: 1;
-}
-
-/* Typography Reveal */
-.preloader-brand-title {
-  font-family: var(--app-font-serif);
-  font-size: clamp(2.5rem, 6vw, 4.5rem);
-  font-weight: 300;
-  color: #b79272;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  text-align: center;
-  line-height: 1.1;
-  position: relative;
-  z-index: 3;
-  display: flex;
-  justify-content: center;
-  overflow: hidden;
-}
-
-.preloader-char {
-  display: inline-block;
-  will-change: transform, opacity;
-}
-
-.preloader-tagline {
-  font-family: var(--app-font-sans);
-  font-size: clamp(0.7rem, 1.5vw, 0.9rem);
-  font-weight: 300;
-  color: #b79272;
-  letter-spacing: 0.5em;
-  text-transform: uppercase;
-  text-align: center;
-  margin-top: 2rem;
-  z-index: 3;
-  opacity: 0;
-  will-change: opacity, transform;
-}
-
-/* Shimmer pass across title */
-.preloader-shimmer {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(
-    105deg,
-    transparent 0%,
-    transparent 40%,
-    rgba(255, 255, 255, 0.6) 50%,
-    transparent 60%,
-    transparent 100%
-  );
-  mix-blend-mode: overlay;
-  pointer-events: none;
-  z-index: 4;
-  opacity: 0;
-}
-
-/* Subtle floating ivory particles */
-.preloader-particle {
-  position: absolute;
-  width: 2px;
-  height: 2px;
-  background: #fff;
-  border-radius: 50%;
-  pointer-events: none;
-  opacity: 0;
-  z-index: 1;
-}
-
-.preloader-grain {
-  position: absolute;
-  inset: 0;
-  background-image: url('data:image/svg+xml,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)"/%3E%3C/svg%3E');
-  opacity: 0.02;
-  pointer-events: none;
-  z-index: 6;
-}
 
 
 
@@ -269,44 +142,95 @@ html.lenis body {
 
 /* Ambient Pearls */
 @keyframes ambient-float {
-  0% { transform: translateY(110vh) scale(0.8); opacity: 0; }
-  10% { opacity: 0.04; }
-  90% { opacity: 0.04; }
-  100% { transform: translateY(-10vh) scale(1.2); opacity: 0; }
+  0% {
+    transform: translateY(110vh) scale(0.8);
+    opacity: 0;
+  }
+
+  10% {
+    opacity: 0.04;
+  }
+
+  90% {
+    opacity: 0.04;
+  }
+
+  100% {
+    transform: translateY(-10vh) scale(1.2);
+    opacity: 0;
+  }
 }
+
 .ambient-pearl {
   position: absolute;
   bottom: -100px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(199,169,138,0.3) 0%, rgba(215,187,180,0.1) 50%, transparent 70%);
+  background: radial-gradient(circle, rgba(199, 169, 138, 0.3) 0%, rgba(215, 187, 180, 0.1) 50%, transparent 70%);
   filter: blur(30px);
   animation: ambient-float linear infinite;
 }
 
 /* DSLR Camera Pan Crossfade */
 @keyframes dslr-pan-1 {
-  0%, 45% { opacity: 1; transform: scale(1.02) translateX(2%); }
-  55%, 95% { opacity: 0; transform: scale(1) translateX(0%); }
-  100% { opacity: 1; transform: scale(1.02) translateX(2%); }
+
+  0%,
+  45% {
+    opacity: 1;
+    transform: scale(1.02) translateX(2%);
+  }
+
+  55%,
+  95% {
+    opacity: 0;
+    transform: scale(1) translateX(0%);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1.02) translateX(2%);
+  }
 }
 
 @keyframes dslr-pan-2 {
-  0%, 45% { opacity: 0; transform: scale(1) translateX(0%); }
-  55%, 95% { opacity: 1; transform: scale(1.02) translateX(-2%); }
-  100% { opacity: 0; transform: scale(1) translateX(0%); }
+
+  0%,
+  45% {
+    opacity: 0;
+    transform: scale(1) translateX(0%);
+  }
+
+  55%,
+  95% {
+    opacity: 1;
+    transform: scale(1.02) translateX(-2%);
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(1) translateX(0%);
+  }
 }
 
 .hero-img-1 {
   animation: dslr-pan-1 20s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
+
 .hero-img-2 {
   animation: dslr-pan-2 20s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
 
 @keyframes lens-breathe {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.008); }
+
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.008);
+  }
 }
+
 .lens-breathe {
   animation: lens-breathe 4s ease-in-out infinite;
 }
@@ -316,7 +240,8 @@ html.lenis body {
   position: absolute;
   inset: 0;
   z-index: 15;
-  backdrop-filter: blur(4px); /* Reduced for more clarity */
+  backdrop-filter: blur(4px);
+  /* Reduced for more clarity */
   mask-image: radial-gradient(ellipse at center, transparent 50%, black 100%);
   -webkit-mask-image: radial-gradient(ellipse at center, transparent 50%, black 100%);
   pointer-events: none;
@@ -329,18 +254,26 @@ html.lenis body {
   right: 0;
   height: 60px;
   background: black;
-  opacity: 0.2; /* Lightened */
+  opacity: 0.2;
+  /* Lightened */
   z-index: 30;
   pointer-events: none;
 }
-.letterbox.top { top: 0; }
-.letterbox.bottom { bottom: 0; }
+
+.letterbox.top {
+  top: 0;
+}
+
+.letterbox.bottom {
+  bottom: 0;
+}
 
 /* Vignette */
 .vignette {
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle, transparent 40%, rgba(0,0,0,0.4) 100%); /* Softer vignette */
+  background: radial-gradient(circle, transparent 40%, rgba(0, 0, 0, 0.4) 100%);
+  /* Softer vignette */
   z-index: 20;
   pointer-events: none;
 }
@@ -368,14 +301,12 @@ html.lenis body {
 
 .leafy-btn:hover {
   border: 1px solid #f3b182;
-  background: linear-gradient(
-    85deg,
-    #fec195,
-    #fcc196,
-    #fabd92,
-    #fac097,
-    #fac39c
-  );
+  background: linear-gradient(85deg,
+      #fec195,
+      #fcc196,
+      #fabd92,
+      #fac097,
+      #fac39c);
   animation: wind 2s ease-in-out infinite;
 }
 
@@ -383,9 +314,11 @@ html.lenis body {
   0% {
     background-position: 0% 50%;
   }
+
   50% {
     background-position: 50% 100%;
   }
+
   100% {
     background-position: 0% 50%;
   }
@@ -408,9 +341,17 @@ html.lenis body {
 }
 
 @keyframes slay-1 {
-  0% { transform: rotate(10deg); }
-  50% { transform: rotate(-5deg); }
-  100% { transform: rotate(10deg); }
+  0% {
+    transform: rotate(10deg);
+  }
+
+  50% {
+    transform: rotate(-5deg);
+  }
+
+  100% {
+    transform: rotate(10deg);
+  }
 }
 
 .leafy-btn .icon-2 {
@@ -430,9 +371,17 @@ html.lenis body {
 }
 
 @keyframes slay-2 {
-  0% { transform: rotate(0deg); }
-  50% { transform: rotate(15deg); }
-  100% { transform: rotate(0); }
+  0% {
+    transform: rotate(0deg);
+  }
+
+  50% {
+    transform: rotate(15deg);
+  }
+
+  100% {
+    transform: rotate(0);
+  }
 }
 
 .leafy-btn .icon-3 {
@@ -452,9 +401,17 @@ html.lenis body {
 }
 
 @keyframes slay-3 {
-  0% { transform: rotate(0deg); }
-  50% { transform: rotate(-5deg); }
-  100% { transform: rotate(0); }
+  0% {
+    transform: rotate(0deg);
+  }
+
+  50% {
+    transform: rotate(-5deg);
+  }
+
+  100% {
+    transform: rotate(0);
+  }
 }
 
 /* Glass/Frosted Button Base Override for Leafy Effect */
@@ -480,7 +437,8 @@ html.lenis body {
 .candlelit-overlay {
   position: absolute;
   inset: 0;
-  background: rgba(255, 180, 100, 0.1); /* Slightly more subtle */
+  background: rgba(255, 180, 100, 0.1);
+  /* Slightly more subtle */
   mix-blend-mode: overlay;
   z-index: 21;
   pointer-events: none;
@@ -488,17 +446,49 @@ html.lenis body {
 
 /* Film Grain Animation */
 @keyframes grain-animation {
-  0%, 100% { transform: translate(0, 0); }
-  10% { transform: translate(-1%, -1%); }
-  20% { transform: translate(-2%, 1%); }
-  30% { transform: translate(1%, -2%); }
-  40% { transform: translate(-1%, 2%); }
-  50% { transform: translate(-2%, 1%); }
-  60% { transform: translate(2%, 0); }
-  70% { transform: translate(0, 2%); }
-  80% { transform: translate(-2%, 0); }
-  90% { transform: translate(1%, 1%); }
+
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+
+  10% {
+    transform: translate(-1%, -1%);
+  }
+
+  20% {
+    transform: translate(-2%, 1%);
+  }
+
+  30% {
+    transform: translate(1%, -2%);
+  }
+
+  40% {
+    transform: translate(-1%, 2%);
+  }
+
+  50% {
+    transform: translate(-2%, 1%);
+  }
+
+  60% {
+    transform: translate(2%, 0);
+  }
+
+  70% {
+    transform: translate(0, 2%);
+  }
+
+  80% {
+    transform: translate(-2%, 0);
+  }
+
+  90% {
+    transform: translate(1%, 1%);
+  }
 }
+
 .hero-grain {
   background-image: url('data:image/svg+xml,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.75" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)"/%3E%3C/svg%3E');
   animation: grain-animation 0.8s steps(8) infinite;
@@ -508,20 +498,22 @@ html.lenis body {
 .btn-frosted {
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  background: rgba(255,255,255,0.08);
-  border: 1px solid rgba(183,146,114,0.4);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(183, 146, 114, 0.4);
   transition: all 0.5s ease-out;
 }
+
 .btn-frosted:hover {
-  box-shadow: 0 0 25px rgba(183,146,114,0.25);
-  background: rgba(255,255,255,0.12);
-  border-color: rgba(183,146,114,0.6);
+  box-shadow: 0 0 25px rgba(183, 146, 114, 0.25);
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(183, 146, 114, 0.6);
 }
 
 /* Nav underline */
 .nav-link {
   position: relative;
 }
+
 .nav-link::after {
   content: '';
   position: absolute;
@@ -532,6 +524,7 @@ html.lenis body {
   background: currentColor;
   transition: width 0.4s ease, left 0.4s ease;
 }
+
 .nav-link:hover::after {
   width: 100%;
   left: 0;
@@ -539,9 +532,19 @@ html.lenis body {
 
 /* Particles */
 @keyframes particle-drift {
-  0% { transform: translateY(0) translateX(0); opacity: 0; }
-  50% { opacity: 0.4; }
-  100% { transform: translateY(-120px) translateX(30px); opacity: 0; }
+  0% {
+    transform: translateY(0) translateX(0);
+    opacity: 0;
+  }
+
+  50% {
+    opacity: 0.4;
+  }
+
+  100% {
+    transform: translateY(-120px) translateX(30px);
+    opacity: 0;
+  }
 }
 
 .particle {
@@ -557,11 +560,31 @@ html.lenis body {
 
 /* Scroll Line Pulse */
 @keyframes scroll-pulse {
-  0% { transform: scaleY(0); transform-origin: top; opacity: 0; }
-  50% { transform: scaleY(1); transform-origin: top; opacity: 1; }
-  50.1% { transform: scaleY(1); transform-origin: bottom; opacity: 1; }
-  100% { transform: scaleY(0); transform-origin: bottom; opacity: 0; }
+  0% {
+    transform: scaleY(0);
+    transform-origin: top;
+    opacity: 0;
+  }
+
+  50% {
+    transform: scaleY(1);
+    transform-origin: top;
+    opacity: 1;
+  }
+
+  50.1% {
+    transform: scaleY(1);
+    transform-origin: bottom;
+    opacity: 1;
+  }
+
+  100% {
+    transform: scaleY(0);
+    transform-origin: bottom;
+    opacity: 0;
+  }
 }
+
 .scroll-line {
   width: 1px;
   height: 60px;
@@ -585,19 +608,27 @@ html.lenis body {
 .editorial-image-hover {
   transition: transform 0.8s cubic-bezier(0.25, 0.1, 0.25, 1), filter 0.8s ease;
 }
+
 .group:hover .editorial-image-hover {
   transform: scale(1.04);
   filter: brightness(1.05);
 }
+
 .editorial-overlay {
   transition: opacity 0.8s ease;
 }
 
 /* Infinite Scroll Strip */
 @keyframes infinite-scroll {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
 }
+
 .scroll-strip {
   display: flex;
   width: max-content;
@@ -627,14 +658,19 @@ html.lenis body {
   overflow: hidden;
   transition: all 0.5s ease;
 }
+
 .btn-silk::before {
   content: '';
   position: absolute;
-  top: 0; left: -100%; width: 50%; height: 100%;
-  background: linear-gradient(to right, transparent, rgba(255,255,255,0.3), transparent);
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.3), transparent);
   transform: skewX(-20deg);
   transition: all 0.7s ease;
 }
+
 .btn-silk:hover::before {
   left: 150%;
 }
@@ -644,14 +680,162 @@ html.lenis body {
   transform-origin: left;
 }
 
-.scrollbar-hide::-webkit-scrollbar { display: none; }
-.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
 
 @keyframes slow-rotate-glow {
-  0% { transform: rotate(0deg) scale(1); }
-  50% { transform: rotate(180deg) scale(1.2); }
-  100% { transform: rotate(360deg) scale(1); }
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+
+  50% {
+    transform: rotate(180deg) scale(1.2);
+  }
+
+  100% {
+    transform: rotate(360deg) scale(1);
+  }
 }
+
 .atelier-bg-glow {
   animation: slow-rotate-glow 30s linear infinite;
+}
+
+/* ─── Bridal Moment Section — Expanded Editorial Layout ───────────────────── */
+/*
+ * Targeted via the unique `data-reveal-stagger` attribute on the 2×2 image grid.
+ * Overrides Tailwind's default `container` max-width and tight inline padding so
+ * the section spans 90-95 % of the viewport for a premium editorial feel.
+ * All animations, hover effects, and mobile-collapse behaviour are preserved.
+ */
+
+/* 1. Widen the inner container wrapper */
+section:has([data-reveal-stagger]) > .container,
+section:has([data-reveal-stagger]) > [class*="container"] {
+  width: min(95vw, 1800px);
+  max-width: min(95vw, 1800px);
+  padding-inline: clamp(24px, 3vw, 60px);
+  margin-inline: auto;
+}
+
+/* 2. Expand the two-column flex row — overrides md:gap-20 */
+@media (min-width: 768px) {
+  section:has([data-reveal-stagger]) .flex.md\:flex-row {
+    gap: clamp(40px, 5vw, 120px);
+    align-items: start;
+  }
+
+  /* 3. Image column: grow from 42 % → roughly 48 % for more visual weight */
+  section:has([data-reveal-stagger]) .flex.md\:flex-row > div:first-child {
+    width: 48% !important;
+    flex: none;
+  }
+
+  /* 4. Verse column: grows to fill the rest */
+  section:has([data-reveal-stagger]) .flex.md\:flex-row > div:last-child {
+    width: 52% !important;
+    flex: none;
+  }
+}
+
+/* 5. Image grid cells — enforce a taller minimum height so images are larger */
+section:has([data-reveal-stagger]) [data-reveal-stagger] > div {
+  min-height: clamp(180px, 22vw, 360px);
+}
+
+/* 6. On tablet (768px–1023px): slightly narrower container, same fluid padding */
+@media (min-width: 768px) and (max-width: 1023px) {
+  section:has([data-reveal-stagger]) > .container,
+  section:has([data-reveal-stagger]) > [class*="container"] {
+    width: min(96vw, 960px);
+    max-width: min(96vw, 960px);
+    padding-inline: clamp(20px, 4vw, 48px);
+  }
+}
+
+/* 7. Mobile: full bleed with comfortable side breathing room */
+@media (max-width: 767px) {
+  section:has([data-reveal-stagger]) > .container,
+  section:has([data-reveal-stagger]) > [class*="container"] {
+    width: 100%;
+    max-width: 100%;
+    padding-inline: clamp(16px, 5vw, 32px);
+  }
+
+  section:has([data-reveal-stagger]) [data-reveal-stagger] > div {
+    min-height: clamp(140px, 40vw, 240px);
+  }
+
+  /* Verse column → 2-column grid to mirror the image collage */
+  section:has([data-reveal-stagger]) .flex.flex-col.justify-between {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    align-items: stretch;
+  }
+
+  /* Each FadeIn verse wrapper fills its grid cell */
+  section:has([data-reveal-stagger]) .flex.flex-col.justify-between > * {
+    flex: unset;
+  }
+
+  /* The trailing bottom border rule spans both columns */
+  section:has([data-reveal-stagger]) .flex.flex-col.justify-between > div:last-child {
+    grid-column: 1 / -1;
+  }
+
+  /* Verse inner card: keep top border, tighten padding */
+  section:has([data-reveal-stagger]) .flex.flex-col.justify-between .py-6 {
+    padding-block: 0.875rem;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  /* Scale verse headline down so it fits in a half-width cell */
+  section:has([data-reveal-stagger]) .flex.flex-col.justify-between h3 {
+    font-size: clamp(1rem, 4.5vw, 1.4rem) !important;
+  }
+}
+
+/* ─── Footer — Reduce Excessive Vertical Space ─────────────────────────────── */
+/*
+ * The footer JSX uses py-32/md:py-48, mt-32/md:mt-48, pt-16, py-10, mt-24 etc.
+ * These create huge blank gaps. Override them via CSS targeting the unique
+ * dark footer element. No colours, typography, or hover effects are changed.
+ */
+
+/* 1. Footer outer padding — tighten from py-32/py-48 to something proportional */
+footer:has(.grid) {
+  padding-top: clamp(48px, 6vw, 96px) !important;
+  padding-bottom: clamp(40px, 5vw, 80px) !important;
+}
+
+/* 2. Copyright row — massive mt-32/mt-48 + pt-16 → compact */
+footer:has(.grid) .border-t.border-white\/5 {
+  margin-top: clamp(32px, 4vw, 64px) !important;
+  padding-top: clamp(20px, 2vw, 36px) !important;
+}
+
+/* 3. Social link rows — py-10 per row is too tall */
+footer:has(.grid) a.py-10 {
+  padding-top: clamp(12px, 1.5vw, 20px) !important;
+  padding-bottom: clamp(12px, 1.5vw, 20px) !important;
+}
+
+/* 4. Right column "Private Inquiries" block — mt-24 → compact */
+footer:has(.grid) .mt-24 {
+  margin-top: clamp(24px, 3vw, 48px) !important;
+}
+
+/* 5. Grid gap between columns on mobile — gap-20 is still too open */
+@media (max-width: 1023px) {
+  footer:has(.grid) .grid {
+    gap: clamp(32px, 5vw, 64px) !important;
+  }
 }

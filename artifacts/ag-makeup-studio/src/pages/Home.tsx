@@ -244,7 +244,7 @@ function TransformationSlider({
             >
               {/* Left/right arrows */}
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                <path d="M6 10l-3 3m0 0l3 3m-3-3h14m0 0l-3-3m3 3l-3 3" stroke="rgba(183,146,114,0.9)" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M6 10l-3 3m0 0l3 3m-3-3h14m0 0l-3-3m3 3l-3 3" stroke="rgba(183,146,114,0.9)" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </div>
           </div>
@@ -505,7 +505,7 @@ const CinematicHeroVideo = memo(
         const observer = new IntersectionObserver(
           ([entry]) => {
             if (entry.isIntersecting) {
-              video.play().catch(() => {});
+              video.play().catch(() => { });
             } else {
               video.pause();
             }
@@ -515,7 +515,7 @@ const CinematicHeroVideo = memo(
 
         observer.observe(video);
         // Play immediately if intersecting when ready
-        video.play().catch(() => {});
+        video.play().catch(() => { });
 
         return () => {
           observer.disconnect();
@@ -527,7 +527,7 @@ const CinematicHeroVideo = memo(
         if (video) {
           video.load();
           if (isReady) {
-            video.play().catch(() => {});
+            video.play().catch(() => { });
           }
         }
       }, [videoUrl, posterUrl, isReady]);
@@ -628,13 +628,13 @@ export default function Home() {
   const portfolioItems = portfolioData && portfolioData.length > 0
     ? portfolioData
     : [
-        { isStatic: true, src: gallery1Path, alt: "Bridal portrait", caption: "01. The Signature Look, New Delhi" },
-        { isStatic: true, src: gallery3Path, alt: "Bridal in motion", caption: "02. Veil in Flight" },
-        { isStatic: true, src: gallery4Path, alt: "Makeup closeup", caption: "03. Luminous Finish" },
-        { isStatic: true, src: gallery2Path, alt: "Bridal hands", caption: "04. Mehndi & Pearls" },
-        { isStatic: true, src: gallery6Path, alt: "Bridal Joy", caption: "05. Candid Radiance" },
-        { isStatic: true, src: gallery5Path, alt: "Jewelry", caption: "06. Heritage Adornments" },
-      ];
+      { isStatic: true, src: gallery1Path, alt: "Bridal portrait", caption: "01. The Signature Look, New Delhi" },
+      { isStatic: true, src: gallery3Path, alt: "Bridal in motion", caption: "02. Veil in Flight" },
+      { isStatic: true, src: gallery4Path, alt: "Makeup closeup", caption: "03. Luminous Finish" },
+      { isStatic: true, src: gallery2Path, alt: "Bridal hands", caption: "04. Mehndi & Pearls" },
+      { isStatic: true, src: gallery6Path, alt: "Bridal Joy", caption: "05. Candid Radiance" },
+      { isStatic: true, src: gallery5Path, alt: "Jewelry", caption: "06. Heritage Adornments" },
+    ];
 
   const getPortfolioImgSrc = (item: any) => {
     if (item.isStatic) return item.src;
@@ -655,9 +655,9 @@ export default function Home() {
   const biographyParagraphs = homepage?.founderBiography
     ? homepage.founderBiography.split(/\n\s*\n/).filter((p: string) => p.trim() !== "")
     : [
-        "With over a decade of dedication to the art of luxury bridal makeup, my philosophy is rooted in a simple truth: we are designing for unforgettable memories.",
-        "The AG approach blends the flawless techniques of editorial fashion with the emotional resonance of a wedding day. We do not mask; we elevate. We bring forward the radiant, timeless version of you that will be cherished in photographs for generations."
-      ];
+      "With over a decade of dedication to the art of luxury bridal makeup, my philosophy is rooted in a simple truth: we are designing for unforgettable memories.",
+      "The AG approach blends the flawless techniques of editorial fashion with the emotional resonance of a wedding day. We do not mask; we elevate. We bring forward the radiant, timeless version of you that will be cherished in photographs for generations."
+    ];
 
   const fallbackStats = [
     { value: "10+", label: "Years Mastery" },
@@ -698,7 +698,7 @@ export default function Home() {
   // Bridal Moments Section Variables
   const bridalMomentsData = sanityData?.bridalMoments?.[0];
   const bridalMomentEyebrowVal = homepage ? (homepage.bridalMomentEyebrow || "The Bridal Moment") : "The Bridal Moment";
-  
+
   const bridalMomentImages = bridalMomentsData?.images && bridalMomentsData.images.length === 4
     ? bridalMomentsData.images.map((img: any) => urlFor(img).url())
     : [story1Path, story2Path, story3Path, story4Path];
@@ -708,33 +708,33 @@ export default function Home() {
     : ["Anticipation", "Artistry", "Revelation", "Bride"];
 
   const fallbackVerses = [
-    { num: "I",   title: "The Anticipation", lines: ["She has", "always known", "this moment."] },
-    { num: "II",  title: "The Artistry",     lines: ["Each stroke,", "a memory", "being born."] },
-    { num: "III", title: "The Revelation",   lines: ["The mirror reflects", "what she", "always was."] },
-    { num: "IV",  title: "The Bride",        lines: ["Unforgettable.", "Always."] },
+    { num: "I", title: "The Anticipation", lines: ["She has", "always known", "this moment."] },
+    { num: "II", title: "The Artistry", lines: ["Each stroke,", "a memory", "being born."] },
+    { num: "III", title: "The Revelation", lines: ["The mirror reflects", "what she", "always was."] },
+    { num: "IV", title: "The Bride", lines: ["Unforgettable.", "Always."] },
   ];
 
   const bridalMomentVerses = bridalMomentsData?.verses && bridalMomentsData.verses.length > 0
     ? bridalMomentsData.verses.map((v: any) => ({
-        num: v.verseNumber || "",
-        title: v.verseTitle || "",
-        lines: v.verseLines || []
-      }))
+      num: v.verseNumber || "",
+      title: v.verseTitle || "",
+      lines: v.verseLines || []
+    }))
     : fallbackVerses;
 
   // Collections (Offerings) Section Variables
   const collectionsEyebrowVal = homepage ? (homepage.collectionsEyebrow || "Our Offerings") : "Our Offerings";
   const collectionsTitleVal = homepage ? (homepage.collectionsTitle || "Couture Bridal Experiences") : "Couture Bridal Experiences";
-  
+
   const offeringsData = sanityData?.offerings;
   const offeringsItems = offeringsData && offeringsData.length > 0
     ? offeringsData
     : [
-        { isStatic: true, number: 1, name: "The Signature Bride", description: "Our most requested comprehensive bridal styling. Flawless HD makeup, advanced draping, and intricate hairstyling designed for a majestic, commanding presence.", image: { isStatic: true, src: gallery2Path }, ctaText: "Request Consultation" },
-        { isStatic: true, number: 2, name: "The Timeless Bride", description: "A classic, elegant aesthetic focusing on glowing skin and traditional elements that transcend fleeting trends. Pure, radiant, eternal.", image: { isStatic: true, src: gallery3Path }, ctaText: "Request Consultation" },
-        { isStatic: true, number: 3, name: "The Royal Glow", description: "Premium airbrush techniques paired with luxury 24k gold infused skincare prep for the ultimate illuminated finish. For the bride who demands absolute perfection.", image: { isStatic: true, src: gallery1Path }, ctaText: "Request Consultation" },
-        { isStatic: true, number: 4, name: "The Modern Muse", description: "For the contemporary bride — minimalist, editorial-style makeup that highlights natural bone structure and lets your inner radiance lead.", image: { isStatic: true, src: gallery4Path }, ctaText: "Request Consultation" }
-      ];
+      { isStatic: true, number: 1, name: "The Signature Bride", description: "Our most requested comprehensive bridal styling. Flawless HD makeup, advanced draping, and intricate hairstyling designed for a majestic, commanding presence.", image: { isStatic: true, src: gallery2Path }, ctaText: "Request Consultation" },
+      { isStatic: true, number: 2, name: "The Timeless Bride", description: "A classic, elegant aesthetic focusing on glowing skin and traditional elements that transcend fleeting trends. Pure, radiant, eternal.", image: { isStatic: true, src: gallery3Path }, ctaText: "Request Consultation" },
+      { isStatic: true, number: 3, name: "The Royal Glow", description: "Premium airbrush techniques paired with luxury 24k gold infused skincare prep for the ultimate illuminated finish. For the bride who demands absolute perfection.", image: { isStatic: true, src: gallery1Path }, ctaText: "Request Consultation" },
+      { isStatic: true, number: 4, name: "The Modern Muse", description: "For the contemporary bride — minimalist, editorial-style makeup that highlights natural bone structure and lets your inner radiance lead.", image: { isStatic: true, src: gallery4Path }, ctaText: "Request Consultation" }
+    ];
 
   const renderCollectionsTitle = (title: string) => {
     if (title.includes("\n")) {
@@ -794,10 +794,10 @@ export default function Home() {
   const awardsItems = awardsData && awardsData.length > 0
     ? awardsData
     : [
-        { isStatic: true, title: "International Bridal Excellence", description: "Recognized for exceptional bridal transformations.", location: "Dubai", year: 2024, image: { isStatic: true, src: lens1Path } },
-        { isStatic: true, title: "Global Beauty Leader", description: "Honoured for influence in luxury bridal artistry.", location: "London", year: 2023, image: { isStatic: true, src: lens2Path } },
-        { isStatic: true, title: "Master of Bridal Artistry", description: "Excellence in couture bridal transformations.", location: "Mumbai", year: 2024, image: { isStatic: true, src: lens3Path } }
-      ];
+      { isStatic: true, title: "International Bridal Excellence", description: "Recognized for exceptional bridal transformations.", location: "Dubai", year: 2024, image: { isStatic: true, src: lens1Path } },
+      { isStatic: true, title: "Global Beauty Leader", description: "Honoured for influence in luxury bridal artistry.", location: "London", year: 2023, image: { isStatic: true, src: lens2Path } },
+      { isStatic: true, title: "Master of Bridal Artistry", description: "Excellence in couture bridal transformations.", location: "Mumbai", year: 2024, image: { isStatic: true, src: lens3Path } }
+    ];
 
   const getAwardImgSrc = (item: any) => {
     if (item.isStatic) return item.image.src;
@@ -846,17 +846,17 @@ export default function Home() {
   const finalRemainingTestimonials = remainingTestimonials.length >= 2
     ? remainingTestimonials
     : [
-        {
-          quote: "The detail, the care, the luxury experience. The AG team understands how to make a bride feel like absolute royalty.",
-          brideName: "Meera R.",
-          brideType: "Royal Palace Bride"
-        },
-        {
-          quote: "My makeup lasted flawlessly through tears, laughter, and a night of dancing. She is an absolute master of her craft.",
-          brideName: "Aisha M.",
-          brideType: "Classic Bride"
-        }
-      ];
+      {
+        quote: "The detail, the care, the luxury experience. The AG team understands how to make a bride feel like absolute royalty.",
+        brideName: "Meera R.",
+        brideType: "Royal Palace Bride"
+      },
+      {
+        quote: "My makeup lasted flawlessly through tears, laughter, and a night of dancing. She is an absolute master of her craft.",
+        brideName: "Aisha M.",
+        brideType: "Classic Bride"
+      }
+    ];
 
   const testimonialsBrandStripVal = homepage?.testimonialsBrandStrip && homepage.testimonialsBrandStrip.length > 0
     ? [...homepage.testimonialsBrandStrip, ...homepage.testimonialsBrandStrip]
@@ -865,21 +865,21 @@ export default function Home() {
   // Archive In Motion Variables
   const archiveInMotionEyebrowVal = homepage ? (homepage.archiveInMotionEyebrow || "The Archive in Motion") : "The Archive in Motion";
   const archiveInMotionCaptionVal = homepage ? (homepage.archiveInMotionCaption || "Follow @agmakeupstudio for the full story") : "Follow @agmakeupstudio for the full story";
-  
+
   const archiveInMotionData = sanityData?.archiveInMotion;
   const archiveInMotionItems = archiveInMotionData && archiveInMotionData.length > 0
     ? archiveInMotionData.map((item: any) => ({
-        thumbnail: item.thumbnail ? urlFor(item.thumbnail).url() : "",
-        reelUrl: item.instagramUrl || "",
-        reelTitle: item.reelTitle || ""
-      }))
+      thumbnail: item.thumbnail ? urlFor(item.thumbnail).url() : "",
+      reelUrl: item.instagramUrl || "",
+      reelTitle: item.reelTitle || ""
+    }))
     : undefined;
 
   // Atelier Section Variables
   const atelierEyebrowVal = homepage?.atelierContent?.eyebrow || "The Atelier";
   const atelierQuoteVal = homepage?.atelierContent?.quote || "Crafted exclusively with the world's most prestigious beauty houses to ensure a enduring, flawless finish.";
   const atelierFooterTextVal = homepage?.atelierContent?.footerText || "Curated for the AG Makeup Studio";
-  
+
   const atelierBrands = homepage?.atelierContent?.brands && homepage.atelierContent.brands.length > 0
     ? homepage.atelierContent.brands
     : ["DIOR", "CHARLOTTE TILBURY", "M·A·C", "ESTÉE LAUDER", "NARS", "TOM FORD", "HUDA BEAUTY", "BOBBI BROWN"];
@@ -902,20 +902,20 @@ export default function Home() {
   const addressStreet = siteSettings?.address?.street || "Chitrakoot Society, Jamnagar Road";
   const addressCity = siteSettings?.address?.city || "Behind Crystal Mall";
   const addressPostcode = siteSettings?.address?.postcode || "Jamnagar, Gujarat 361002";
-  
+
   const mapDirectionsUrl = `https://www.google.com/maps/dir/?api=1&destination=AG+Makeup+Studio+${encodeURIComponent(addressStreet + ' ' + addressCity + ' ' + addressPostcode)}`;
   const mapEmbedUrlVal = siteSettings?.mapEmbedUrl || "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3687.261234471011!2d70.0435123759247!3d22.456747437151046!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x395715569485764d%3A0xc3929f635f799863!2sAG%20Makeup%20Studio!5e0!3m2!1sen!2sin!4v1717500000000!5m2!1sen!2sin";
-  
+
   const socialLinksVal = siteSettings?.socialLinks && siteSettings.socialLinks.length > 0
     ? siteSettings.socialLinks.map((s: any) => ({
-        name: s.platform ? s.platform.charAt(0).toUpperCase() + s.platform.slice(1) : "",
-        url: s.url || "#"
-      }))
+      name: s.platform ? s.platform.charAt(0).toUpperCase() + s.platform.slice(1) : "",
+      url: s.url || "#"
+    }))
     : [
-        { name: 'Instagram', url: '#' },
-        { name: 'Pinterest', url: '#' },
-        { name: 'Behance', url: '#' }
-      ];
+      { name: 'Instagram', url: '#' },
+      { name: 'Pinterest', url: '#' },
+      { name: 'Behance', url: '#' }
+    ];
 
   const footerContentVal = siteSettings?.footerContent || "Artistry designed for unforgettable memories.";
   const contactEmailVal = siteSettings?.contactEmail || "hello@agmakeupstudio.com";
@@ -1018,7 +1018,7 @@ export default function Home() {
   });
 
   useScrollRevealBatch(isReady);
-  
+
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [quizOpen, setQuizOpen] = useState(false);
 
@@ -1067,7 +1067,7 @@ export default function Home() {
       <AnimatePresence>
         {quizOpen && <BridalQuiz onClose={() => setQuizOpen(false)} />}
       </AnimatePresence>
-      
+
       {/* Texture Overlay */}
       <div className="noise-overlay" />
 
@@ -1089,7 +1089,7 @@ export default function Home() {
       </div>
 
       {/* Navigation */}
-      <nav 
+      <nav
         className="fixed top-0 left-0 right-0 z-[60] py-3 md:py-4 px-6 md:px-12 flex justify-between items-center bg-white/[0.01] backdrop-blur-[6px] border-b border-white/[0.04] text-white transition-all duration-1000 ease-out"
         style={{ opacity: isReady ? 1 : 0, transform: isReady ? 'none' : 'translateY(-10px)' }}
       >
@@ -1097,7 +1097,7 @@ export default function Home() {
           <span className="font-serif text-xl md:text-2xl leading-none tracking-tight">AG</span>
           <span className="font-sans text-[6px] md:text-[7px] tracking-[0.6em] mt-1 group-hover:text-primary transition-colors uppercase opacity-70">Makeup Studio</span>
         </div>
-        
+
         {/* Desktop Nav */}
         <div className="hidden md:flex gap-10 font-sans text-[9px] tracking-[0.4em] uppercase opacity-80">
           <a href="#portfolio" className="nav-link cursor-pointer hover:text-primary transition-colors py-1">Portfolio</a>
@@ -1107,7 +1107,7 @@ export default function Home() {
         </div>
 
         {/* Mobile Menu Toggle */}
-        <button 
+        <button
           className="md:hidden text-white z-50 p-2 opacity-80"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
         >
@@ -1126,7 +1126,7 @@ export default function Home() {
             transition={{ type: "spring", damping: 25, stiffness: 200 }}
             className="fixed inset-0 z-[100] bg-[#1A1614]/98 backdrop-blur-xl flex flex-col items-center justify-center gap-8 md:hidden"
           >
-            <button 
+            <button
               className="absolute top-6 right-6 text-white/60"
               onClick={() => setMobileMenuOpen(false)}
             >
@@ -1159,29 +1159,29 @@ export default function Home() {
         {/* Letterboxes */}
         <div className="letterbox top" />
         <div className="letterbox bottom" />
-        
-        {/* Cinematic Video Background */}
-         <div
-           ref={heroParallaxRef}
-           className="absolute inset-0 w-full h-full overflow-hidden"
-         >
-           <CinematicHeroVideo ref={heroVideoRef} videoUrl={heroVideo} posterUrl={heroPosterUrl} />
- 
-           {/* Luxury Overlays - Ultra light and cinematic */}
-           <div className="absolute inset-0 bg-black/5" /> {/* Negligible tint */}
-           <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-black/5 to-transparent z-10" /> {/* Subtle left-aligned gradient for readability */}
-           
-           {/* Soft Highlight Glow around the subject */}
-           <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_40%,rgba(255,240,220,0.1)_0%,transparent_50%)] mix-blend-overlay pointer-events-none" />
-           
-           {/* Local Cinematic Film Grain */}
-           <div className="absolute inset-0 opacity-[0.03] pointer-events-none mix-blend-overlay z-20 hero-grain" />
 
-           {/* Atmospheric Effects with ultra-low intensity */}
-           <div className="candlelit-overlay opacity-40" />
-           <div className="vignette opacity-20" />
-           <div className="dof-blur opacity-15" />
-         </div>
+        {/* Cinematic Video Background */}
+        <div
+          ref={heroParallaxRef}
+          className="absolute inset-0 w-full h-full overflow-hidden"
+        >
+          <CinematicHeroVideo ref={heroVideoRef} videoUrl={heroVideo} posterUrl={heroPosterUrl} />
+
+          {/* Luxury Overlays - Ultra light and cinematic */}
+          <div className="absolute inset-0 bg-black/5" /> {/* Negligible tint */}
+          <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-black/5 to-transparent z-10" /> {/* Subtle left-aligned gradient for readability */}
+
+          {/* Soft Highlight Glow around the subject */}
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_40%,rgba(255,240,220,0.1)_0%,transparent_50%)] mix-blend-overlay pointer-events-none" />
+
+          {/* Local Cinematic Film Grain */}
+          <div className="absolute inset-0 opacity-[0.03] pointer-events-none mix-blend-overlay z-20 hero-grain" />
+
+          {/* Atmospheric Effects with ultra-low intensity */}
+          <div className="candlelit-overlay opacity-40" />
+          <div className="vignette opacity-20" />
+          <div className="dof-blur opacity-15" />
+        </div>
 
         {/* Particles */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none z-20">
@@ -1207,28 +1207,28 @@ export default function Home() {
               <span className="font-sans text-[9px] md:text-[10px] tracking-[0.5em] uppercase text-primary/70">{heroEyebrow}</span>
               <div className="h-px w-10 bg-primary/30" />
             </div>
-            
-            <h1 
+
+            <h1
               ref={heroTitleRef}
               className="text-white flex flex-col relative"
-              style={{ 
-                fontSize: 'clamp(2.4rem, 7vw, 6.5rem)', 
+              style={{
+                fontSize: 'clamp(2.4rem, 7vw, 6.5rem)',
                 lineHeight: 1.1,
                 letterSpacing: '-0.01em',
-                textShadow: '0 4px 30px rgba(0,0,0,0.15)' 
+                textShadow: '0 4px 30px rgba(0,0,0,0.15)'
               }}
             >
               <span className="font-serif font-light">{heroTitlePart1}</span>
-              
-              <div 
+
+              <div
                 ref={heroRuleRef}
-                className="h-[1.5px] bg-primary/30 w-1/3 my-4 origin-left" 
+                className="h-[1.5px] bg-primary/30 w-1/3 my-4 origin-left"
               />
-              
+
               <span className="font-serif italic text-white/85 translate-x-4 md:translate-x-12" style={{ textShadow: '0 2px 15px rgba(0,0,0,0.1)' }}>{heroTitlePart2}</span>
             </h1>
-            
-            <div 
+
+            <div
               ref={heroCtaRef}
               className="mt-20 flex flex-col sm:flex-row gap-8 w-full sm:w-auto"
             >
@@ -1252,7 +1252,7 @@ export default function Home() {
             <div
               ref={heroSubtitleRef}
               className="mt-24"
-              
+
             >
               <p className="font-serif italic text-white/50 tracking-wide" style={{ fontSize: 'clamp(1rem, 2vw, 1.4rem)' }}>{heroSubtitle}</p>
             </div>
@@ -1260,13 +1260,13 @@ export default function Home() {
         </div>
 
         {/* Scroll Indicator */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 2, duration: 1 }}
           className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4 z-30"
         >
-          
+
         </motion.div>
       </section>
 
@@ -1277,7 +1277,7 @@ export default function Home() {
           <div className="absolute inset-0 bg-[#F7F1EB]/90" />
         </div>
         <div className="container mx-auto px-6 md:px-12 relative z-10">
-          
+
           <div className="relative mb-32 flex flex-col md:flex-row justify-between items-end">
             <FadeIn>
               <div className="flex items-center gap-4 mb-6">
@@ -1291,7 +1291,7 @@ export default function Home() {
                 {portfolioSubtitleVal}
               </p>
             </FadeIn>
-            
+
             {/* Ghost text background */}
             <div className="absolute top-1/2 left-0 -translate-y-1/2 text-ghost text-foreground">
               PORTFOLIO
@@ -1314,11 +1314,11 @@ export default function Home() {
               </div>
             ))}
           </div>
-          
+
           <FadeIn delay={0.4} className="mt-24 text-center">
-            <button 
+            <button
               onClick={() => setLocation("/archive")}
-              data-testid="button-view-all-gallery" 
+              data-testid="button-view-all-gallery"
               className="text-xs uppercase tracking-[0.2em] font-sans border-b border-primary/30 pb-2 hover:border-primary transition-colors text-foreground"
             >
               Explore Full Archive
@@ -1347,7 +1347,7 @@ export default function Home() {
                 </div>
               </FadeIn>
             </div>
-            
+
             <div className="md:w-1/2 w-full md:mt-32">
               <FadeIn stagger={true}>
                 <FadeChild>
@@ -1366,7 +1366,7 @@ export default function Home() {
                     ))}
                   </div>
                 </FadeChild>
-                
+
                 <FadeChild className="mt-16 pt-16 border-t border-border flex gap-16">
                   {founderStats.map((stat: any, index: number) => (
                     <div key={index}>
@@ -1473,7 +1473,7 @@ export default function Home() {
         <div className="absolute top-0 right-0 text-ghost text-primary/40 -translate-y-1/2 z-10">
           COLLECTIONS
         </div>
-        
+
         <div className="container mx-auto px-6 md:px-12 relative z-10">
           <FadeIn className="mb-20 text-center flex flex-col items-center">
             <div className="flex items-center gap-4 mb-6">
@@ -1488,8 +1488,8 @@ export default function Home() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 lg:gap-x-16 gap-y-16 md:gap-y-20 max-w-6xl mx-auto" data-reveal-stagger>
             {offeringsItems.map((col: any, i: number) => (
-              <div 
-                key={col._id || i} 
+              <div
+                key={col._id || i}
                 className="flex flex-col group h-full"
                 data-reveal="fade-up"
               >
@@ -1509,7 +1509,7 @@ export default function Home() {
                     <div className="h-px w-6 bg-primary/30 transition-all duration-700 group-hover:w-12 group-hover:bg-primary" />
                   </div>
                   <h3 className="font-serif text-2xl md:text-3xl mb-4 tracking-wide text-foreground">{col.name}</h3>
-                  <p className="font-sans font-light text-muted-foreground leading-relaxed mb-8 text-sm md:text-base">
+                  <p className="font-sans font-light text-muted-foreground leading-relaxed mb-8 text-sm md:text-base whitespace-pre-line">
                     {col.description}
                   </p>
                   <div className="mt-auto">
@@ -1535,10 +1535,10 @@ export default function Home() {
       <section className="py-32 md:py-48 relative overflow-hidden">
         {/* Background - Preserved from existing aesthetic */}
         <div className="absolute inset-0 z-0">
-          <img 
-            src={featherBgPath} 
-            alt="" 
-            className="w-full h-full object-cover" 
+          <img
+            src={featherBgPath}
+            alt=""
+            className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-[#F7F1EB]/90 backdrop-blur-[2px]" />
         </div>
@@ -1561,9 +1561,9 @@ export default function Home() {
               <FadeIn key={award._id || i} delay={i * 0.1} className="group">
                 <div className="relative mb-8 overflow-hidden rounded-[24px] border border-[#B79272]/10 bg-white/5 backdrop-blur-sm transition-all duration-700 hover:-translate-y-2 hover:border-[#B79272]/30 hover:shadow-[0_20px_50px_rgba(183,146,114,0.15)]">
                   <div className="aspect-[4/5] overflow-hidden">
-                    <img 
-                      src={getAwardImgSrc(award)} 
-                      alt={getAwardImgAlt(award)} 
+                    <img
+                      src={getAwardImgSrc(award)}
+                      alt={getAwardImgAlt(award)}
                       className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
                     />
                   </div>
@@ -1597,7 +1597,7 @@ export default function Home() {
         </div>
       </section>
 
- 
+
 
       {/* NEW SECTION 3: REELS WALL */}
       <section className="py-40 bg-[#0a0a0a] relative overflow-hidden">
@@ -1605,13 +1605,13 @@ export default function Home() {
           <FadeIn className="mb-24">
             <span className="font-sans text-[9px] tracking-[0.4em] text-primary uppercase block mb-4">{archiveInMotionEyebrowVal}</span>
             <h2 className="font-serif text-5xl md:text-7xl font-light text-white leading-[0.9]">
-              Moments<br/><em className="text-[#B79272]/60">Frozen in Light</em>
+              Moments<br /><em className="text-[#B79272]/60">Frozen in Light</em>
             </h2>
           </FadeIn>
 
           {/* Horizontal scrolling reel strip */}
           <InstagramReelsSection reels={archiveInMotionItems} />
-          
+
           <p className="font-sans text-[9px] tracking-[0.4em] text-white/40 uppercase mt-12 text-center">
             {archiveInMotionCaptionVal}
           </p>
@@ -1646,7 +1646,7 @@ export default function Home() {
         </div>
 
         <div className="container mx-auto px-6 md:px-12 relative z-10">
-          
+
           {/* Large Quote style testimonials */}
           <div className="max-w-4xl mx-auto">
             <FadeIn>
@@ -1681,8 +1681,8 @@ export default function Home() {
       {/* Atelier / Products - Full Bleed Cinematic */}
       <section id="atelier" className="py-40 bg-gradient-to-br from-[#EEE3D7] via-[#F7F1EB] to-[#EEE3D7] relative overflow-hidden">
         <div className="absolute inset-0 candlelit-overlay opacity-30" />
-        <motion.div 
-          style={{ y: yBg }} 
+        <motion.div
+          style={{ y: yBg }}
           className="absolute inset-0 opacity-10 atelier-bg-glow"
           initial={false}
         >
@@ -1697,7 +1697,7 @@ export default function Home() {
               <span className="font-sans text-[10px] tracking-[0.4em] uppercase text-foreground">{atelierEyebrowVal}</span>
               <div className="h-px w-8 bg-primary/40" />
             </div>
-            
+
             <p className="font-serif italic text-3xl md:text-5xl mt-8 mb-24 text-foreground max-w-4xl mx-auto leading-tight">
               {atelierQuoteVal}
             </p>
@@ -1707,10 +1707,10 @@ export default function Home() {
               {/* Row 1 */}
               <FadeIn delay={0} className="flex items-baseline justify-center gap-8 md:gap-16 mb-10 flex-wrap">
                 {row1Brands.map((brand: string, idx: number) => (
-                  <span 
-                    key={idx} 
-                    className={idx % 2 === 0 
-                      ? "font-serif text-3xl md:text-5xl tracking-[0.25em] text-foreground/75 hover:text-foreground transition-colors duration-500 cursor-default whitespace-nowrap" 
+                  <span
+                    key={idx}
+                    className={idx % 2 === 0
+                      ? "font-serif text-3xl md:text-5xl tracking-[0.25em] text-foreground/75 hover:text-foreground transition-colors duration-500 cursor-default whitespace-nowrap"
                       : "font-serif text-xl md:text-2xl tracking-widest text-foreground/50 hover:text-foreground/80 transition-colors duration-500 cursor-default whitespace-nowrap"
                     }
                   >
@@ -1721,12 +1721,12 @@ export default function Home() {
               {/* Row 2 */}
               <FadeIn delay={0.1} className="flex items-baseline justify-center gap-8 md:gap-20 mb-10 flex-wrap">
                 {row2Brands.map((brand: string, idx: number) => (
-                  <span 
-                    key={idx} 
-                    className={idx === 0 
-                      ? "font-sans text-2xl md:text-4xl tracking-[0.35em] font-medium text-foreground/80 hover:text-foreground transition-colors duration-500 cursor-default whitespace-nowrap" 
-                      : idx === 1 
-                        ? "font-serif text-2xl md:text-3xl tracking-widest text-foreground/55 hover:text-foreground/80 transition-colors duration-500 cursor-default whitespace-nowrap" 
+                  <span
+                    key={idx}
+                    className={idx === 0
+                      ? "font-sans text-2xl md:text-4xl tracking-[0.35em] font-medium text-foreground/80 hover:text-foreground transition-colors duration-500 cursor-default whitespace-nowrap"
+                      : idx === 1
+                        ? "font-serif text-2xl md:text-3xl tracking-widest text-foreground/55 hover:text-foreground/80 transition-colors duration-500 cursor-default whitespace-nowrap"
                         : "font-sans text-xl md:text-2xl tracking-[0.4em] text-foreground/45 hover:text-foreground/70 transition-colors duration-500 cursor-default whitespace-nowrap"
                     }
                   >
@@ -1737,12 +1737,12 @@ export default function Home() {
               {/* Row 3 */}
               <FadeIn delay={0.2} className="flex items-baseline justify-center gap-8 md:gap-16 flex-wrap">
                 {row3Brands.map((brand: string, idx: number) => (
-                  <span 
-                    key={idx} 
-                    className={idx === 0 
-                      ? "font-sans text-lg md:text-xl tracking-[0.3em] text-foreground/40 hover:text-foreground/65 transition-colors duration-500 cursor-default whitespace-nowrap" 
-                      : idx === 1 
-                        ? "font-serif text-xl md:text-2xl tracking-widest text-[#B79272] transition-colors duration-500 cursor-default whitespace-nowrap" 
+                  <span
+                    key={idx}
+                    className={idx === 0
+                      ? "font-sans text-lg md:text-xl tracking-[0.3em] text-foreground/40 hover:text-foreground/65 transition-colors duration-500 cursor-default whitespace-nowrap"
+                      : idx === 1
+                        ? "font-serif text-xl md:text-2xl tracking-widest text-[#B79272] transition-colors duration-500 cursor-default whitespace-nowrap"
                         : "font-sans text-sm md:text-base tracking-[0.4em] text-foreground/35 hover:text-foreground/60 transition-colors duration-500 cursor-default whitespace-nowrap"
                     }
                   >
@@ -1751,7 +1751,7 @@ export default function Home() {
                 ))}
               </FadeIn>
             </div>
-            
+
             <p className="font-sans text-[9px] uppercase tracking-[0.3em] text-foreground/50 mt-12">
               {atelierFooterTextVal}
             </p>
@@ -1791,7 +1791,7 @@ export default function Home() {
                   <input type="email" data-testid="input-email" className="w-full bg-transparent outline-none font-serif text-2xl text-foreground placeholder:text-muted-foreground/30 placeholder:italic" placeholder="you@example.com" />
                 </div>
               </div>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
                 <div className="border-b border-border hover:border-primary focus-within:border-primary transition-colors pb-3">
                   <label className="block font-sans text-[9px] uppercase tracking-[0.3em] text-muted-foreground mb-2">Wedding Date</label>
@@ -1846,7 +1846,7 @@ export default function Home() {
         >
           {/* WhatsApp icon */}
           <svg viewBox="0 0 24 24" fill="white" className="w-6 h-6">
-            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
           </svg>
 
           {/* Pulse ring */}
@@ -1863,18 +1863,18 @@ export default function Home() {
 
         <div className="container mx-auto px-6 md:px-12 relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-[40%_20%_40%] gap-20 lg:gap-0 items-start">
-            
+
             {/* LEFT COLUMN: Location Card & Details */}
             <FadeIn className="flex flex-col gap-10 order-2 lg:order-1">
               <div className="flex flex-col gap-8">
                 <div className="relative group rounded-[24px] overflow-hidden border border-[#B79272]/20 bg-white/[0.03] backdrop-blur-md transition-all duration-700 hover:border-[#B79272]/40 hover:shadow-[0_20px_50px_rgba(183,146,114,0.15)] h-[320px]">
-                  <iframe 
-                    src={mapEmbedUrlVal} 
-                    width="100%" 
-                    height="100%" 
-                    style={{ border: 0, filter: 'invert(90%) hue-rotate(180deg) brightness(95%) contrast(90%)' }} 
-                    allowFullScreen={false} 
-                    loading="lazy" 
+                  <iframe
+                    src={mapEmbedUrlVal}
+                    width="100%"
+                    height="100%"
+                    style={{ border: 0, filter: 'invert(90%) hue-rotate(180deg) brightness(95%) contrast(90%)' }}
+                    allowFullScreen={false}
+                    loading="lazy"
                     referrerPolicy="no-referrer-when-downgrade"
                     className="opacity-70 group-hover:opacity-90 transition-opacity duration-700"
                   />
@@ -1890,8 +1890,8 @@ export default function Home() {
                       {addressPostcode}
                     </p>
                   </div>
-                  
-                  <a 
+
+                  <a
                     href={mapDirectionsUrl}
                     target="_blank"
                     rel="noopener noreferrer"
@@ -1922,7 +1922,7 @@ export default function Home() {
             <FadeIn delay={0.2} className="flex flex-col gap-0 lg:pl-16 order-3 lg:order-3">
               <span className="font-sans text-[11px] tracking-[0.7em] uppercase text-[#B79272] block mb-16 font-semibold">CONNECT</span>
               {socialLinksVal.map((social: any, i: number) => (
-                <a 
+                <a
                   key={social.name || i}
                   href={social.url}
                   className="group flex items-center justify-between py-10 border-b border-white/10 last:border-0 relative overflow-hidden"
@@ -1932,16 +1932,16 @@ export default function Home() {
                   </span>
                   <div className="flex items-center gap-6">
                     <div className="h-[1px] w-0 bg-[#B79272]/40 group-hover:w-16 transition-all duration-700" />
-                    <ArrowUpRight 
-                      size={28} 
-                      className="text-[#B79272]/40 group-hover:text-[#B79272] transition-all duration-500 transform group-hover:translate-x-2" 
+                    <ArrowUpRight
+                      size={28}
+                      className="text-[#B79272]/40 group-hover:text-[#B79272] transition-all duration-500 transform group-hover:translate-x-2"
                     />
                   </div>
                   {/* Subtle luxury hover glow */}
                   <div className="absolute inset-0 bg-gradient-to-r from-[#B79272]/0 via-[#B79272]/[0.02] to-[#B79272]/[0.05] translate-x-[-100%] group-hover:translate-x-0 transition-transform duration-1000 ease-out" />
                 </a>
               ))}
-              
+
               <div className="mt-24 space-y-3">
                 <span className="font-sans text-[10px] tracking-[0.5em] uppercase text-white/20 block">Private Inquiries</span>
                 <a href={`mailto:${contactEmailVal}`} className="font-serif text-2xl text-white/80 hover:text-[#B79272] transition-colors duration-500 border-b border-[#B79272]/10 pb-2 inline-block">

@@ -9,7 +9,6 @@ export const MOTION = {
     slow: 1.6,
     medium: 1.2,
     fast: 0.9,
-    preloader: 2.4,
   },
   stagger: {
     tight: 0.08,

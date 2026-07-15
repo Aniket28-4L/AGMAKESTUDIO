@@ -17,16 +17,64 @@ interface HeroMotionRefs {
 export function useHeroMotion(refs: HeroMotionRefs) {
   const { isReady, lenis } = useMotion();
 
+  // Stage 1 (Mount): Split title text and set initial hidden states immediately on frame one.
+  // This guarantees the elements are prepared and hidden before the preloader curtains open.
+  useEffect(() => {
+    const { titleRef, ruleRef, eyebrowRef, ctaRef, subtitleRef, videoRef, parallaxRef } = refs;
+    const title = titleRef.current;
+    const video = videoRef.current;
+
+    let split: SplitType | null = null;
+
+    if (title) {
+      gsap.set(title, { autoAlpha: 1 });
+      split = new SplitType(title, {
+        types: "lines,words",
+        lineClass: "hero-split-line",
+        wordClass: "hero-split-word",
+      });
+
+      gsap.set(split.words, { yPercent: 110, autoAlpha: 0 });
+      gsap.set(split.lines, { overflow: "hidden", display: "block" });
+    }
+
+    if (eyebrowRef.current) {
+      gsap.set(eyebrowRef.current, { autoAlpha: 0, y: 28 });
+    }
+    if (ctaRef.current) {
+      gsap.set(ctaRef.current, { autoAlpha: 0, y: 24 });
+    }
+    if (subtitleRef.current) {
+      gsap.set(subtitleRef.current, { autoAlpha: 0, y: 16 });
+    }
+    if (ruleRef.current) {
+      gsap.set(ruleRef.current, { scaleX: 0, transformOrigin: "left center" });
+    }
+    if (video) {
+      gsap.set(video, { scale: 1.18, autoAlpha: 0.6, filter: "blur(4px)" });
+    }
+    if (parallaxRef.current) {
+      gsap.set(parallaxRef.current, { scale: 1.12, autoAlpha: 0 });
+    }
+
+    return () => {
+      split?.revert();
+    };
+  }, []); // Run exactly once on mount
+
+  // Stage 2 (Animation): Construct the entry animation timeline.
+  // This plays only when the curtains are finished opening (isReady === true).
   useEffect(() => {
     if (!isReady) return;
 
-    const { videoRef, titleRef, ruleRef, eyebrowRef, ctaRef, subtitleRef, parallaxRef } = refs;
-    let split: SplitType | null = null;
+    const { videoRef, ruleRef, eyebrowRef, ctaRef, subtitleRef, parallaxRef, titleRef } = refs;
+    const video = videoRef.current;
+    const title = titleRef.current;
+
+    // Access the split characters created in Stage 1
+    const words = title ? title.querySelectorAll(".hero-split-word") : null;
 
     const ctx = gsap.context(() => {
-      const video = videoRef.current;
-      const title = titleRef.current;
-
       if (video) {
         gsap.fromTo(
           video,
@@ -57,34 +105,9 @@ export function useHeroMotion(refs: HeroMotionRefs) {
         );
       }
 
-      if (title) {
-        gsap.set(title, { autoAlpha: 1 });
-        split = new SplitType(title, {
-          types: "lines,words",
-          lineClass: "hero-split-line",
-          wordClass: "hero-split-word",
-        });
-
-        gsap.set(split.words, { yPercent: 110, autoAlpha: 0 });
-        gsap.set(split.lines, { overflow: "hidden", display: "block" });
-      }
-
-      if (eyebrowRef.current) {
-        gsap.set(eyebrowRef.current, { autoAlpha: 0, y: 28 });
-      }
-      if (ctaRef.current) {
-        gsap.set(ctaRef.current, { autoAlpha: 0, y: 24 });
-      }
-      if (subtitleRef.current) {
-        gsap.set(subtitleRef.current, { autoAlpha: 0, y: 16 });
-      }
-      if (ruleRef.current) {
-        gsap.set(ruleRef.current, { scaleX: 0, transformOrigin: "left center" });
-      }
-
       const tl = gsap.timeline({
         defaults: { ease: MOTION.ease.luxury },
-        delay: 0.1, // Slight delay to let the curtains begin moving
+        delay: 0.1, // Small delay matching curtain timing config
       });
 
       if (eyebrowRef.current) {
@@ -96,9 +119,9 @@ export function useHeroMotion(refs: HeroMotionRefs) {
         );
       }
 
-      if (split?.words) {
+      if (words && words.length > 0) {
         tl.to(
-          split.words,
+          words,
           {
             yPercent: 0,
             autoAlpha: 1,
@@ -152,7 +175,6 @@ export function useHeroMotion(refs: HeroMotionRefs) {
     });
 
     return () => {
-      split?.revert();
       ctx.revert();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps -- refs are stable

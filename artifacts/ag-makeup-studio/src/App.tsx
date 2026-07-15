@@ -6,6 +6,7 @@ import { MotionProvider } from "@/components/motion/MotionProvider";
 import NotFound from "@/pages/not-found";
 import Home from "@/pages/Home";
 import Archive from "@/pages/Archive";
+import LoadingScreen from "@/components/LoadingScreen";
 
 const queryClient = new QueryClient();
 
@@ -21,16 +22,21 @@ function Router() {
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <MotionProvider>
-          <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
-            <Router />
-          </WouterRouter>
-        </MotionProvider>
-        <Toaster />
-      </TooltipProvider>
-    </QueryClientProvider>
+    <>
+      {/* Brand splash — fully isolated, mounts once, slides away, then unmounts */}
+      <LoadingScreen />
+
+      <QueryClientProvider client={queryClient}>
+        <TooltipProvider>
+          <MotionProvider>
+            <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
+              <Router />
+            </WouterRouter>
+          </MotionProvider>
+          <Toaster />
+        </TooltipProvider>
+      </QueryClientProvider>
+    </>
   );
 }
 
