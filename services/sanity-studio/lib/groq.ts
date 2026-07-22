@@ -6,7 +6,7 @@ export const HOME_PAGE_QUERY = `*[_type == "homepage" && _id == "homepage"][0] {
   heroEyebrow,
   heroTitle,
   heroSubtitle,
-  heroVideo,
+  "heroVideo": select(defined(heroVideo.asset->url) => heroVideo.asset->url, heroVideo),
   heroPosterImage,
   primaryCta,
   secondaryCta,

@@ -29,6 +29,7 @@ import InstagramReelsSection from "../components/InstagramReelsSection";
 import { LeafyButton } from "../components/ui/leafy-button";
 import { client } from "../lib/sanity.client";
 import { urlFor } from "../lib/imageUrl";
+import { resolveHeroVideoUrl } from "../lib/videoUrl";
 import {
   HOME_PAGE_QUERY,
   PORTFOLIO_QUERY,
@@ -546,7 +547,7 @@ const CinematicHeroVideo = memo(
             filter: "contrast(1.02) saturate(1.05) brightness(1.02)",
           }}
         >
-          <source src={videoUrl || "/videos/bridal-hero.mp4"} type="video/mp4" />
+          <source src={resolveHeroVideoUrl(videoUrl)} type="video/mp4" />
         </video>
       );
     }
@@ -616,7 +617,7 @@ export default function Home() {
   const heroSubtitle = homepage ? homepage.heroSubtitle : "Beauty Designed Like A Memory.";
   const primaryCta = homepage ? homepage.primaryCta : "Explore Collections";
   const secondaryCta = homepage ? homepage.secondaryCta : "Find Your Bridal Look";
-  const heroVideo = homepage ? homepage.heroVideo : "/videos/bridal-hero.mp4";
+  const heroVideo = resolveHeroVideoUrl(homepage?.heroVideo);
   const heroPosterUrl = homepage?.heroPosterImage ? urlFor(homepage.heroPosterImage).url() : undefined;
 
   // Portfolio Section Variables
