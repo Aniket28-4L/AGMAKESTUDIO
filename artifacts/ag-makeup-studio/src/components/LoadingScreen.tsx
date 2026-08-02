@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from "react";
+import aaravellaLogo from "../ag-studio-assets/avlogo.png";
 
 /**
  * LoadingScreen — Independent Brand Splash
  *
- * Single Source of Truth implementation matching the reference image.
- * Uses tight vector SVG viewBox and responsive max-width scaling for a commanding,
- * luxury editorial presence on desktop, tablet, and mobile displays.
+ * Displays the AARAVELLA Luxe Salon logo with a fade-up entrance,
+ * hold, and slide-down exit animation before unmounting.
  */
 export default function LoadingScreen() {
   const [gone, setGone] = useState(false);
@@ -62,109 +62,71 @@ export default function LoadingScreen() {
   if (gone) return null;
 
   return (
-    <div
-      ref={panelRef}
-      aria-hidden="true"
-      style={{
-        position:       "fixed",
-        inset:          0,
-        width:          "100vw",
-        height:         "100dvh",
-        zIndex:         999999,
-        background:     "#FAF7F2",
-        display:        "flex",
-        alignItems:     "center",
-        justifyContent: "center",
-        boxSizing:      "border-box",
-        paddingTop:     "env(safe-area-inset-top,    0px)",
-        paddingBottom:  "env(safe-area-inset-bottom, 0px)",
-        paddingLeft:    "env(safe-area-inset-left,   0px)",
-        paddingRight:   "env(safe-area-inset-right,  0px)",
-        overflow:       "hidden",
-        pointerEvents:  "none",
-        touchAction:    "none",
-        willChange:     "transform",
-      }}
-    >
+    <>
+      <style>{`
+        .aaravella-preloader-logo {
+          width: clamp(480px, 36vw, 620px);
+          max-width: 90vw;
+          height: auto;
+          display: block;
+          user-select: none;
+          object-fit: contain;
+        }
+        @media (max-width: 1024px) {
+          .aaravella-preloader-logo {
+            width: clamp(360px, 50vw, 460px);
+          }
+        }
+        @media (max-width: 600px) {
+          .aaravella-preloader-logo {
+            width: clamp(240px, 72vw, 320px);
+          }
+        }
+      `}</style>
       <div
-        ref={logoRef}
+        ref={panelRef}
+        aria-hidden="true"
         style={{
+          position:       "fixed",
+          inset:          0,
+          width:          "100vw",
+          height:         "100dvh",
+          zIndex:         999999,
+          background:     "#FAF7F2",
           display:        "flex",
           alignItems:     "center",
           justifyContent: "center",
-          width:          "100%",
-          padding:        "0 1rem",
-          willChange:     "opacity, transform",
+          boxSizing:      "border-box",
+          paddingTop:     "env(safe-area-inset-top,    0px)",
+          paddingBottom:  "env(safe-area-inset-bottom, 0px)",
+          paddingLeft:    "env(safe-area-inset-left,   0px)",
+          paddingRight:   "env(safe-area-inset-right,  0px)",
+          overflow:       "hidden",
+          pointerEvents:  "none",
+          touchAction:    "none",
+          willChange:     "transform",
         }}
       >
-        <svg
-          viewBox="0 0 600 340"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
+        <div
+          ref={logoRef}
           style={{
-            width:     "min(88vw, 820px)",
-            height:    "auto",
-            display:   "block",
-            userSelect:"none",
+            display:        "flex",
+            alignItems:     "center",
+            justifyContent: "center",
+            width:          "100%",
+            padding:        "0 1rem",
+            willChange:     "opacity, transform",
           }}
-          aria-label="ANU GIRI STUDIO - Luxury Bridal Studio"
         >
-          <g
-            fill="#B79272"
-            fontFamily="'Cormorant Garamond', 'Cormorant', Georgia, serif"
-            textAnchor="middle"
-          >
-            {/* ANU */}
-            <text
-              x="300"
-              y="85"
-              fontSize="64"
-              fontWeight="200"
-              letterSpacing="0.40em"
-              dx="0.20em"
-            >
-              ANU
-            </text>
-
-            {/* GIRI */}
-            <text
-              x="300"
-              y="158"
-              fontSize="64"
-              fontWeight="200"
-              letterSpacing="0.40em"
-              dx="0.20em"
-            >
-              GIRI
-            </text>
-
-            {/* STUDIO */}
-            <text
-              x="300"
-              y="231"
-              fontSize="64"
-              fontWeight="200"
-              letterSpacing="0.40em"
-              dx="0.20em"
-            >
-              STUDIO
-            </text>
-
-            {/* LUXURY BRIDAL STUDIO */}
-            <text
-              x="300"
-              y="308"
-              fontSize="14.5"
-              fontWeight="300"
-              letterSpacing="0.50em"
-              dx="0.25em"
-              opacity="0.88"
-            >
-              LUXURY BRIDAL STUDIO
-            </text>
-          </g>
-        </svg>
+          <img
+            src={aaravellaLogo}
+            alt="AARAVELLA Luxe Salon"
+            draggable={false}
+            className="aaravella-preloader-logo"
+          />
+        </div>
       </div>
-    </div>
+    </>
   );
 }
+
