@@ -149,7 +149,7 @@ export default function Archive() {
           <span className="sm:hidden">Back</span>
         </button>
         <h1 className="absolute left-1/2 -translate-x-1/2 font-serif text-xl md:text-2xl text-primary whitespace-nowrap tracking-tight">
-          AG Bridal Archive
+          AARAVELLA Bridal Archive
         </h1>
         <div className="w-24" />
       </header>

@@ -24,6 +24,8 @@ import heroBridePath from "@assets/hero_bride.png";
 import testimonialsBgPath from "@assets/a0dcf1bf0f646736b9552283059a83bf_1778999396158.jpg";
 import featherBgPath from "@assets/3b202712b82894b59517c133e8c2fecf_1779000059086.jpg";
 import { Menu, X, Instagram, Youtube, ExternalLink, ArrowUpRight, Mail, MapPin, Trophy, Users, Globe, Star, Gem, ArrowRight } from "lucide-react";
+import avLogoPath from "@/ag-studio-assets/avlogo.png";
+import aaravellaTextLogoPath from "@/ag-studio-assets/AARAVELLA_text_transparent.png";
 import { useLocation } from "wouter";
 import InstagramReelsSection from "../components/InstagramReelsSection";
 import { LeafyButton } from "../components/ui/leafy-button";
@@ -612,7 +614,7 @@ export default function Home() {
   const homepage = sanityData?.homepage;
 
   // While loading, use static values
-  const heroEyebrow = homepage ? homepage.heroEyebrow : "AG Bridal Couture";
+  const heroEyebrow = homepage ? homepage.heroEyebrow : "AARAVELLA Bridal Couture";
   const heroTitleText = homepage ? homepage.heroTitle : "Crafted For The Bride Who Wants To Feel Unforgettable.";
   const heroSubtitle = homepage ? homepage.heroSubtitle : "Beauty Designed Like A Memory.";
   const primaryCta = homepage ? homepage.primaryCta : "Explore Collections";
@@ -649,6 +651,7 @@ export default function Home() {
 
   // Founder Section Variables
   const founderEyebrowVal = homepage ? (homepage.founderEyebrow || "The Founder") : "The Founder";
+  // TODO: Client's founder/owner name is still required. Using "Anu Giri" as placeholder until updated.
   const founderNameVal = homepage ? (homepage.founderName || "Anu Giri") : "Anu Giri";
   const founderImgUrl = homepage?.founderImage ? urlFor(homepage.founderImage).url() : founderPath;
   const founderImgAlt = homepage?.founderImage?.alt || founderNameVal;
@@ -657,7 +660,7 @@ export default function Home() {
     ? homepage.founderBiography.split(/\n\s*\n/).filter((p: string) => p.trim() !== "")
     : [
       "With over a decade of dedication to the art of luxury bridal makeup, my philosophy is rooted in a simple truth: we are designing for unforgettable memories.",
-      "The AG approach blends the flawless techniques of editorial fashion with the emotional resonance of a wedding day. We do not mask; we elevate. We bring forward the radiant, timeless version of you that will be cherished in photographs for generations."
+      "The AARAVELLA approach blends the flawless techniques of editorial fashion with the emotional resonance of a wedding day. We do not mask; we elevate. We bring forward the radiant, timeless version of you that will be cherished in photographs for generations."
     ];
 
   const fallbackStats = [
@@ -837,6 +840,7 @@ export default function Home() {
 
   // Testimonials Section Variables
   const testimonialsData = sanityData?.testimonials || [];
+  // TODO: The featured testimonial mentions "Anu" — should be replaced after the client provides updated testimonial content.
   const featuredTestimonial = testimonialsData.find((t: any) => t.featured) || testimonialsData[0] || {
     quote: "Anu didn't just do my makeup; she crafted a vision. I felt like I stepped out of a Vogue India editorial. Truly unforgettable.",
     brideName: "Priyanka S.",
@@ -848,7 +852,7 @@ export default function Home() {
     ? remainingTestimonials
     : [
       {
-        quote: "The detail, the care, the luxury experience. The AG team understands how to make a bride feel like absolute royalty.",
+        quote: "The detail, the care, the luxury experience. The AARAVELLA team understands how to make a bride feel like absolute royalty.",
         brideName: "Meera R.",
         brideType: "Royal Palace Bride"
       },
@@ -865,7 +869,7 @@ export default function Home() {
 
   // Archive In Motion Variables
   const archiveInMotionEyebrowVal = homepage ? (homepage.archiveInMotionEyebrow || "The Archive in Motion") : "The Archive in Motion";
-  const archiveInMotionCaptionVal = homepage ? (homepage.archiveInMotionCaption || "Follow @agmakeupstudio for the full story") : "Follow @agmakeupstudio for the full story";
+  const archiveInMotionCaptionVal = homepage ? (homepage.archiveInMotionCaption || "Follow @aaravellaluxesalon for the full story") : "Follow @aaravellaluxesalon for the full story";
 
   const archiveInMotionData = sanityData?.archiveInMotion;
   const archiveInMotionItems = archiveInMotionData && archiveInMotionData.length > 0
@@ -879,7 +883,7 @@ export default function Home() {
   // Atelier Section Variables
   const atelierEyebrowVal = homepage?.atelierContent?.eyebrow || "The Atelier";
   const atelierQuoteVal = homepage?.atelierContent?.quote || "Crafted exclusively with the world's most prestigious beauty houses to ensure a enduring, flawless finish.";
-  const atelierFooterTextVal = homepage?.atelierContent?.footerText || "Curated for the AG Makeup Studio";
+  const atelierFooterTextVal = homepage?.atelierContent?.footerText || "Curated for AARAVELLA Luxe Salon";
 
   const atelierBrands = homepage?.atelierContent?.brands && homepage.atelierContent.brands.length > 0
     ? homepage.atelierContent.brands
@@ -896,7 +900,7 @@ export default function Home() {
 
   // Floating WhatsApp Variables
   const whatsappNumberVal = homepage?.whatsappNumber || "919999999999";
-  const whatsappLink = `https://wa.me/${whatsappNumberVal.replace(/\D/g, '')}?text=Hi%2C%20I%27d%20love%20to%20book%20a%20bridal%20consultation%20with%20AG%20Makeup%20Studio`;
+  const whatsappLink = `https://wa.me/${whatsappNumberVal.replace(/\D/g, '')}?text=Hi%2C%20I%27d%20love%20to%20book%20a%20bridal%20consultation%20with%20AARAVELLA%20Luxe%20Salon`;
 
   // Footer Section Variables
   const siteSettings = sanityData?.siteSettings;
@@ -904,7 +908,7 @@ export default function Home() {
   const addressCity = siteSettings?.address?.city || "Behind Crystal Mall";
   const addressPostcode = siteSettings?.address?.postcode || "Jamnagar, Gujarat 361002";
 
-  const mapDirectionsUrl = `https://www.google.com/maps/dir/?api=1&destination=AG+Makeup+Studio+${encodeURIComponent(addressStreet + ' ' + addressCity + ' ' + addressPostcode)}`;
+  const mapDirectionsUrl = `https://www.google.com/maps/dir/?api=1&destination=AARAVELLA+Luxe+Salon+${encodeURIComponent(addressStreet + ' ' + addressCity + ' ' + addressPostcode)}`;
   const mapEmbedUrlVal = siteSettings?.mapEmbedUrl || "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3687.261234471011!2d70.0435123759247!3d22.456747437151046!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x395715569485764d%3A0xc3929f635f799863!2sAG%20Makeup%20Studio!5e0!3m2!1sen!2sin!4v1717500000000!5m2!1sen!2sin";
 
   const socialLinksVal = siteSettings?.socialLinks && siteSettings.socialLinks.length > 0
@@ -919,7 +923,8 @@ export default function Home() {
     ];
 
   const footerContentVal = siteSettings?.footerContent || "Artistry designed for unforgettable memories.";
-  const contactEmailVal = siteSettings?.contactEmail || "hello@agmakeupstudio.com";
+  // TODO: Actual client email is unknown — update before launch.
+  const contactEmailVal = siteSettings?.contactEmail || "hello@aaravellaluxesalon.com";
   const copyrightTextVal = siteSettings?.copyrightText || "Crafted for Elegance.";
 
   let heroTitlePart1 = heroTitleText;
@@ -1094,9 +1099,8 @@ export default function Home() {
         className="fixed top-0 left-0 right-0 z-[60] py-3 md:py-4 px-6 md:px-12 flex justify-between items-center bg-white/[0.01] backdrop-blur-[6px] border-b border-white/[0.04] text-white transition-all duration-1000 ease-out"
         style={{ opacity: isReady ? 1 : 0, transform: isReady ? 'none' : 'translateY(-10px)' }}
       >
-        <div className="flex flex-col items-start cursor-pointer group">
-          <span className="font-serif text-xl md:text-2xl leading-none tracking-tight">AG</span>
-          <span className="font-sans text-[6px] md:text-[7px] tracking-[0.6em] mt-1 group-hover:text-primary transition-colors uppercase opacity-70">Makeup Studio</span>
+        <div className="flex items-center cursor-pointer group">
+          <img src={aaravellaTextLogoPath} alt="AARAVELLA" className="h-7 md:h-9 w-auto object-contain" />
         </div>
 
         {/* Desktop Nav */}
@@ -1149,7 +1153,7 @@ export default function Home() {
               ))}
             </div>
             <div className="absolute bottom-12 flex flex-col items-center gap-4">
-              <span className="font-sans text-[8px] tracking-[0.5em] text-white/30 uppercase">AG Makeup Studio</span>
+              <span className="font-sans text-[8px] tracking-[0.5em] text-white/30 uppercase">AARAVELLA Luxe Salon</span>
             </div>
           </motion.div>
         )}
@@ -1461,7 +1465,7 @@ export default function Home() {
 
         {/* Vertical section label */}
         <div className="absolute top-1/2 right-6 -translate-y-1/2 font-sans text-[8px] tracking-[0.4em] text-black/15 uppercase" style={{ writingMode: "vertical-rl" }}>
-          AG Bridal Couture
+          AARAVELLA Bridal Couture
         </div>
       </section>
 
@@ -1858,8 +1862,13 @@ export default function Home() {
       {/* Footer */}
       <footer className="bg-[#1A1614] text-[#F5F0EB] py-32 md:py-48 relative overflow-hidden">
         {/* Large BG letters - perfectly centered and reduced opacity */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[50vw] font-serif font-light text-[#F5F0EB]/[0.05] pointer-events-none leading-none select-none z-0 text-center w-full">
-          AG
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none select-none z-0 text-center w-full flex flex-col items-center justify-center">
+          <span className="text-[12vw] font-serif font-light text-[#F5F0EB]/[0.05] leading-none tracking-[0.15em] block">
+            AARAVELLA
+          </span>
+          <span className="text-[4vw] font-sans font-light text-[#F5F0EB]/[0.04] leading-none tracking-[0.5em] block mt-[1.5vw]">
+            LUXE SALON
+          </span>
         </div>
 
         <div className="container mx-auto px-6 md:px-12 relative z-10">
@@ -1884,7 +1893,7 @@ export default function Home() {
 
                 <div className="space-y-6">
                   <div className="space-y-2">
-                    <span className="font-sans text-[11px] tracking-[0.5em] uppercase text-[#B79272] block font-semibold">{siteSettings?.businessName || "AG MAKEUP STUDIO"}</span>
+                    <span className="font-sans text-[11px] tracking-[0.5em] uppercase text-[#B79272] block font-semibold">{siteSettings?.businessName || "AARAVELLA LUXE SALON"}</span>
                     <p className="font-serif text-xl md:text-2xl leading-relaxed opacity-90 text-white/80">
                       {addressStreet}<br />
                       {addressCity}<br />
@@ -1907,7 +1916,9 @@ export default function Home() {
 
             {/* CENTER COLUMN: Logo & Tagline */}
             <FadeIn delay={0.1} className="flex flex-col items-center text-center lg:pt-16 order-1 lg:order-2 px-4">
-              <div className="font-serif text-7xl md:text-9xl tracking-widest uppercase text-white mb-12">AG</div>
+              <div className="flex justify-center mb-12">
+                <img src={avLogoPath} alt="AARAVELLA Luxe Salon" className="h-32 md:h-44 w-auto object-contain brightness-0 invert" />
+              </div>
               <div className="w-20 h-[1px] bg-[#B79272]/40 mb-12" />
               <p className="font-serif italic text-2xl md:text-4xl text-[#B79272]/80 max-w-sm leading-relaxed mb-16">
                 "{footerContentVal}"
@@ -1956,7 +1967,7 @@ export default function Home() {
           {/* Copyright Bottom */}
           <div className="mt-32 md:mt-48 pt-16 border-t border-white/5 flex flex-col items-center">
             <div className="text-[11px] tracking-[0.6em] font-sans text-white/10 uppercase">
-              &copy; {new Date().getFullYear()} {siteSettings?.businessName || "AG Makeup Studio"}. {copyrightTextVal}
+              &copy; {new Date().getFullYear()} {siteSettings?.businessName || "AARAVELLA Luxe Salon"}. {copyrightTextVal}
             </div>
           </div>
         </div>

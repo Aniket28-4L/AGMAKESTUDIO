@@ -1,0 +1,17 @@
+{
+  "name": "AARAVELLA Luxe Salon",
+  "short_name": "AARAVELLA",
+  "description": "Premier luxury bridal makeup and hair styling studio in Jamnagar, Gujarat.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1A1614",
+  "theme_color": "#B79272",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
