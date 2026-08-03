@@ -1917,7 +1917,7 @@ export default function Home() {
             {/* CENTER COLUMN: Logo & Tagline */}
             <FadeIn delay={0.1} className="flex flex-col items-center text-center lg:pt-16 order-1 lg:order-2 px-4">
               <div className="flex justify-center mb-12">
-                <img src={avLogoPath} alt="AARAVELLA Luxe Salon" className="h-32 md:h-44 w-auto object-contain brightness-0 invert" />
+                <img src={avLogoPath} alt="AARAVELLA Luxe Salon" className="h-56 md:h-80 w-auto object-contain brightness-0 invert" />
               </div>
               <div className="w-20 h-[1px] bg-[#B79272]/40 mb-12" />
               <p className="font-serif italic text-2xl md:text-4xl text-[#B79272]/80 max-w-sm leading-relaxed mb-16">
