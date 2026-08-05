@@ -32,69 +32,17 @@ export function MotionProvider({ children }: MotionProviderProps) {
 
   // Initialize motion systems on mount and signal readiness immediately.
   useEffect(() => {
-    logPerfEvent("MotionProvider initialized");
-    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    logPerfEvent("MotionProvider initialized (Phase 1 Test: Lenis Disabled)");
 
+    // PHASE 1 ISOLATION TEST: Lenis disabled. Native scrolling only.
     let lenis: Lenis | null = null;
-
-    if (!prefersReducedMotion) {
-      lenis = new Lenis({
-        duration: 1.35,
-        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-        orientation: "vertical",
-        gestureOrientation: "vertical",
-        smoothWheel: true,
-        wheelMultiplier: 0.85,
-        touchMultiplier: 1.1,
-        infinite: false,
-      });
-
-      // Wrap start and stop methods for instrumented logging
-      const origStart = lenis.start.bind(lenis);
-      const origStop = lenis.stop.bind(lenis);
-      lenis.start = () => {
-        logPerfEvent("[Lenis] start() called");
-        console.log("[Lenis] start() called");
-        origStart();
-      };
-      lenis.stop = () => {
-        logPerfEvent("[Lenis] stop() called");
-        console.log("[Lenis] stop() called");
-        origStop();
-      };
-
-      console.log("[Lenis] Initialized", lenis);
-      logPerfEvent("[Lenis] Initialized");
-
-      lenis.on("scroll", ScrollTrigger.update);
-
-      const raf = (time: number) => {
-        lenis!.raf(time);
-        rafRef.current = requestAnimationFrame(raf);
-      };
-      rafRef.current = requestAnimationFrame(raf);
-
-      const onAnchorClick = (e: MouseEvent) => {
-        const anchor = (e.target as HTMLElement).closest('a[href^="#"]');
-        if (!anchor) return;
-        const href = anchor.getAttribute("href");
-        if (!href || href === "#") return;
-        const target = document.querySelector(href);
-        if (!target) return;
-        e.preventDefault();
-        lenis!.scrollTo(target as HTMLElement, { offset: -72, duration: 2.2 });
-      };
-
-      document.addEventListener("click", onAnchorClick);
-      clickListenerRef.current = onAnchorClick;
-    }
 
     // Recalculate scroll-trigger positions against the settled layout.
     ScrollTrigger.refresh();
 
     // Signal readiness — batched with Lenis init for a single re-render.
     setIsReady(true);
-    setLenisInstance(lenis);
+    setLenisInstance(null);
   }, []);
 
   // Cleanup: cancel RAF, detach listeners, destroy Lenis on unmount.

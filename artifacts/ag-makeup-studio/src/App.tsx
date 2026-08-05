@@ -9,6 +9,7 @@ import Home from "@/pages/Home";
 import Archive from "@/pages/Archive";
 import LoadingScreen from "@/components/LoadingScreen";
 import { logPerfEvent } from "@/lib/perf-logger";
+import { initWheelTracer } from "@/lib/wheel-tracer";
 
 const queryClient = new QueryClient();
 
@@ -25,6 +26,7 @@ function Router() {
 function App() {
   useEffect(() => {
     logPerfEvent("App mounted");
+    initWheelTracer();
   }, []);
 
   return (
