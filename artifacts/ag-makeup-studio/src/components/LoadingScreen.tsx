@@ -29,33 +29,45 @@ export default function LoadingScreen() {
     logo.style.opacity   = "0";
     logo.style.transform = "translateY(14px)";
 
-    // Phase 2: Fade up logo
-    const t1 = setTimeout(() => {
-      logo.style.transition = "opacity 650ms ease, transform 650ms cubic-bezier(.25,.46,.45,.94)";
-      logo.style.opacity   = "1";
-      logo.style.transform = "translateY(0)";
-    }, 120);
+    let raf1: number;
+    let raf2: number;
+    let t1: ReturnType<typeof setTimeout>;
+    let t2: ReturnType<typeof setTimeout>;
+    let t3: ReturnType<typeof setTimeout>;
 
-    // Phase 3 & 4: Hold ~1s, then slide panel downward off screen
-    const t2 = setTimeout(() => {
-      panel.style.transition = "transform 780ms cubic-bezier(.22,1,.36,1)";
-      panel.style.transform  = "translateY(100%)";
+    // Use double requestAnimationFrame to ensure the preloader is rendered/painted before timers begin
+    raf1 = requestAnimationFrame(() => {
+      raf2 = requestAnimationFrame(() => {
+        // Phase 2: Fade up logo
+        t1 = setTimeout(() => {
+          logo.style.transition = "opacity 650ms ease, transform 650ms cubic-bezier(.25,.46,.45,.94)";
+          logo.style.opacity   = "1";
+          logo.style.transform = "translateY(0)";
+        }, 120);
 
-      // Phase 5: Restore scroll & unmount cleanly
-      const t3 = setTimeout(() => {
-        document.body.style.overflow         = originalOverflow;
-        document.body.style.overscrollBehavior = originalOverscroll;
-        setGone(true);
-      }, 800);
+        // Phase 3 & 4: Hold ~1s, then slide panel downward off screen
+        t2 = setTimeout(() => {
+          panel.style.transition = "transform 780ms cubic-bezier(.22,1,.36,1)";
+          panel.style.transform  = "translateY(100%)";
 
-      return () => clearTimeout(t3);
-    }, 1600);
+          // Phase 5: Restore scroll & unmount cleanly
+          t3 = setTimeout(() => {
+            document.body.style.overflow         = originalOverflow;
+            document.body.style.overscrollBehavior = originalOverscroll;
+            setGone(true);
+          }, 800);
+        }, 1600);
+      });
+    });
 
     return () => {
       document.body.style.overflow         = originalOverflow;
       document.body.style.overscrollBehavior = originalOverscroll;
-      clearTimeout(t1);
-      clearTimeout(t2);
+      if (raf1) cancelAnimationFrame(raf1);
+      if (raf2) cancelAnimationFrame(raf2);
+      if (t1) clearTimeout(t1);
+      if (t2) clearTimeout(t2);
+      if (t3) clearTimeout(t3);
     };
   }, []);
 
