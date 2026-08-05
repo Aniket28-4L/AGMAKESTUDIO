@@ -1,9 +1,10 @@
-﻿import { useState, useRef, useEffect, type ReactNode } from "react";
+import { useState, useRef, useEffect, type ReactNode } from "react";
 import Lenis from "lenis";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { MotionContext } from "./motion-context";
 import { PageContent } from "./PageContent";
+import { logPerfEvent } from "../../lib/perf-logger";
 import "lenis/dist/lenis.css";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -31,6 +32,7 @@ export function MotionProvider({ children }: MotionProviderProps) {
 
   // Initialize motion systems on mount and signal readiness immediately.
   useEffect(() => {
+    logPerfEvent("MotionProvider initialized");
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     let lenis: Lenis | null = null;
@@ -46,6 +48,23 @@ export function MotionProvider({ children }: MotionProviderProps) {
         touchMultiplier: 1.1,
         infinite: false,
       });
+
+      // Wrap start and stop methods for instrumented logging
+      const origStart = lenis.start.bind(lenis);
+      const origStop = lenis.stop.bind(lenis);
+      lenis.start = () => {
+        logPerfEvent("[Lenis] start() called");
+        console.log("[Lenis] start() called");
+        origStart();
+      };
+      lenis.stop = () => {
+        logPerfEvent("[Lenis] stop() called");
+        console.log("[Lenis] stop() called");
+        origStop();
+      };
+
+      console.log("[Lenis] Initialized", lenis);
+      logPerfEvent("[Lenis] Initialized");
 
       lenis.on("scroll", ScrollTrigger.update);
 

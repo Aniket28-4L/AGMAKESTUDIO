@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Switch, Route, Router as WouterRouter } from "wouter";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -7,6 +8,7 @@ import NotFound from "@/pages/not-found";
 import Home from "@/pages/Home";
 import Archive from "@/pages/Archive";
 import LoadingScreen from "@/components/LoadingScreen";
+import { logPerfEvent } from "@/lib/perf-logger";
 
 const queryClient = new QueryClient();
 
@@ -21,22 +23,23 @@ function Router() {
 }
 
 function App() {
-  return (
-    <>
-      {/* Brand splash — fully isolated, mounts once, slides away, then unmounts */}
-      <LoadingScreen />
+  useEffect(() => {
+    logPerfEvent("App mounted");
+  }, []);
 
-      <QueryClientProvider client={queryClient}>
-        <TooltipProvider>
-          <MotionProvider>
-            <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
-              <Router />
-            </WouterRouter>
-          </MotionProvider>
-          <Toaster />
-        </TooltipProvider>
-      </QueryClientProvider>
-    </>
+  return (
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <MotionProvider>
+          {/* Brand splash — uses Lenis & scroll lifecycle coordination */}
+          <LoadingScreen />
+          <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
+            <Router />
+          </WouterRouter>
+        </MotionProvider>
+        <Toaster />
+      </TooltipProvider>
+    </QueryClientProvider>
   );
 }
 

@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import aaravellaLogo from "../ag-studio-assets/avlogo.png";
+import { useMotion } from "./motion/motion-context";
+import { logPerfEvent } from "../lib/perf-logger";
 
 /**
  * LoadingScreen — Independent Brand Splash
@@ -12,18 +14,31 @@ export default function LoadingScreen() {
 
   const panelRef = useRef<HTMLDivElement>(null);
   const logoRef  = useRef<HTMLDivElement>(null);
+  const { lenis } = useMotion();
 
   useEffect(() => {
+    logPerfEvent("LoadingScreen mounted");
     const panel = panelRef.current;
     const logo  = logoRef.current;
 
     if (!panel || !logo) return;
+
+    // Stop Lenis smooth scroll while preloader is active
+    if (lenis) {
+      lenis.stop();
+    }
 
     // Lock body scrolling while preloader is active
     const originalOverflow   = document.body.style.overflow;
     const originalOverscroll = document.body.style.overscrollBehavior;
     document.body.style.overflow         = "hidden";
     document.body.style.overscrollBehavior = "none";
+
+    // Intercept wheel events during active splash to prevent background scrolling
+    const preventScroll = (e: WheelEvent) => {
+      e.preventDefault();
+    };
+    window.addEventListener("wheel", preventScroll, { passive: false });
 
     // Logo initial state: hidden & slightly down
     logo.style.opacity   = "0";
@@ -52,8 +67,14 @@ export default function LoadingScreen() {
 
           // Phase 5: Restore scroll & unmount cleanly
           t3 = setTimeout(() => {
+            window.removeEventListener("wheel", preventScroll);
             document.body.style.overflow         = originalOverflow;
             document.body.style.overscrollBehavior = originalOverscroll;
+            logPerfEvent("[Preloader] Completed - restoring scroll");
+            console.log("[Preloader] Completed - restoring scroll");
+            if (lenis) {
+              lenis.start();
+            }
             setGone(true);
           }, 800);
         }, 1600);
@@ -61,15 +82,21 @@ export default function LoadingScreen() {
     });
 
     return () => {
+      window.removeEventListener("wheel", preventScroll);
       document.body.style.overflow         = originalOverflow;
       document.body.style.overscrollBehavior = originalOverscroll;
+      logPerfEvent("[Preloader] Overlay unmounted");
+      console.log("[Preloader] Overlay unmounted");
+      if (lenis) {
+        lenis.start();
+      }
       if (raf1) cancelAnimationFrame(raf1);
       if (raf2) cancelAnimationFrame(raf2);
       if (t1) clearTimeout(t1);
       if (t2) clearTimeout(t2);
       if (t3) clearTimeout(t3);
     };
-  }, []);
+  }, [lenis]);
 
   if (gone) return null;
 

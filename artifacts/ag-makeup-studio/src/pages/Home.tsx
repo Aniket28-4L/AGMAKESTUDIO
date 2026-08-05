@@ -482,6 +482,8 @@ function BridalQuiz({ onClose }: { onClose: () => void }) {
   );
 }
 
+import { logPerfEvent } from "../lib/perf-logger";
+
 // Continuous playback cinematic background video
 const CinematicHeroVideo = memo(
   forwardRef<HTMLVideoElement, { videoUrl?: string; posterUrl?: string }>(
@@ -490,6 +492,9 @@ const CinematicHeroVideo = memo(
       const { isReady } = useMotion();
 
       const setRef = (node: HTMLVideoElement | null) => {
+        if (node && !videoRef.current) {
+          logPerfEvent("<video> element created & mounted in DOM");
+        }
         videoRef.current = node;
         if (typeof ref === "function") ref(node);
         else if (ref) ref.current = node;
@@ -527,13 +532,45 @@ const CinematicHeroVideo = memo(
 
       useEffect(() => {
         const video = videoRef.current;
-        if (video) {
-          video.load();
-          if (isReady) {
-            video.play().catch(() => { });
+        if (!video) return;
+
+        const resolved = resolveHeroVideoUrl(videoUrl);
+        logPerfEvent("Video network request start", { url: resolved });
+
+        // Instrument video media pipeline events
+        const onMetadata = () => logPerfEvent("Video metadata loaded (loadedmetadata)");
+        const onCanPlay = () => logPerfEvent("Video canplay event");
+        const onPlaying = () => {
+          logPerfEvent("Video playing event");
+          if ("requestVideoFrameCallback" in video) {
+            (video as any).requestVideoFrameCallback(() => {
+              logPerfEvent("Video first frame painted");
+            });
+          } else {
+            requestAnimationFrame(() => {
+              logPerfEvent("Video first frame painted");
+            });
           }
+        };
+
+        video.addEventListener("loadedmetadata", onMetadata);
+        video.addEventListener("canplay", onCanPlay);
+        video.addEventListener("playing", onPlaying);
+
+        video.load();
+        if (isReady) {
+          video.play().catch(() => { });
         }
+
+        return () => {
+          video.removeEventListener("loadedmetadata", onMetadata);
+          video.removeEventListener("canplay", onCanPlay);
+          video.removeEventListener("playing", onPlaying);
+        };
       }, [videoUrl, posterUrl, isReady]);
+
+      const resolvedUrl = resolveHeroVideoUrl(videoUrl);
+      const isMp4 = resolvedUrl.endsWith(".mp4") || !resolvedUrl.endsWith(".webm");
 
       return (
         <video
@@ -542,14 +579,14 @@ const CinematicHeroVideo = memo(
           muted
           loop
           playsInline
-          preload="metadata"
+          preload="auto"
           poster={posterUrl || heroBridePath}
           className="w-full h-full object-cover object-[75%_35%] md:object-[82%_28%] scale-[1.05] will-change-transform"
           style={{
             filter: "contrast(1.02) saturate(1.05) brightness(1.02)",
           }}
         >
-          <source src={resolveHeroVideoUrl(videoUrl)} type="video/mp4" />
+          <source src={resolvedUrl} type={isMp4 ? "video/mp4" : "video/webm"} />
         </video>
       );
     }
@@ -608,6 +645,10 @@ async function fetchHomeData() {
 }
 
 export default function Home() {
+  useEffect(() => {
+    logPerfEvent("Hero component mounted");
+  }, []);
+
   const [sanityData, setSanityData] = useState<any>(null);
   const [, setLocation] = useLocation();
 
