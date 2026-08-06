@@ -70,7 +70,6 @@ export default function LoadingScreen() {
             document.body.style.overscrollBehavior = originalOverscroll;
             if (lenis) {
               lenis.start();
-              lenis.resize();
             }
             setGone(true);
           }, 800);
@@ -84,7 +83,6 @@ export default function LoadingScreen() {
       document.body.style.overscrollBehavior = originalOverscroll;
       if (lenis) {
         lenis.start();
-        lenis.resize();
       }
       if (raf1) cancelAnimationFrame(raf1);
       if (raf2) cancelAnimationFrame(raf2);
