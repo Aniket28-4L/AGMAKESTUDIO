@@ -29,67 +29,62 @@ export function MotionProvider({ children }: MotionProviderProps) {
   const rafRef = useRef<number>(0);
   const clickListenerRef = useRef<((e: MouseEvent) => void) | null>(null);
 
-  // Initialize motion systems on mount and signal readiness immediately.
+  // Initialize motion systems on mount with complete cleanup on unmount.
   useEffect(() => {
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    let lenis: Lenis | null = null;
-
-    if (!prefersReducedMotion) {
-      lenis = new Lenis({
-        duration: 1.35,
-        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-        orientation: "vertical",
-        gestureOrientation: "vertical",
-        smoothWheel: true,
-        wheelMultiplier: 0.85,
-        touchMultiplier: 1.1,
-        infinite: false,
-      });
-
-      lenis.on("scroll", ScrollTrigger.update);
-
-      const raf = (time: number) => {
-        lenis!.raf(time);
-        rafRef.current = requestAnimationFrame(raf);
-      };
-      rafRef.current = requestAnimationFrame(raf);
-
-      const onAnchorClick = (e: MouseEvent) => {
-        const anchor = (e.target as HTMLElement).closest('a[href^="#"]');
-        if (!anchor) return;
-        const href = anchor.getAttribute("href");
-        if (!href || href === "#") return;
-        const target = document.querySelector(href);
-        if (!target) return;
-        e.preventDefault();
-        lenis!.scrollTo(target as HTMLElement, { offset: -72, duration: 2.2 });
-      };
-
-      document.addEventListener("click", onAnchorClick);
-      clickListenerRef.current = onAnchorClick;
+    if (prefersReducedMotion) {
+      setIsReady(true);
+      return;
     }
 
-    // Recalculate scroll-trigger positions against the settled layout.
+    const lenis = new Lenis({
+      duration: 1.35,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      orientation: "vertical",
+      gestureOrientation: "vertical",
+      smoothWheel: true,
+      wheelMultiplier: 0.85,
+      touchMultiplier: 1.1,
+      infinite: false,
+    });
+
+    lenis.on("scroll", ScrollTrigger.update);
+
+    const raf = (time: number) => {
+      lenis.raf(time);
+      rafRef.current = requestAnimationFrame(raf);
+    };
+    rafRef.current = requestAnimationFrame(raf);
+
+    const onAnchorClick = (e: MouseEvent) => {
+      const anchor = (e.target as HTMLElement).closest('a[href^="#"]');
+      if (!anchor) return;
+      const href = anchor.getAttribute("href");
+      if (!href || href === "#") return;
+      const target = document.querySelector(href);
+      if (!target) return;
+      e.preventDefault();
+      lenis.scrollTo(target as HTMLElement, { offset: -72, duration: 2.2 });
+    };
+
+    document.addEventListener("click", onAnchorClick);
+    clickListenerRef.current = onAnchorClick;
+
     ScrollTrigger.refresh();
 
-    // Signal readiness — batched with Lenis init for a single re-render.
     setIsReady(true);
     setLenisInstance(lenis);
-  }, []);
 
-  // Cleanup: cancel RAF, detach listeners, destroy Lenis on unmount.
-  useEffect(() => {
     return () => {
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
       if (clickListenerRef.current) {
         document.removeEventListener("click", clickListenerRef.current);
       }
-      if (lenisInstance) {
-        lenisInstance.destroy();
-      }
+      lenis.destroy();
+      setLenisInstance(null);
     };
-  }, [lenisInstance]);
+  }, []);
 
   return (
     <MotionContext.Provider value={{ isReady, lenis: lenisInstance }}>
