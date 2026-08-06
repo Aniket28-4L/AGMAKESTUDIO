@@ -4,7 +4,6 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { MotionContext } from "./motion-context";
 import { PageContent } from "./PageContent";
-import { logPerfEvent } from "../../lib/perf-logger";
 import "lenis/dist/lenis.css";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -32,17 +31,51 @@ export function MotionProvider({ children }: MotionProviderProps) {
 
   // Initialize motion systems on mount and signal readiness immediately.
   useEffect(() => {
-    logPerfEvent("MotionProvider initialized (Phase 1 Test: Lenis Disabled)");
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    // PHASE 1 ISOLATION TEST: Lenis disabled. Native scrolling only.
     let lenis: Lenis | null = null;
+
+    if (!prefersReducedMotion) {
+      lenis = new Lenis({
+        duration: 1.35,
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        orientation: "vertical",
+        gestureOrientation: "vertical",
+        smoothWheel: true,
+        wheelMultiplier: 0.85,
+        touchMultiplier: 1.1,
+        infinite: false,
+      });
+
+      lenis.on("scroll", ScrollTrigger.update);
+
+      const raf = (time: number) => {
+        lenis!.raf(time);
+        rafRef.current = requestAnimationFrame(raf);
+      };
+      rafRef.current = requestAnimationFrame(raf);
+
+      const onAnchorClick = (e: MouseEvent) => {
+        const anchor = (e.target as HTMLElement).closest('a[href^="#"]');
+        if (!anchor) return;
+        const href = anchor.getAttribute("href");
+        if (!href || href === "#") return;
+        const target = document.querySelector(href);
+        if (!target) return;
+        e.preventDefault();
+        lenis!.scrollTo(target as HTMLElement, { offset: -72, duration: 2.2 });
+      };
+
+      document.addEventListener("click", onAnchorClick);
+      clickListenerRef.current = onAnchorClick;
+    }
 
     // Recalculate scroll-trigger positions against the settled layout.
     ScrollTrigger.refresh();
 
     // Signal readiness — batched with Lenis init for a single re-render.
     setIsReady(true);
-    setLenisInstance(null);
+    setLenisInstance(lenis);
   }, []);
 
   // Cleanup: cancel RAF, detach listeners, destroy Lenis on unmount.

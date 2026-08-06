@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import aaravellaLogo from "../ag-studio-assets/avlogo.png";
 import { useMotion } from "./motion/motion-context";
-import { logPerfEvent } from "../lib/perf-logger";
 
 /**
  * LoadingScreen — Independent Brand Splash
@@ -17,7 +16,6 @@ export default function LoadingScreen() {
   const { lenis } = useMotion();
 
   useEffect(() => {
-    logPerfEvent("LoadingScreen mounted");
     const panel = panelRef.current;
     const logo  = logoRef.current;
 
@@ -70,10 +68,9 @@ export default function LoadingScreen() {
             window.removeEventListener("wheel", preventScroll);
             document.body.style.overflow         = originalOverflow;
             document.body.style.overscrollBehavior = originalOverscroll;
-            logPerfEvent("[Preloader] Completed - restoring scroll");
-            console.log("[Preloader] Completed - restoring scroll");
             if (lenis) {
               lenis.start();
+              lenis.resize();
             }
             setGone(true);
           }, 800);
@@ -85,10 +82,9 @@ export default function LoadingScreen() {
       window.removeEventListener("wheel", preventScroll);
       document.body.style.overflow         = originalOverflow;
       document.body.style.overscrollBehavior = originalOverscroll;
-      logPerfEvent("[Preloader] Overlay unmounted");
-      console.log("[Preloader] Overlay unmounted");
       if (lenis) {
         lenis.start();
+        lenis.resize();
       }
       if (raf1) cancelAnimationFrame(raf1);
       if (raf2) cancelAnimationFrame(raf2);

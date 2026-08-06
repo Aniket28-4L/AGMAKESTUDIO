@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { Switch, Route, Router as WouterRouter } from "wouter";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -8,8 +7,6 @@ import NotFound from "@/pages/not-found";
 import Home from "@/pages/Home";
 import Archive from "@/pages/Archive";
 import LoadingScreen from "@/components/LoadingScreen";
-import { logPerfEvent } from "@/lib/perf-logger";
-import { initWheelTracer } from "@/lib/wheel-tracer";
 
 const queryClient = new QueryClient();
 
@@ -24,11 +21,6 @@ function Router() {
 }
 
 function App() {
-  useEffect(() => {
-    logPerfEvent("App mounted");
-    initWheelTracer();
-  }, []);
-
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>

@@ -482,8 +482,6 @@ function BridalQuiz({ onClose }: { onClose: () => void }) {
   );
 }
 
-import { logPerfEvent } from "../lib/perf-logger";
-
 // Continuous playback cinematic background video
 const CinematicHeroVideo = memo(
   forwardRef<HTMLVideoElement, { videoUrl?: string; posterUrl?: string }>(
@@ -492,9 +490,6 @@ const CinematicHeroVideo = memo(
       const { isReady } = useMotion();
 
       const setRef = (node: HTMLVideoElement | null) => {
-        if (node && !videoRef.current) {
-          logPerfEvent("<video> element created & mounted in DOM");
-        }
         videoRef.current = node;
         if (typeof ref === "function") ref(node);
         else if (ref) ref.current = node;
@@ -534,39 +529,10 @@ const CinematicHeroVideo = memo(
         const video = videoRef.current;
         if (!video) return;
 
-        const resolved = resolveHeroVideoUrl(videoUrl);
-        logPerfEvent("Video network request start", { url: resolved });
-
-        // Instrument video media pipeline events
-        const onMetadata = () => logPerfEvent("Video metadata loaded (loadedmetadata)");
-        const onCanPlay = () => logPerfEvent("Video canplay event");
-        const onPlaying = () => {
-          logPerfEvent("Video playing event");
-          if ("requestVideoFrameCallback" in video) {
-            (video as any).requestVideoFrameCallback(() => {
-              logPerfEvent("Video first frame painted");
-            });
-          } else {
-            requestAnimationFrame(() => {
-              logPerfEvent("Video first frame painted");
-            });
-          }
-        };
-
-        video.addEventListener("loadedmetadata", onMetadata);
-        video.addEventListener("canplay", onCanPlay);
-        video.addEventListener("playing", onPlaying);
-
         video.load();
         if (isReady) {
           video.play().catch(() => { });
         }
-
-        return () => {
-          video.removeEventListener("loadedmetadata", onMetadata);
-          video.removeEventListener("canplay", onCanPlay);
-          video.removeEventListener("playing", onPlaying);
-        };
       }, [videoUrl, posterUrl, isReady]);
 
       const resolvedUrl = resolveHeroVideoUrl(videoUrl);
@@ -645,10 +611,6 @@ async function fetchHomeData() {
 }
 
 export default function Home() {
-  useEffect(() => {
-    logPerfEvent("Hero component mounted");
-  }, []);
-
   const [sanityData, setSanityData] = useState<any>(null);
   const [, setLocation] = useLocation();
 
