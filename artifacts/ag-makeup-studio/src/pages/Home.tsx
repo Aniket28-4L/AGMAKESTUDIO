@@ -268,73 +268,91 @@ function TransformationSlider({
 // ── Bridal Quiz ─────────────────────────────────────────────────────────────
 const QUIZ_QUESTIONS = [
   {
-    q: "What feeling do you want to radiate on your wedding day?",
+    q: "What kind of finish do you envision for your special day?",
     opts: [
-      { label: "Timeless & Pure", value: "timeless" },
-      { label: "Majestic & Commanding", value: "signature" },
-      { label: "Luminous & Regal", value: "royal" },
-      { label: "Modern & Editorial", value: "muse" },
+      { label: "Soft, Radiant & Timeless", value: "signature" },
+      { label: "Lightweight & Effortlessly Natural", value: "airbrush" },
+      { label: "Luxury, Glamorous & High-Fashion", value: "luxe" },
+      { label: "Flawless & Camera-Perfect", value: "hd" },
     ],
   },
   {
-    q: "Your bridal palette — which speaks to your soul?",
+    q: "What matters most to you in your bridal makeup?",
     opts: [
-      { label: "Ivory, Pearl & Blush", value: "timeless" },
-      { label: "Deep Jewels & Burgundy", value: "signature" },
-      { label: "Gold, Vermillion & Amber", value: "royal" },
-      { label: "Nude, Taupe & Champagne", value: "muse" },
+      { label: "A look personalized just for me", value: "signature" },
+      { label: "A lightweight finish that lasts through heat & humidity", value: "airbrush" },
+      { label: "Luxury beauty brands & an elevated finish", value: "luxe" },
+      { label: "Perfect skin for photographs & videos", value: "hd" },
     ],
   },
   {
-    q: "Which word defines your bridal vision?",
+    q: "Which bridal beauty experience speaks to you most?",
     opts: [
-      { label: "Eternal", value: "timeless" },
-      { label: "Grand", value: "signature" },
-      { label: "Opulent", value: "royal" },
-      { label: "Effortless", value: "muse" },
+      { label: "Natural beauty, perfected for my features", value: "signature" },
+      { label: "Barely-there makeup with a beautiful, even finish", value: "airbrush" },
+      { label: "A luxurious, radiant and glamorous transformation", value: "luxe" },
+      { label: "Smooth, flawless skin that looks incredible on camera", value: "hd" },
     ],
   },
 ];
 
-const QUIZ_RESULTS: Record<string, { name: string; desc: string; img: string }> = {
-  timeless: {
-    name: "The Timeless Bride",
-    desc: "A classic, elegant aesthetic — glowing skin, traditional elements, and a radiance that transcends trends. Pure. Eternal.",
-    img: "/src/assets/gallery_3.png",
-  },
+const QUIZ_RESULTS: Record<
+  string,
+  { name: string; desc: string; img: string }
+> = {
   signature: {
-    name: "The Signature Bride",
-    desc: "Comprehensive, commanding, majestic. Flawless HD makeup and intricate hairstyling for a presence that fills every room.",
+    name: "Anu’s Signature Makeup",
+    desc: "A bespoke bridal makeup experience created exclusively for you — personalized to your face shape and skin tone, with premium luxury products and a soft, radiant, timeless finish.",
     img: "/src/assets/gallery_2.png",
   },
-  royal: {
-    name: "The Royal Glow",
-    desc: "Premium airbrush and 24k gold-infused skincare prep — the ultimate illuminated finish for a bride who demands perfection.",
+
+  airbrush: {
+    name: "Airbrush Makeup",
+    desc: "A lightweight, camera-perfect finish for the modern bride. Ultra-light, sweat and humidity resistant, with a natural finish designed to stay beautiful throughout your celebration.",
+    img: "/src/assets/gallery_3.png",
+  },
+
+  luxe: {
+    name: "Luxe Makeup",
+    desc: "Luxury artistry using internationally renowned beauty brands including Dior, Charlotte Tilbury and MAC — creating a radiant, high-fashion finish with elegant, long-lasting wear.",
     img: "/src/assets/gallery_1.png",
   },
-  muse: {
-    name: "The Modern Muse",
-    desc: "Minimalist and editorial — celebrating your natural bone structure with a softness that reads breathtaking in every frame.",
+
+  hd: {
+    name: "HD Makeup",
+    desc: "Flawless makeup designed for high-definition photography and video. A smooth, skin-like finish that naturally conceals imperfections while keeping you fresh throughout the celebration.",
     img: "/src/assets/gallery_4.png",
   },
 };
 
 function BridalQuiz({ onClose }: { onClose: () => void }) {
-  const [step, setStep] = useState(0); // 0-2 questions, 3 = result
+  const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<string[]>([]);
   const [selected, setSelected] = useState<string | null>(null);
 
   const getResult = useCallback((ans: string[]) => {
-    const counts: Record<string, number> = { timeless: 0, signature: 0, royal: 0, muse: 0 };
-    ans.forEach((a) => { counts[a] = (counts[a] || 0) + 1; });
+    const counts: Record<string, number> = {
+      signature: 0,
+      airbrush: 0,
+      luxe: 0,
+      hd: 0,
+    };
+
+    ans.forEach((a) => {
+      counts[a] = (counts[a] || 0) + 1;
+    });
+
     return Object.entries(counts).sort((a, b) => b[1] - a[1])[0][0];
   }, []);
 
   const next = () => {
     if (!selected) return;
+
     const newAnswers = [...answers, selected];
+
     setAnswers(newAnswers);
     setSelected(null);
+
     if (step < 2) {
       setStep(step + 1);
     } else {
@@ -342,7 +360,8 @@ function BridalQuiz({ onClose }: { onClose: () => void }) {
     }
   };
 
-  const result = step === 3 ? QUIZ_RESULTS[getResult(answers)] : null;
+  const result =
+    step === 3 ? QUIZ_RESULTS[getResult(answers)] : null;
 
   return createPortal(
     <motion.div
@@ -356,8 +375,15 @@ function BridalQuiz({ onClose }: { onClose: () => void }) {
     >
       {/* Noise grain */}
       <div className="absolute inset-0 noise-overlay opacity-[0.04] pointer-events-none" />
+
       {/* Ambient champagne glow */}
-      <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse at center, rgba(183,146,114,0.07) 0%, transparent 65%)" }} />
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background:
+            "radial-gradient(ellipse at center, rgba(183,146,114,0.07) 0%, transparent 65%)",
+        }}
+      />
 
       {/* Close */}
       <button
@@ -375,27 +401,38 @@ function BridalQuiz({ onClose }: { onClose: () => void }) {
               initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -24 }}
-              transition={{ duration: 0.7, ease: [0.25, 0.1, 0.25, 1] }}
+              transition={{
+                duration: 0.7,
+                ease: [0.25, 0.1, 0.25, 1],
+              }}
             >
               {/* Header */}
               <div className="mb-12 text-center">
                 <span className="font-sans text-[9px] tracking-[0.5em] text-[#B79272] uppercase block mb-6">
                   Bridal Style Discovery — {step + 1} of 3
                 </span>
+
                 {/* Progress line */}
                 <div className="w-48 h-px bg-white/10 mx-auto relative">
                   <motion.div
                     className="absolute left-0 top-0 h-full bg-[#B79272]"
-                    animate={{ width: `${((step + 1) / 3) * 100}%` }}
-                    transition={{ duration: 0.5, ease: "easeOut" }}
+                    animate={{
+                      width: `${((step + 1) / 3) * 100}%`,
+                    }}
+                    transition={{
+                      duration: 0.5,
+                      ease: "easeOut",
+                    }}
                   />
                 </div>
               </div>
 
+              {/* Question */}
               <h2 className="font-serif text-3xl md:text-5xl font-light text-white text-center leading-[1.15] mb-14">
                 {QUIZ_QUESTIONS[step].q}
               </h2>
 
+              {/* Options */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {QUIZ_QUESTIONS[step].opts.map((opt) => (
                   <button
@@ -403,20 +440,31 @@ function BridalQuiz({ onClose }: { onClose: () => void }) {
                     onClick={() => setSelected(opt.value)}
                     className="group text-left px-7 py-6 border transition-all duration-400 relative overflow-hidden"
                     style={{
-                      borderColor: selected === opt.value ? "#B79272" : "rgba(255,255,255,0.1)",
-                      background: selected === opt.value ? "rgba(183,146,114,0.08)" : "transparent",
+                      borderColor:
+                        selected === opt.value
+                          ? "#B79272"
+                          : "rgba(255,255,255,0.1)",
+                      background:
+                        selected === opt.value
+                          ? "rgba(183,146,114,0.08)"
+                          : "transparent",
                     }}
                   >
                     {selected === opt.value && (
                       <motion.div
                         layoutId="quiz-select-bg"
                         className="absolute inset-0 pointer-events-none"
-                        style={{ background: "rgba(183,146,114,0.06)" }}
+                        style={{
+                          background:
+                            "rgba(183,146,114,0.06)",
+                        }}
                       />
                     )}
+
                     <span className="font-serif text-xl text-white/80 group-hover:text-white transition-colors relative z-10">
                       {opt.label}
                     </span>
+
                     {selected === opt.value && (
                       <div className="absolute right-5 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-[#B79272]" />
                     )}
@@ -424,50 +472,83 @@ function BridalQuiz({ onClose }: { onClose: () => void }) {
                 ))}
               </div>
 
+              {/* Continue */}
               <div className="mt-12 flex justify-center">
                 <button
                   onClick={next}
                   disabled={!selected}
                   className="font-sans text-[10px] uppercase tracking-[0.3em] border-b pb-1 transition-all duration-300"
                   style={{
-                    borderColor: selected ? "#B79272" : "rgba(255,255,255,0.2)",
-                    color: selected ? "#B79272" : "rgba(255,255,255,0.2)",
-                    cursor: selected ? "pointer" : "not-allowed",
+                    borderColor: selected
+                      ? "#B79272"
+                      : "rgba(255,255,255,0.2)",
+                    color: selected
+                      ? "#B79272"
+                      : "rgba(255,255,255,0.2)",
+                    cursor: selected
+                      ? "pointer"
+                      : "not-allowed",
                   }}
                 >
-                  {step < 2 ? "Continue →" : "Reveal My Look →"}
+                  {step < 2
+                    ? "Continue →"
+                    : "Reveal My Look →"}
                 </button>
               </div>
             </motion.div>
           ) : (
+            /* RESULT */
             <motion.div
               key="result"
-              initial={{ opacity: 0, scale: 0.97 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.9, ease: [0.25, 0.1, 0.25, 1] }}
+              initial={{
+                opacity: 0,
+                scale: 0.97,
+              }}
+              animate={{
+                opacity: 1,
+                scale: 1,
+              }}
+              transition={{
+                duration: 0.9,
+                ease: [0.25, 0.1, 0.25, 1],
+              }}
               className="text-center"
             >
               <span className="font-sans text-[9px] tracking-[0.5em] text-[#B79272] uppercase block mb-8">
                 Your Bridal Look
               </span>
+
               <h2 className="font-serif text-5xl md:text-7xl font-light text-white mb-6 leading-[0.9]">
                 {result?.name}
               </h2>
+
               <div className="w-16 h-px bg-[#B79272]/50 mx-auto mb-8" />
+
               <p className="font-sans font-light text-white/50 text-sm leading-loose max-w-md mx-auto mb-12">
                 {result?.desc}
               </p>
+
               <div className="flex gap-4 justify-center flex-wrap">
                 <a
                   href="#book"
                   onClick={onClose}
                   className="inline-block px-10 py-4 text-[10px] uppercase tracking-[0.3em] text-white"
-                  style={{ background: "linear-gradient(135deg,#B79272,#C9A98A)", boxShadow: "0 4px 24px rgba(183,146,114,0.35)" }}
+                  style={{
+                    background:
+                      "linear-gradient(135deg,#B79272,#C9A98A)",
+                    boxShadow:
+                      "0 4px 24px rgba(183,146,114,0.35)",
+                  }}
                 >
                   Book This Look
                 </a>
+
                 <button
-                  onClick={() => { setStep(0); setAnswers([]); setSelected(null); }}
+                  onClick={() => {
+                    setStep(0);
+                    setAnswers([]);
+                    setSelected(null);
+                  }}
                   className="px-10 py-4 text-[10px] uppercase tracking-[0.3em] border border-white/15 text-white/40 hover:text-white/70 hover:border-white/30 transition-colors"
                 >
                   Retake Quiz
@@ -737,10 +818,38 @@ export default function Home() {
   const offeringsItems = offeringsData && offeringsData.length > 0
     ? offeringsData
     : [
-      { isStatic: true, number: 1, name: "The Signature Bride", description: "Our most requested comprehensive bridal styling. Flawless HD makeup, advanced draping, and intricate hairstyling designed for a majestic, commanding presence.", image: { isStatic: true, src: gallery2Path }, ctaText: "Request Consultation" },
-      { isStatic: true, number: 2, name: "The Timeless Bride", description: "A classic, elegant aesthetic focusing on glowing skin and traditional elements that transcend fleeting trends. Pure, radiant, eternal.", image: { isStatic: true, src: gallery3Path }, ctaText: "Request Consultation" },
-      { isStatic: true, number: 3, name: "The Royal Glow", description: "Premium airbrush techniques paired with luxury 24k gold infused skincare prep for the ultimate illuminated finish. For the bride who demands absolute perfection.", image: { isStatic: true, src: gallery1Path }, ctaText: "Request Consultation" },
-      { isStatic: true, number: 4, name: "The Modern Muse", description: "For the contemporary bride — minimalist, editorial-style makeup that highlights natural bone structure and lets your inner radiance lead.", image: { isStatic: true, src: gallery4Path }, ctaText: "Request Consultation" }
+      {
+        isStatic: true,
+        number: 1,
+        name: "Anu’s Signature Makeup",
+        description: "A bespoke bridal makeup experience created exclusively for you.\n\n✓ Personalized to your face shape & skin tone\n✓ Premium luxury products only\n✓ Soft, radiant & timeless finish\n✓ Long-lasting for weddings & events\n✓ Natural look with flawless photographs",
+        image: { isStatic: true, src: gallery2Path },
+        ctaText: "Request Consultation"
+      },
+      {
+        isStatic: true,
+        number: 2,
+        name: "Airbrush Makeup",
+        description: "A lightweight, camera-perfect finish for modern brides.\n\n✓ Ultra-light airbrush application\n✓ Sweat & humidity resistant\n✓ HD camera-ready finish\n✓ Covers imperfections naturally\n✓ Ideal for destination weddings",
+        image: { isStatic: true, src: gallery3Path },
+        ctaText: "Request Consultation"
+      },
+      {
+        isStatic: true,
+        number: 3,
+        name: "Luxe Makeup",
+        description: "Luxury artistry using internationally renowned beauty brands.\n\n✓ Dior, Charlotte Tilbury & MAC products\n✓ High-fashion radiant finish\n✓ Customized bridal styling\n✓ Long-lasting premium wear\n✓ Elegant, luxurious appearance",
+        image: { isStatic: true, src: gallery1Path },
+        ctaText: "Request Consultation"
+      },
+      {
+        isStatic: true,
+        number: 4,
+        name: "HD Makeup",
+        description: "Flawless makeup designed for high-definition photography.\n\n✓ Smooth skin-like finish\n✓ Perfect for HD cameras & videos\n✓ Soft, natural-looking coverage\n✓ Conceals fine lines & pores\n✓ Fresh look throughout the celebration",
+        image: { isStatic: true, src: gallery4Path },
+        ctaText: "Request Consultation"
+      }
     ];
 
   const renderCollectionsTitle = (title: string) => {
@@ -1918,15 +2027,25 @@ export default function Home() {
             </FadeIn>
 
             {/* CENTER COLUMN: Logo & Tagline */}
-            <FadeIn delay={0.1} className="flex flex-col items-center text-center lg:pt-16 order-1 lg:order-2 px-4">
-              <div className="flex justify-center mb-12">
+            <FadeIn delay={0.1} className="relative flex flex-col items-center text-center lg:pt-16 order-1 lg:order-2 px-4">
+              {/* Mobile AV Watermark behind logo/tagline section (not behind map) */}
+              <div className="md:hidden absolute top-[65%] left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none select-none z-0 w-full flex justify-center items-center opacity-[0.06]">
+                <img
+                  src={avLogoPath}
+                  alt=""
+                  className="w-[130vw] max-w-[520px] h-auto object-contain brightness-0 invert scale-150"
+                  style={{ clipPath: "inset(0 0 54% 0)" }}
+                />
+              </div>
+
+              <div className="relative z-10 flex justify-center mb-12">
                 <img src={avLogoPath} alt="AARAVELLA Luxe Salon" className="h-56 md:h-80 w-auto object-contain brightness-0 invert" />
               </div>
-              <div className="w-20 h-[1px] bg-[#B79272]/40 mb-12" />
-              <p className="font-serif italic text-2xl md:text-4xl text-[#B79272]/80 max-w-sm leading-relaxed mb-16">
+              <div className="relative z-10 w-20 h-[1px] bg-[#B79272]/40 mb-12" />
+              <p className="relative z-10 font-serif italic text-2xl md:text-4xl text-[#B79272]/80 max-w-sm leading-relaxed mb-16">
                 "{footerContentVal}"
               </p>
-              <div className="space-y-4 font-sans text-[11px] tracking-[0.5em] uppercase text-white/30">
+              <div className="relative z-10 space-y-4 font-sans text-[11px] tracking-[0.5em] uppercase text-white/30">
                 <p className="hover:text-[#B79272] transition-colors duration-300">Bridal Makeup</p>
                 <p className="hover:text-[#B79272] transition-colors duration-300">Editorial Beauty</p>
                 <p className="hover:text-[#B79272] transition-colors duration-300">Luxury Transformations</p>

@@ -49,17 +49,17 @@ async function uploadImage(fileName: string) {
 // Main seed function
 async function seed() {
   console.log('Starting seed process...')
-  
+
   // Validate assets directory first
   console.log('Assets directory:', ASSETS_DIR)
-  
+
   if (!fs.existsSync(ASSETS_DIR)) {
     throw new Error(`Assets directory not found: ${ASSETS_DIR}`)
   }
-  
+
   const filesInAssetsDir = fs.readdirSync(ASSETS_DIR)
   console.log('Files found in assets directory:', filesInAssetsDir)
-  
+
   // Verify hero_bride.png exists specifically
   const heroBridePath = path.resolve(ASSETS_DIR, 'hero_bride.png')
   if (fs.existsSync(heroBridePath)) {
@@ -107,7 +107,7 @@ async function seed() {
     uploadImage('awards2.jpeg'),
     uploadImage('awards3.jpeg'),
   ])
-  
+
   // Upload archive images (img1.jpg - img30.jpg)
   const archiveAssets = await Promise.all(
     Array.from({ length: 30 }, (_, i) => uploadImage(`img${i + 1}.jpg`))
@@ -289,10 +289,38 @@ async function seed() {
   // ─────────────────────────────────────────────────────────────────
   console.log('Creating offering items...')
   const offeringData = [
-    { id: 'offering-01', number: 1, name: 'The Signature Bride', description: 'Our most requested comprehensive bridal styling. Flawless HD makeup, advanced draping, and intricate hairstyling designed for a majestic, commanding presence.', image: gallery2Asset, ctaText: 'Request Consultation' },
-    { id: 'offering-02', number: 2, name: 'The Timeless Bride', description: 'A classic, elegant aesthetic focusing on glowing skin and traditional elements that transcend fleeting trends. Pure, radiant, eternal.', image: gallery3Asset, ctaText: 'Request Consultation' },
-    { id: 'offering-03', number: 3, name: 'The Royal Glow', description: 'Premium airbrush techniques paired with luxury 24k gold infused skincare prep for the ultimate illuminated finish. For the bride who demands absolute perfection.', image: gallery1Asset, ctaText: 'Request Consultation' },
-    { id: 'offering-04', number: 4, name: 'The Modern Muse', description: 'For the contemporary bride — minimalist, editorial-style makeup that highlights natural bone structure and lets your inner radiance lead.', image: gallery4Asset, ctaText: 'Request Consultation' },
+    {
+      id: 'offering-01',
+      number: 1,
+      name: 'Anu’s Signature Makeup',
+      description: 'A bespoke bridal makeup experience created exclusively for you.\n\n✓ Personalized to your face shape & skin tone\n✓ Premium luxury products only\n✓ Soft, radiant & timeless finish\n✓ Long-lasting for weddings & events\n✓ Natural look with flawless photographs',
+      image: gallery2Asset,
+      ctaText: 'Request Consultation'
+    },
+    {
+      id: 'offering-02',
+      number: 2,
+      name: 'Airbrush Makeup',
+      description: 'A lightweight, camera-perfect finish for modern brides.\n\n✓ Ultra-light airbrush application\n✓ Sweat & humidity resistant\n✓ HD camera-ready finish\n✓ Covers imperfections naturally\n✓ Ideal for destination weddings',
+      image: gallery3Asset,
+      ctaText: 'Request Consultation'
+    },
+    {
+      id: 'offering-03',
+      number: 3,
+      name: 'Luxe Makeup',
+      description: 'Luxury artistry using internationally renowned beauty brands.\n\n✓ Dior, Charlotte Tilbury & MAC products\n✓ High-fashion radiant finish\n✓ Customized bridal styling\n✓ Long-lasting premium wear\n✓ Elegant, luxurious appearance',
+      image: gallery1Asset,
+      ctaText: 'Request Consultation'
+    },
+    {
+      id: 'offering-04',
+      number: 4,
+      name: 'HD Makeup',
+      description: 'Flawless makeup designed for high-definition photography.\n\n✓ Smooth skin-like finish\n✓ Perfect for HD cameras & videos\n✓ Soft, natural-looking coverage\n✓ Conceals fine lines & pores\n✓ Fresh look throughout the celebration',
+      image: gallery4Asset,
+      ctaText: 'Request Consultation'
+    },
   ]
   for (const offering of offeringData) {
     await client.createOrReplace({
