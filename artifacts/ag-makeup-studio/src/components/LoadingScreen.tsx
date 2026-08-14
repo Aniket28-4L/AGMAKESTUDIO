@@ -94,12 +94,11 @@ export default function LoadingScreen() {
 
   // Recalculate Lenis metrics and ScrollTrigger after preloader is completely unmounted from DOM
   useEffect(() => {
-    if (gone && lenis) {
-      const timer = setTimeout(() => {
-        lenis.resize();
-      }, 50);
-      return () => clearTimeout(timer);
-    }
+    if (!gone || !lenis) return;
+    const timer = setTimeout(() => {
+      lenis.resize();
+    }, 50);
+    return () => clearTimeout(timer);
   }, [gone, lenis]);
 
   if (gone) return null;

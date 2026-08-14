@@ -695,6 +695,14 @@ export default function Home() {
   const [sanityData, setSanityData] = useState<any>(null);
   const [, setLocation] = useLocation();
 
+  // Booking Form State
+  const [formName, setFormName] = useState("");
+  const [formEmail, setFormEmail] = useState("");
+  const [formEventDate, setFormEventDate] = useState("");
+  const [formLocation, setFormLocation] = useState("");
+  const [formDetails, setFormDetails] = useState("");
+  const [formError, setFormError] = useState<string | null>(null);
+
   const homepage = sanityData?.homepage;
 
   // While loading, use static values
@@ -1178,6 +1186,46 @@ export default function Home() {
       if (isReady) document.body.style.overflow = "";
     }
   }, [mobileMenuOpen, lenis, isReady]);
+
+  // Booking Form Handlers
+  const formatWhatsAppDate = (dateStr: string) => {
+    if (!dateStr) return "";
+    const parts = dateStr.split("-");
+    if (parts.length !== 3) return dateStr;
+    const year = parts[0];
+    const monthIdx = parseInt(parts[1], 10) - 1;
+    const day = parts[2].padStart(2, "0");
+    const monthNames = [
+      "January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"
+    ];
+    const monthName = monthNames[monthIdx] || "";
+    return `${day} ${monthName} ${year}`;
+  };
+
+  const handleConsultationSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!formName.trim() || !formEmail.trim() || !formEventDate || !formLocation.trim() || !formDetails.trim()) {
+      setFormError("Please complete all required fields.");
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formEmail.trim())) {
+      setFormError("Please enter a valid email address.");
+      return;
+    }
+
+    setFormError(null);
+
+    const formattedDate = formatWhatsAppDate(formEventDate);
+
+    const message = `Hello AARAVELLA LUXE SALON,\n\nI would love to enquire about an event.\n\nMy Details\n\nName: ${formName.trim()}\nEmail: ${formEmail.trim()}\nEvent Date: ${formattedDate}\nLocation / Venue: ${formLocation.trim()}\n\nEvent Details & Vision:\n${formDetails.trim()}\n\nI would love to know about your availability, packages, and consultation process.\n\nThank you.`;
+
+    const cleanPhone = whatsappNumberVal.replace(/\D/g, '');
+    const waUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`;
+    window.open(waUrl, '_blank', 'noopener,noreferrer');
+  };
 
   return (
     <main className="min-h-screen bg-background overflow-x-hidden selection:bg-primary/20 selection:text-foreground relative">
@@ -1897,33 +1945,96 @@ export default function Home() {
           </FadeIn>
 
           <FadeIn delay={0.2}>
-            <form className="space-y-12" onSubmit={(e) => e.preventDefault()}>
+            <form className="space-y-12" onSubmit={handleConsultationSubmit}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
                 <div className="border-b border-border hover:border-primary focus-within:border-primary transition-colors pb-3">
                   <label className="block font-sans text-[9px] uppercase tracking-[0.3em] text-muted-foreground mb-2">Full Name</label>
-                  <input type="text" data-testid="input-name" className="w-full bg-transparent outline-none font-serif text-2xl text-foreground placeholder:text-muted-foreground/30 placeholder:italic" placeholder="Your name" />
+                  <input
+                    type="text"
+                    data-testid="input-name"
+                    value={formName}
+                    onChange={(e) => {
+                      setFormName(e.target.value);
+                      if (formError) setFormError(null);
+                    }}
+                    className="w-full bg-transparent outline-none font-serif text-2xl text-foreground placeholder:text-muted-foreground/30 placeholder:italic"
+                    placeholder="Your name"
+                  />
                 </div>
                 <div className="border-b border-border hover:border-primary focus-within:border-primary transition-colors pb-3">
                   <label className="block font-sans text-[9px] uppercase tracking-[0.3em] text-muted-foreground mb-2">Email Address</label>
-                  <input type="email" data-testid="input-email" className="w-full bg-transparent outline-none font-serif text-2xl text-foreground placeholder:text-muted-foreground/30 placeholder:italic" placeholder="you@example.com" />
+                  <input
+                    type="email"
+                    data-testid="input-email"
+                    value={formEmail}
+                    onChange={(e) => {
+                      setFormEmail(e.target.value);
+                      if (formError) setFormError(null);
+                    }}
+                    className="w-full bg-transparent outline-none font-serif text-2xl text-foreground placeholder:text-muted-foreground/30 placeholder:italic"
+                    placeholder="you@example.com"
+                  />
                 </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
                 <div className="border-b border-border hover:border-primary focus-within:border-primary transition-colors pb-3">
-                  <label className="block font-sans text-[9px] uppercase tracking-[0.3em] text-muted-foreground mb-2">Wedding Date</label>
-                  <input type="text" data-testid="input-date" className="w-full bg-transparent outline-none font-serif text-2xl text-foreground placeholder:text-muted-foreground/30 placeholder:italic" placeholder="DD / MM / YYYY" />
+                  <label className="block font-sans text-[9px] uppercase tracking-[0.3em] text-muted-foreground mb-2">Event Date</label>
+                  <input
+                    type="date"
+                    data-testid="input-date"
+                    min={new Date().toISOString().split('T')[0]}
+                    value={formEventDate}
+                    onChange={(e) => {
+                      setFormEventDate(e.target.value);
+                      if (formError) setFormError(null);
+                    }}
+                    onClick={(e) => {
+                      try {
+                        if ('showPicker' in e.currentTarget) {
+                          (e.currentTarget as any).showPicker();
+                        }
+                      } catch { }
+                    }}
+                    className="w-full bg-transparent outline-none font-serif text-2xl text-foreground placeholder:text-muted-foreground/30 placeholder:italic cursor-pointer [color-scheme:light]"
+                  />
                 </div>
                 <div className="border-b border-border hover:border-primary focus-within:border-primary transition-colors pb-3">
                   <label className="block font-sans text-[9px] uppercase tracking-[0.3em] text-muted-foreground mb-2">Location / Venue</label>
-                  <input type="text" data-testid="input-location" className="w-full bg-transparent outline-none font-serif text-2xl text-foreground placeholder:text-muted-foreground/30 placeholder:italic" placeholder="City, State" />
+                  <input
+                    type="text"
+                    data-testid="input-location"
+                    value={formLocation}
+                    onChange={(e) => {
+                      setFormLocation(e.target.value);
+                      if (formError) setFormError(null);
+                    }}
+                    className="w-full bg-transparent outline-none font-serif text-2xl text-foreground placeholder:text-muted-foreground/30 placeholder:italic"
+                    placeholder="City, State"
+                  />
                 </div>
               </div>
 
               <div className="border-b border-border hover:border-primary focus-within:border-primary transition-colors pb-3">
                 <label className="block font-sans text-[9px] uppercase tracking-[0.3em] text-muted-foreground mb-2">Event Details & Vision</label>
-                <textarea data-testid="input-details" rows={3} className="w-full bg-transparent outline-none font-serif text-2xl text-foreground resize-none placeholder:text-muted-foreground/30 placeholder:italic" placeholder="Tell us about how you want to feel..."></textarea>
+                <textarea
+                  data-testid="input-details"
+                  rows={3}
+                  value={formDetails}
+                  onChange={(e) => {
+                    setFormDetails(e.target.value);
+                    if (formError) setFormError(null);
+                  }}
+                  className="w-full bg-transparent outline-none font-serif text-2xl text-foreground resize-none placeholder:text-muted-foreground/30 placeholder:italic"
+                  placeholder="Tell us about how you want to feel..."
+                ></textarea>
               </div>
+
+              {formError && (
+                <p className="text-red-700 font-sans text-xs tracking-widest uppercase text-center mt-2" data-testid="form-error">
+                  {formError}
+                </p>
+              )}
 
               <div className="pt-10 w-full">
                 <button type="submit" data-testid="button-submit-inquiry" className="btn-silk w-full py-8 text-center text-white cursor-pointer group">
